@@ -1,0 +1,2 @@
+genranpass32() { a=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32}`; echo $a | tee /var/www/streisand/nginx_password; }
+genranpass8() { a=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-8}`; echo $a | tee /var/www/streisand/nginx_password; }
