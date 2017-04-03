@@ -1,0 +1,5 @@
+### shows current users ID
+cuser() { id | tee `echo "current_user"`; }  # cuser
+
+### Attempts to remount FSTAB drives
+rmount() { mount -a; }  # rmount  
