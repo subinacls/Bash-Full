@@ -1,0 +1,16 @@
+
+
+### dig a domain name and stow results
+d() { dig $_ > `echo "dig_$_"`; }  # Example: d google.com
+
+### whois a domain name and stow the results
+w() { whois $_ | tee `echo "whois_$_"`; }  # Example: w google.com
+
+### host for SRV type records on a domain
+h() { host -t SRV $_ | tee `echo "host_SRV_$_"`; }  # Example: h google.com
+
+### do a zone transfer from a specific nameserver for a given domain, stow results
+dz() { dig @$1 $2 -t AXFR | tee `echo "dig_zone_transfer_$2"`; }  # Example: dz 8.8.8.8 google.com
+
+### do a zone transfer from a specific nameserver for a given domain, stow results
+hz() { host -l $2 $1 | tee `echo "host_zone_transfer_$_"`; }  # Example: hz 8.8.8.8 google.com
