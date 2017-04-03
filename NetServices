@@ -1,0 +1,11 @@
+### shows listening TCP services on the network stack
+slisten() { ss -lapmnet | tr -s " " | grep LISTEN; }  # Example: slisten
+
+### shortcut to TCP netstat command, requires root perms
+nstat() { netstat -antelop; }  # Example: nstat
+
+### shortcut to UDP netstat command, requires root perms
+nstut() { netstat -anuelop; }  # Example: nstut
+
+### list connections from external host
+lcon() { lsof -i; }  # lcon
