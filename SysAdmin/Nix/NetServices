@@ -1,5 +1,8 @@
+### get routable Gateway (External IP), checks 2 different places for reply
+extip() { $(a=`wget whatsmyip.com -O - 2>/dev/null | grep -E '^setCookie' | cut -d"'" -f4 2>/dev/null`) && $(b=`wget ipchicken.com -O - 2>/dev/null | grep -E "^(([0-9]{1,3}\.){3}([0-9]{1,3}))" | cut -d"<" -f1 2>/dev/null`); if echo $a; then $(echo -n ""); else echo $b; fi; } # Example: extip
+
 ### shows listening TCP services on the network stack
-slisten() { ss -lapmnet | tr -s " " | grep LISTEN; }  # Example: slisten
+slisten() { ss -lapmnet | tr -s " " | grep LISTEN; } # Example: slisten
 
 ### shortcut to TCP netstat command, requires root perms
 nstat() { netstat -antelop; }  # Example: nstat
