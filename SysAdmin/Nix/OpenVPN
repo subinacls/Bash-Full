@@ -1,0 +1,23 @@
+#####################################################
+##
+##### Useful functions for OpenVPN Community Edition
+##
+#####################################################
+## Get external IP of OpenVPN server
+getextip() { wget whatsmyip.com -O - 2>/dev/null | grep "setCookie('" | cut -d"'" -f4; }
+#####################################################
+## echo openvpn certs to STDOUT, used by other functions below
+echocrt() { cat $1 | sed -nr '/-----BEGIN (CERTIFICATE|PRIVATE KEY|OpenVPN Static key V1)-----/,/-----END (CERTIFICATE|PRIVATE KEY|OpenVPN Static key V1)-----/p'; }
+#####################################################
+## Generates UUIDS on system, echo to STDOUT
+genid() { uuid=`uuidgen`&& echo $uuid; }
+#####################################################
+## Adds user to the vpn by producing the keys and configuration needed
+addvpnuser() { nuser=`genid` && echo -en "\n\n\n\n\n\n\ny\n\n\ny\n\n" |  /etc/openvpn/easy-rsa/build-key --batch --keysize 2048 `echo $nuser` && makeclientconfig ; }
+#####################################################
+## Produces the client configuration, uses other defined functions above
+makeclientconfig() { echo -e "client\ndev tun\nproto udp\nremote `getextip` 1194\nresolv-retry infinite\nnobind\nuser nobody\ngroup nogroup\npersist-key\npersist-tun\nmute-replay-warnings\n<ca>\n`echoca /etc/openvpn/easy-rsa/keys/ca.crt`\n</ca>\n<cert>\n`echocrt /etc/openvpn/easy-rsa/keys/$(echo $nuser).crt`</cert>\n<key>\n`echocrt /etc/openvpn/easy-rsa/keys/$(echo $nuser).key`\n</key>\nremote-cert-tls server\nkey-direction 1\n<tls-auth>\n`echocrt /etc/openvpn/easy-rsa/keys/ta.key`\n</tls-auth>\ncipher AES-256-CFB8\ntls-cipher TLS-ECDHE-RSA-WITH-AES-256-GCM-SHA384:TLS-ECDHE-ECDSA-WITH-AES-256-GCM-SHA384:TLS-ECDHE-RSA-WITH-AES-256-CBC-SHA384:TLS-ECDHE-ECDSA-WITH-AES-256-CBC-SHA384:TLS-ECDHE-RSA-WITH-AES-256-CBC-SHA:DH-DSS-AES256-GCM-SHA384:TLS-DHE-DSS-WITH-AES-256-GCM-SHA384:DH-RSA-AES256-GCM-SHA384:TLS-DHE-RSA-WITH-AES-256-GCM-SHA384:DH-RSA-AES256-SHA256:DH-DSS-AES256-SHA256:TLS-ECDH-RSA-WITH-AES-256-GCM-SHA384:TLS-ECDH-ECDSA-WITH-AES-256-GCM-SHA384:TLS-RSA-WITH-AES-256-GCM-SHA384:TLS-ECDHE-RSA-WITH-AES-128-GCM-SHA256:TLS-ECDHE-ECDSA-WITH-AES-128-GCM-SHA256:DH-DSS-AES128-GCM-SHA256:TLS-DHE-DSS-WITH-AES-128-GCM-SHA256:DH-RSA-AES128-GCM-SHA256:TLS-DHE-RSA-WITH-AES-128-GCM-SHA256:DH-RSA-AES128-SHA256:DH-DSS-AES128-SHA256:TLS-ECDH-RSA-WITH-AES-128-GCM-SHA256:TLS-ECDH-ECDSA-WITH-AES-128-GCM-SHA256:TLS-RSA-WITH-AES-128-GCM-SHA256\nauth SHA512\ncomp-lza\nverb 3\nmute 20"; }
+#####################################################
+## Batch process for generating keys
+genkeys() { source /etc/openvpn/easy-rsa/vars && echo -en "\n\n\n\n\n\n\n\n\n\ny\ny\n" | /etc/openvpn/easy-rsa/build-key –key-size 2048 `echo $nuser` 2>/dev/null &&  echo -en "\n\n\n\n\n\n\n\n\n\n" | /etc/openvpn/easy-rsa/build-req  `echo $nuser` 2>/dev/null; }
+#####################################################
