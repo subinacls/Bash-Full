@@ -1,6 +1,6 @@
 #
 # Adds shortcuts to complex commands, useful with bash shell scripting.
-# Copy and Paste Contents to your current bash shell
+# Copy and Paste Contents to your current bash shell, add to ~/.bashrc to make perm
 # Modify or append as needed, share with team for uniformity
 #
 ### get routable Gateway (External IP), checks 2 different places for reply
@@ -15,12 +15,3 @@ nstat() { netstat -antelop; }  # Example: nstat
 nstut() { netstat -anuelop; }  # Example: nstut
 ### list connections from external host
 lcon() { lsof -i; }  # Example: lcon
-#
-# Export to ~/.bashrc
-#
-export extip
-export extip2
-export slisten
-export nstat
-export nstut
-export lcon
