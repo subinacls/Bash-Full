@@ -1,0 +1,2 @@
+### Identify local machines alive on the network through ARP Cache
+local() { arp -a; } # Example: local
