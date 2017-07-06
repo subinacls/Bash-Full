@@ -4,7 +4,7 @@ for x in $(seq 1 255);do
  z=`echo $ip`.`echo $x`; # sets iterated IP address
  wget -O $y https://www.shodan.io/host/`echo $z`; # makes wget call and saves results to disk
  done; # finish the for loop
-find ./ -size 0 -print0 | xargs -0 rm; # removes any file with size 0 (be careful)
+find ./ -maxdepth 1 -size 0 -print0 | xargs -0 rm; # removes any file with size 0 (be careful)
 # greps for specific line containing port numbers
 # removes Contact information for cleaner output
 # further cleaning of STDOUT for reading
