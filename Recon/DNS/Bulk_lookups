@@ -2,8 +2,18 @@
 blookup() { a=`echo $1 | sed -r s/(.*)\.(.*)\.(.*)/\1\.\2/g"`; for x in $(seq 0 255); do for y in $(seq 0 255); do nslookup `echo $1 | sed -r "s/(.*)\.(.*)\.(.*)/\1\.\2/g"`.$x.$y | tee nslookup-`echo $a`.`echo $x`.`echo $y`; done; done; }  # Example: blookup 172.20.0.0
 
 ### Conduct nslookup on class c range
-clookup() { a=`echo $1 | sed -r s/(.*)\.(.*)\.(.*)/\1\.\2/g"`; for x in $(seq 0 255); do  nslookup `echo $1 | sed -r "s/(.*)\.(.*)\.(.*)/\1\.\2\.\3/g"`.$x | tee nslookup-`echo $a`.`echo $x`; done; done; }  # Example: clookup 172.20.12.0
-
+clookup() { mkdir ./`echo $1` &>/dev/null; 
+    a=`echo $1 |\
+    sed -r "s/(.*)\.(.*)\.(.*)/\1\.\2/g"`; 
+    for x in $(seq 0 255); do 
+      nslookup `echo $1`.`echo $x` |\
+      grep name |\
+      tee ./`echo $1`/nslookup-`echo $1`.`echo $x` &>/dev/null;
+    done; 
+    find ./`echo $1` -maxdepth 1 -size 0 -print0 |\
+    xargs -0 rm; 
+    grep name ./`echo $1`/*; 
+}
 ### FROM the cwd, parse b/lookup results, gets dns names
 parsedns() { grep -v NXDOMAIN ./* | grep name | tr -s "\t" " " | sed -r "s/^(.*)\.(.*)\.(.*)\.(.*)\.(.*) name = (.*)$/\4.\3.\2.\1 = \6/g" | sed -r "s/in-addr\./target: /g" |  cut -d " " -f4 | sed -r "s/(.*)\.$/\1/g"; }  # Example: parsedns
 
