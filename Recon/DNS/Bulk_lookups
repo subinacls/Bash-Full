@@ -3,8 +3,6 @@ blookup() { a=`echo $1 | sed -r s/(.*)\.(.*)\.(.*)/\1\.\2/g"`; for x in $(seq 0 
 
 ### Conduct nslookup on class c range
 clookup() { mkdir ./`echo $1` &>/dev/null; 
-    a=`echo $1 |\
-    sed -r "s/(.*)\.(.*)\.(.*)/\1\.\2/g"`; 
     for x in $(seq 0 255); do 
       nslookup `echo $1`.`echo $x` |\
       grep name |\
