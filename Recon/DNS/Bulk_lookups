@@ -1,20 +1,49 @@
 ### Conduct nslookup on class B range
-blookup() { a=`echo $1 | sed -r s/(.*)\.(.*)\.(.*)/\1\.\2/g"`; for x in $(seq 0 255); do for y in $(seq 0 255); do nslookup `echo $1 | sed -r "s/(.*)\.(.*)\.(.*)/\1\.\2/g"`.$x.$y | tee nslookup-`echo $a`.`echo $x`.`echo $y`; done; done; }  # Example: blookup 172.20.0.0
+blookup() { mkdir ./`echo $1` &>/dev/null;
+    a=`echo $1 |\
+    sed -r "s/(.*)\.(.*)\.(.*)\.(.*)/\1\.\2/g"`; 
+    for x in $(seq 0 255); do 
+      for y in $(seq 0 255); do 
+        nslookup `echo $a`.`echo $x`.`echo $y` |\
+        grep name |\
+        tee ./`echo $1`/Bnslookup-`echo $a`.`echo $x`.`echo $y`;
+      done;
+    done;
+    find ./`echo $1` -maxdepth 1 -size 0 -print0 |\
+    xargs -0 rm; 
+    grep name ./`echo $1`/* &>/dev/null;
+    find . -type d -empty -delete;
+}  # Example: blookup 172.20.1.0
 
 ### Conduct nslookup on class c range
-clookup() { mkdir ./`echo $1` &>/dev/null; 
+clookup() { mkdir ./`echo $1` &>/dev/null;
+    a=`echo $1 |\
+    sed -r "s/(.*)\.(.*)\.(.*)\.(.*)/\1\.\2.\3/g"`; 
     for x in $(seq 0 255); do 
-      nslookup `echo $1`.`echo $x` |\
+      nslookup `echo $a`.`echo $x` |\
       grep name |\
-      tee ./`echo $1`/nslookup-`echo $1`.`echo $x` &>/dev/null;
+      tee ./`echo $1`/Cnslookup-`echo $a`.`echo $x`;
     done; 
     find ./`echo $1` -maxdepth 1 -size 0 -print0 |\
     xargs -0 rm; 
-    grep name ./`echo $1`/*;
+    grep name ./`echo $1`/* &>/dev/null;
     find . -type d -empty -delete;
-}
+}  # Example: clookup 172.20.1.0
+
 ### FROM the cwd, parse b/lookup results, gets dns names
-parsedns() { grep -v NXDOMAIN ./* | grep name | tr -s "\t" " " | sed -r "s/^(.*)\.(.*)\.(.*)\.(.*)\.(.*) name = (.*)$/\4.\3.\2.\1 = \6/g" | sed -r "s/in-addr\./target: /g" |  cut -d " " -f4 | sed -r "s/(.*)\.$/\1/g"; }  # Example: parsedns
+parsedns() { grep -v NXDOMAIN ./* |\
+  grep name |\
+  tr -s "\t" " " |\
+  sed -r "s/^(.*)\.(.*)\.(.*)\.(.*)\.(.*) name = (.*)$/\4.\3.\2.\1 = \6/g" |\
+  sed -r "s/in-addr\./target: /g" |\
+  cut -d " " -f4 |\
+  sed -r "s/(.*)\.$/\1/g"; 
+}  # Example: parsedns
 
 ### FROM the cwd, parse b/lookup results, gets ip addresses
-parseip() { grep -v NXDOMAIN ./* | grep name | cut -d ":" -f2 | tr -s "\t" " " | sed -r "s/^(.*)\.(.*)\.(.*)\.(.*)\.in-addr\.arpa name = (.*)$/\4\.\3\.\2\.\1/g" ; }  # Example: parseip
+parseip() { grep -v NXDOMAIN ./* |\
+  grep name |\
+  cut -d ":" -f2 |\
+  tr -s "\t" " " |\
+  sed -r "s/^(.*)\.(.*)\.(.*)\.(.*)\.in-addr\.arpa name = (.*)$/\4\.\3\.\2\.\1/g" ; 
+}  # Example: parseip
