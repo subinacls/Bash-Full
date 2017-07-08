@@ -1,20 +1,34 @@
 ### show SSL Certificate Expiration date
-slldate() { echo | openssl s_client -connect $1 | openssl x509 -noout -dates | tee `echo "SSL_Cert_Dates_$1"`; }  # Example: slldate server.net:port
-
+ssldate() { echo -e "\n\n\n" | openssl s_client -connect $1 2>1 | openssl x509 -enddate -noout | tee `echo "SSL_Cert_Dates_$1"` | cut -d"=" -f2; }  # Example: sslsubject server.net:port
 ### shows SSL subject line of certificate
-sllsubject() { echo | openssl s_client -connect $1 | openssl x509 -noout -subject | tee `echo "SSL_Cert_Subject_$1"`; }  # Example: sllsubject server.net:port
+sslsubject() { echo | openssl s_client -connect $1 | openssl x509 -noout -subject | tee `echo "SSL_Cert_Subject_$1"`; }  # Example: sslsubject server.net:port
 
 ### shows SSL issuer line of certificate
-sllissue() { echo | openssl s_client -connect $1 | openssl x509 -noout -issuer | tee `echo "SSL_Cert_Issuer_$1"`; }  # Example: sllissue server.net:port
+sslissue() { echo | openssl s_client -connect $1 | openssl x509 -noout -issuer | tee `echo "SSL_Cert_Issuer_$1"`; }  # Example: sslissue server.net:port
 
 ### shows SSL certificate hash value
-sllhash() { echo | openssl s_client -connect $1 | openssl x509 -noout -hash | tee `echo "SSL_Cert_Hash_$1"`; }  # Example: sllhash server.net:port
+sslhash() { echo | openssl s_client -connect $1 | openssl x509 -noout -hash | tee `echo "SSL_Cert_Hash_$1"`; }  # Example: sslhash server.net:port
 
 ### calculates the MD5 of the certificate
-sllmd5() { echo | openssl s_client -connect $1 | openssl x509 -noout -fingerprint | tee `echo "SSL_Cert_Fingerprint_$1"`; }  # Example: sslmd5 server.net:port
+sslmd5() { echo | openssl s_client -connect $1 | openssl x509 -noout -fingerprint | tee `echo "SSL_Cert_Fingerprint_$1"`; }  # Example: sslmd5 server.net:port
 
 ### basic information gathering on the certificte
-sllgather() { echo | openssl s_client -connect $1 | openssl x509 -noout -issuer -subject -dates | tee `echo "SSL_Cert_Info_$1"`; }  # Example: sllgather server.net:port
+sslgather() { echo | openssl s_client -connect $1 | openssl x509 -noout -issuer -subject -dates | tee `echo "SSL_Cert_Info_$1"`; }  # Example: sslgather server.net:port
 
 ### DUMP of all information contained in the certificate
-sllall() { echo | openssl s_client -connect $1 | openssl x509 -noout -text | tee `echo "SSL_Cert_Dump_$1"`; }  # Example: sllall server.net:port
+sslall() { echo | openssl s_client -connect $1 | openssl x509 -noout -text | tee `echo "SSL_Cert_Dump_$1"`; }  # Example: sslall server.net:port
+
+
+
+
+#########
+## check if certificate is expired
+checkexp() { certdate=$(date --date="$(ssldate `echo $1`)" +%s); 
+    today=$(date +%s);
+    if [ $certdate -ge $today ]; then 
+      echo "Pass"; 
+    else 
+      echo "Fail: $certdate";
+    fi;
+}
+
