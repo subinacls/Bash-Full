@@ -32,12 +32,17 @@ checkexp() { certdate=$(date --date="$(ssldate `echo $1`)" +%s);
     fi;
 }
 
-bulksslscan() { 
-  for x in $(cat $1); do
-    sslscan $x:443 ;
-  done;
+expirewarn() {
+  grep -i "not valid after" ./sslscan/* |\
+  grep -Ev "(20(18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40|41|42|43|44|45|46|47|48|49|50|51|52|53|54|55))" |\
+  sed -r "s/\:  /:\t/g"; 
 }
 
-expirewarn() { grep -i "not valid after" ./* |\
-  grep -Ev "(20(18|19|20|21|22|23))" ; 
+bulksslscan() { mkdir sslscan 2>/dev/null;
+  for x in $(cat $1); do
+    echo "Scanning the following system: `echo $x`";
+    sslscan $x:443 | tee ./sslscan/sslscan_`echo $x` >/dev/null;
+  done;
+  expirewarn
 }
+
