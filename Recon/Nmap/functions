@@ -1,4 +1,9 @@
-# nmap ping scanning output to STDOUT
-# pingscan 192.168.1.0/24
-pingscan() { nmap -sn $1 --open | grep -v -i -E "(starting|latency|do(wn|ne))" | cut -d " " -f5- ;}
+## nmap ping scanning output to STDOUT
+##
+pingscan() { nmap -sn $1 --open |\
+  grep -v -i -E "(starting|latency|do(wn|ne))" |\
+  cut -d " " -f5- ;
+}  # pingscan 172.16.20.0/24
+
+
 
