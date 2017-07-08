@@ -32,3 +32,12 @@ checkexp() { certdate=$(date --date="$(ssldate `echo $1`)" +%s);
     fi;
 }
 
+bulksslscan() { 
+  for x in $(cat $1); do
+    sslscan $x:443 ;
+  done;
+}
+
+expirewarn() { grep -i "not valid after" ./* |\
+  grep -Ev "(20(18|19|20|21|22|23))" ; 
+}
