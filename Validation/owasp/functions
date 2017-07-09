@@ -1,0 +1,44 @@
+################################################################################
+#
+# OWASP Testing and Validation Functions for Bash
+#
+#### Review Webserver Metafiles for Information Leakage (OTG-INFO-003)
+# grabs the robots.txt file from "/" dir of web site
+# saves output to dir on disk for later consumption
+#
+robotears() {
+  if [ ! -d "./robots/" ]; then
+    mkdir ./robots >/dev/null;
+  fi;
+  # 
+  wget --user-agent="NO UA" $1/robots.txt -O ./robots/`echo $1`_robots.txt 2>/dev/null;
+  echo -e "\n" >> ./robots/`echo $1`_robots.txt;
+}  # robotears site.tld
+#
+#### Conduct search engine discovery/reconnaissance for information leakage (OTG-INFO-001)
+# This function does numerous searches across different servers to gather information leaks
+# Uses Shodan and other sites that scan and archive services over time
+# 
+scrapeallinfo() {
+  # DROPPING IN FUTURE UPDATES
+} # infogather site.tld
+#
+####
+# This test function grabs the Headers of the server and follows and redirection
+# further grabbing headers as they are presented to the crawler
+# 
+spidereyes() {
+  if [ ! -d "./spidereyes/" ]; then
+    mkdir ./spidereyes >/dev/null;
+  fi;
+  # 
+  wget --server-response \
+    --spider --user-agent="Unknown UA" \
+    $1 2>./spidereyes/`echo $1`_server_headers.txt 3>/dev/null;
+  echo -e "\n" >> ./spidereyes/`echo $1`_server_headers.txt;
+} # spidereyes site.tld
+#
+####
+# 
+# 
+# 
