@@ -32,17 +32,38 @@ checkexp() { certdate=$(date --date="$(ssldate `echo $1`)" +%s);
     fi;
 }
 
+########
+# shows expires certificates validated through SSLscan
+# can be used independently, recommended to use bluksslscan
 expirewarn() {
   grep -i "not valid after" ./sslscan/* |\
   grep -Ev "(20(18|19|20|21|22|23|24|25|26|27|28|29|30|31|32|33|34|35|36|37|38|39|40|41|42|43|44|45|46|47|48|49|50|51|52|53|54|55))" |\
   sed -r "s/\:  /:\t/g"; 
 }
 
+########
+# used to scan large list of HTTPS services with SSLscan
+# requires a host list of IP Addresses, one IP per line
 bulksslscan() { mkdir sslscan 2>/dev/null;
   for x in $(cat $1); do
     echo "Scanning the following system: `echo $x`";
     sslscan $x:443 | tee ./sslscan/sslscan_`echo $x` >/dev/null;
   done;
   expirewarn
-}
+} # bulksslscan ./myhostlist
+
+########
+# cypher fail shows any HIGH risk failures designated by SSLscan
+cypherhigh() { 
+  grep -E "(\[31m)" $@ |\
+  grep -Ei "(accepted|preferred)";
+} ## cypherhigh ./sslscan/*
+
+########
+# cypher fail shows any MED failures designated by SSLscan
+cyphermed() { 
+  grep -E "(\[33m)" $@ |\
+  grep -Ei "(accepted|preferred)" |\
+  grep -Ev "(\[31m)";
+} ## cyphermed ./sslscan/*
 
