@@ -7,12 +7,15 @@
 # saves output to dir on disk for later consumption
 #
 robotears() {
-  if [ ! -d "./robots/" ]; then
-    mkdir ./robots >/dev/null;
+  if [ ! -d "./owasp/" ]; then \
+    mkdir ./owasp >/dev/null;
+  fi;
+  if [ ! -d "./owasp/robots/" ]; then \
+    mkdir ./owasp/robots >/dev/null;
   fi;
   # 
   wget --user-agent="NO UA" $1/robots.txt -O ./robots/`echo $1`_robots.txt 2>/dev/null;
-  echo -e "\n" >> ./robots/`echo $1`_robots.txt;
+  echo -e "\n" >> ./owasp/robots/`echo $1`_robots.txt;
 }  # robotears site.tld
 #
 #### Conduct search engine discovery/reconnaissance for information leakage (OTG-INFO-001)
@@ -24,21 +27,106 @@ scrapeallinfo() {
 } # infogather site.tld
 #
 ####
-# This test function grabs the Headers of the server and follows and redirection
+# This test function grabs the Headers of the HTTP server / follows redirections
+# further grabbing headers as they are presented to the crawler
+# 
+spidereye() {
+  if [ ! -d "./owasp/" ]; then \
+    mkdir ./owasp >/dev/null;
+  fi;
+  if [ ! -d "./owasp/spidereyes/" ]; then \
+    mkdir ./owasp/spidereyes >/dev/null;
+  fi;
+  #
+  wget -T 5 -t 1 \
+    --server-response \
+    --spider --user-agent="Unknown UA" \
+    http://$1 2>./owasp/spidereyes/`echo $1`_server_headers.txt 3>/dev/null;
+  echo -e "\n" >> ./owasp/spidereyes/`echo $1`_server_headers.txt;
+} # spidereye site.tld
+#
+####
+# This test function grabs the Headers of the HTTPS server / follows redirections
 # further grabbing headers as they are presented to the crawler
 # 
 spidereyes() {
-  if [ ! -d "./spidereyes/" ]; then
-    mkdir ./spidereyes >/dev/null;
+  if [ ! -d "./owasp/" ]; then \
+    mkdir ./owasp >/dev/null;
   fi;
-  # 
-  wget --server-response \
+  if [ ! -d "./owasp/spidereyes/" ]; then \
+    mkdir ./owasp/spidereyes >/dev/null;
+  fi;
+  #
+  wget -T 5 -t 1 \
+    --server-response \
     --spider --user-agent="Unknown UA" \
-    $1 2>./spidereyes/`echo $1`_server_headers.txt 3>/dev/null;
-  echo -e "\n" >> ./spidereyes/`echo $1`_server_headers.txt;
+    https://$1 2>./owasp/spidereyes/`echo $1`_server_headers.txt 3>/dev/null;
+  echo -e "\n" >> ./owasp/spidereyes/`echo $1`_server_headers.txt;
 } # spidereyes site.tld
 #
 ####
+# Bulk test function grabs the Headers of the HTTP server / follows redirections
+# further grabbing headers as they are presented to the crawler
 # 
+HTTPspidereyes() {
+  if [ ! -d "./owasp/" ]; then \
+    mkdir ./owasp >/dev/null;
+  fi;
+  if [ ! -d "./owasp/spidereyes/" ]; then \
+    mkdir ./owasp/spidereyes >/dev/null;
+  fi;
+  for x in $(cat $1); do \
+    echo "Scanning HTTP Headers on: `echo $x`";
+    wget -T 5 -t 1 \
+      --server-response \
+      --spider --user-agent="Unknown UA" \
+      http://$x 2>./owasp/spidereyes/`echo $x`_HTTP_server_headers.txt 3>/dev/null;
+    echo -e "\n" >> ./owasp/spidereyes/`echo $x`_HTTP_server_headers.txt;
+  done;
+} # HTTPspidereyes myDNShostlist#
+####
+# Bulk test function grabs the Headers of the HTTPS server / follows redirections
+# further grabbing headers as they are presented to the crawler
 # 
+SSLspidereyes() {
+  if [ ! -d "./owasp/" ]; then \
+    mkdir ./owasp >/dev/null;
+  fi;
+  if [ ! -d "./owasp/spidereyes/" ]; then \
+    mkdir ./owasp/spidereyes >/dev/null;
+  fi;
+  for x in $(cat $1); do \
+    echo "Scanning HTTPS Headers on: `echo $x`";
+    wget -T 5 -t 1 \
+      --server-response \
+      --spider --user-agent="Unknown UA" \
+      https://$x 2>./owasp/spidereyes/`echo $x`_SSL_server_headers.txt 3>/dev/null;
+    echo -e "\n" >> ./owasp/spidereyes/`echo $x`_SSL_server_headers.txt;
+  done;
+} # SSLspidereyes myDNShostlist
+#
+####
+# Grabs Server Header and displays to STDOUT
+# Can be redirected to file for archiving with > filenamehere
 # 
+getservertype() {
+  grep -i "server\:" ./owasp/spidereyes/* |\
+  sed -r "s/\:  /\:\t/g";
+} # getservertype / getservertype > filenamehere
+#
+####
+# Grabs Set-Cookies Header and displays to STDOUT
+# Can be redirected to file for archiving with > filenamehere
+# 
+getallcookies() {
+  grep -i "set-cookie\:" ./owasp/spidereyes/*;
+} # getallcookies / getallcookies > filenamehere
+####
+# Grabs Set-Cookies Header and displays only weak cookies to STDOUT
+# Can be redirected to file for archiving with > filenamehere
+# 
+getweakcookies() {
+  grep -i "set-cookie\:" ./owasp/spidereyes/* |\
+  grep -Eiv "(secure|httponly)" |\
+  sed -r "s/\:  /\:\t/g";
+} # getweakcookies / getweakcookies > /filename
