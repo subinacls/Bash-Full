@@ -14,7 +14,9 @@ robotears() {
     mkdir ./owasp/robots >/dev/null;
   fi;
   # 
-  wget --user-agent="NO UA" $1/robots.txt -O ./robots/`echo $1`_robots.txt 2>/dev/null;
+  wget --no-check-certificate \
+    --user-agent="NO UA" $1/robots.txt \
+    -O ./robots/`echo $1`_robots.txt 2>/dev/null;
   echo -e "\n" >> ./owasp/robots/`echo $1`_robots.txt;
 }  # robotears site.tld
 #
@@ -39,6 +41,7 @@ spidereye() {
   fi;
   #
   wget -T 5 -t 1 \
+    --no-check-certificate \
     --server-response \
     --spider --user-agent="Unknown UA" \
     http://$1 2>./owasp/spidereyes/`echo $1`_server_headers.txt 3>/dev/null;
@@ -58,6 +61,7 @@ spidereyes() {
   fi;
   #
   wget -T 5 -t 1 \
+    --no-check-certificate \
     --server-response \
     --spider --user-agent="Unknown UA" \
     https://$1 2>./owasp/spidereyes/`echo $1`_server_headers.txt 3>/dev/null;
@@ -98,6 +102,7 @@ SSLspidereyes() {
   for x in $(cat $1); do \
     echo "Scanning HTTPS Headers on: `echo $x`";
     wget -T 5 -t 1 \
+      --no-check-certificate \
       --server-response \
       --spider --user-agent="Unknown UA" \
       https://$x 2>./owasp/spidereyes/`echo $x`_SSL_server_headers.txt 3>/dev/null;
@@ -121,6 +126,7 @@ getservertype() {
 getallcookies() {
   grep -i "set-cookie\:" ./owasp/spidereyes/*;
 } # getallcookies / getallcookies > filenamehere
+#
 ####
 # Grabs Set-Cookies Header and displays only weak cookies to STDOUT
 # Can be redirected to file for archiving with > filenamehere
@@ -130,3 +136,49 @@ getweakcookies() {
   grep -Eiv "(secure|httponly)" |\
   sed -r "s/\:  /\:\t/g";
 } # getweakcookies / getweakcookies > /filename
+#
+####
+# Used to profile pages from a server and gather the URI/L removing the clutter 
+# to easily identify unique entry points, can redirect output to a file
+#
+getresource() { 
+  wget -T 5 -t 1 \
+    --no-check-certificate \
+    --spider --force-html -r -l2 $1 2>&1 |\
+  grep '^--' |\
+  awk '{ print $3 }' |\
+  cut -d"?" -f1 |\
+  grep -Evi "(\.jpg|\.png|\.css)" |\
+  sort -u; 
+} # getresource site.tld / getresource site.tld > filename
+#
+####
+# Bulk function sed to profile pages from a DNS list to gather the URI/L removing the clutter 
+# to easily identify unique entry points, can redirect output to a file
+#
+SSLgetresources() { 
+  if [ ! -d "./owasp/" ]; then \
+    mkdir ./owasp >/dev/null;
+  fi;
+  if [ ! -d "./owasp/getresources/" ]; then \
+    mkdir ./owasp/getresources 2>/dev/null;
+  fi;
+  for x in $(cat $1); do \
+    rm ./owasp/getresources/`echo $x`_resources 2>/dev/null;
+    echo "Identifying URIs hosted from site: `echo $x`";
+    wget -T 5 -t 1 --spider \
+      --no-check-certificate \
+      --force-html \
+      -r -l2 https://$x 2>&1 |\
+    grep '^--' |\
+    awk '{ print $3 }' |\
+    cut -d"?" -f1 |\
+    grep -Evi "(\.jpg|\.gif|\.ico|\.png|\.css|\.pdf)" |\
+    sort -u >> ./owasp/getresources/`echo $x`_resources;
+  done;
+} # SSLgetresources mydnslist
+#
+####
+#
+#
+#
