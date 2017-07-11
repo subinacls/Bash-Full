@@ -182,3 +182,95 @@ SSLgetresources() {
 #
 #
 #
+HTTPdownitall() {
+  if [ ! -d "./owasp/" ]; then \
+    mkdir ./owasp >/dev/null;
+  fi;
+  if [ ! -d "./owasp/webarchive/" ]; then \
+    mkdir ./owasp/webarchive 2>/dev/null;
+  fi;
+  for x in $(cat $1); do \
+    echo "Identifying URIs hosted from site: `echo $x`";
+    wget -T 5 -t 1 --spider \
+      --no-check-certificate \
+      --force-html \
+      -r -l2 https://$x 2>&1 |\
+    grep '^--' |\
+    awk '{ print $3 }' |\
+    cut -d"?" -f1 |\
+    sort -u >> ./owasp/getresources/`echo $x`_resources;
+  done;
+}
+#
+####
+# Downloads HTTPS site in a recursive manner with no clobber
+# stays within the domain and does not check for invalid certificates
+#
+HTTPSdownitall() { wget https://$1 \
+      --recursive \
+      --user-agent="Unknown UA" \
+      --no-clobber \
+      --no-check-certificate \
+      --page-requisites \
+      --html-extension \
+      --convert-links \
+      --domain $1 
+      --no-parent \
+      -t 1 -T 5 2>/dev/null;
+}  # HTTPSdownitall google.com
+#
+####
+# Downloads HTTP site in a recursive manner with no clobber
+# stays within the domain and does not check for invalid certificates
+#-e use_proxy=yes -e http_proxy=127.0.0.1:8080
+HTTPdownitall() { wget http://$1 \
+      --recursive \
+      --user-agent="Unknown UA" \
+      --no-clobber \
+      --no-check-certificate \
+      --page-requisites \
+      --html-extension \
+      --convert-links \
+      --domain `echo $1 | cut -d":" -f1` 
+      --no-parent \
+      -t 1 -T 5 2>/dev/null;
+}  # HTTPdownitall google.com
+#
+####
+# Utilize BurpSuite - Downloads HTTPS site in a recursive manner with no clobber
+# stays within the domain and does not check for invalid certificates
+#
+HTTPSBurpitall() { wget https://$1 \
+      -e use_proxy=on \
+      -e http_proxy=127.0.0.1:8080 \
+      -e https_proxy=127.0.0.1:8080 \
+      -e ftp_proxy=127.0.0.1:8080 \
+      --recursive \
+      --user-agent="Unknown UA" \
+      --no-check-certificate \
+      --page-requisites \
+      --html-extension \
+      --convert-links \
+      --domain $1 \
+      --no-parent \
+      -t 1 -T 5 -4 2>/dev/null;
+}  # HTTPSdownitall google.com#
+####
+# Utilize BurpSuite - Downloads HTTP site in a recursive manner with no clobber
+# stays within the domain and does not check for invalid certificates
+#-e use_proxy=yes -e http_proxy=127.0.0.1:8080
+HTTPBurpitall() { wget http://$1 \
+      -e use_proxy=on \
+      -e http_proxy=127.0.0.1:8080 \
+      -e https_proxy=127.0.0.1:8080 \
+      -e ftp_proxy=127.0.0.1:8080 \
+      --recursive \
+      --user-agent="Unknown UA" \
+      --no-check-certificate \
+      --page-requisites \
+      --html-extension \
+      --convert-links \
+      --domain `echo $1 | cut -d":" -f1 >/dev/null` \
+      --no-parent \
+      -t 1 -T 5 2>/dev/null;
+}  # HTTPdownitall google.com
