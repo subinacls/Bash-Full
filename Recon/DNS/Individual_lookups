@@ -1,5 +1,5 @@
 ### dig a domain name and stow results
-d() { dig $_ > `echo "dig_$_"`; }  # Example: d google.com
+d() { dig $_ | tee `echo "dig_$_"`; }  # Example: d google.com
 
 ### whois a domain name and stow the results
 w() { whois $_ | tee `echo "whois_$_"`; }  # Example: w google.com
