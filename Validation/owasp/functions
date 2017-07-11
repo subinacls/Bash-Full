@@ -272,5 +272,5 @@ HTTPBurpitall() { wget http://$1 \
       --convert-links \
       --domain `echo $1 | cut -d":" -f1 >/dev/null` \
       --no-parent \
-      -t 1 -T 5 2>/dev/null;
+      -t 1 -T 5 -4 2>/dev/null;
 }  # HTTPdownitall google.com
