@@ -1,0 +1,9 @@
+HTTPoptions() { 
+  echo -e "OPTIONS / HTTP/1.0\n\n" |\
+  nc $1 $2; 
+}
+
+HTTPSoptions() { 
+  echo -e "OPTIONS / HTTP/1.0\n\n" |\
+  nc $1 $2;
+}
