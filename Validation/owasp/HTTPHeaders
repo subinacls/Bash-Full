@@ -1,6 +1,7 @@
-#
+# 
 ####
-# Uses gethead.py from HTTPHacker from github, no need to reinvent the wheel here
+# Uses gethead.py from HTTPHacker from github, no need to reinvent the wheel -
+# Thank you Nathan: https://github.com/httphacker/gethead/blob/gh-pages/gethead.py
 # grabs headers and validates the current settings against known HTTP weaknesses
 # Echos the gethead.py file to the system if it is not already found in the ~/scripts/ dir
 #
@@ -98,9 +99,9 @@ else:
 EOF
    python ~/scripts/gethead.py https://$1;
 else
-   python ~/scripts/gethead.py https://$1
+   python ~/scripts/gethead.py https://$1;
 fi
-}
+} # HTTPSgetheaders sitehere.tld / HTTPSgetheaders sitehere.tld > ./file/ondisk.ext
 #
 ####
 #
