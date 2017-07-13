@@ -1,0 +1,13 @@
+<form>
+  <input type="checkbox" name="External" value="External">External Pentest<br> <!--implies off site-->
+  <input type="checkbox" name="Internal" value="Internal">Internal Pentest<br>
+  <input type="checkbox" name="Internal1" value="Internaloff">Internal Pentest (Off-Site)<br>
+  <input type="checkbox" name="Internal2" value="Internaloff">Internal Pentest (On-Site)<br>
+  <input type="checkbox" name="Wireless" value="Wireless">Wireless Pentest<br>
+  <input type="checkbox" name="Wireless1" value="Wirelessoff">Internal Pentest (Off-Site)<br>
+  <input type="checkbox" name="Wireless2" value="Wirelesson">Internal Pentest (On-Site)<br>
+  <input type="checkbox" name="Physical" value="Physical">Physical Pentest<br> <!--implies on site-->
+  <input type="checkbox" name="Social" value="Social">Social-Engineering (Telephone)<br> <!--implies off site-->
+  <input type="checkbox" name="Social1" value="Social1">Social-Engineering (Phishing)<br> <!--implies off site-->
+  <input type="checkbox" name="Social2" value="Social2">Social-Engineering (On-Site)<br>
+</form>
