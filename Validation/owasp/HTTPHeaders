@@ -1,6 +1,6 @@
 # 
 ####
-# HTTPS version, uses gethead.py from HTTPHacker from github, no need to reinvent the wheel -
+# HTTPS version, uses modified gethead.py from HTTPHacker from github, no need to reinvent the wheel -
 # Thank you Nathan: https://github.com/httphacker/gethead/blob/gh-pages/gethead.py
 # grabs headers and validates the current settings against known weaknesses
 # Echos the gethead.py file to the system if it is not already found in the ~/scripts/ directory
@@ -96,7 +96,7 @@ fi
 } # HTTPSgetheader sitehere.tld(:port) / HTTPSgetheader sitehere.tld(:port) > ./file/ondisk.ext
 #
 ####
-# HTTP version, uses gethead.py from HTTPHacker from github, no need to reinvent the wheel -
+# HTTP version, uses modified gethead.py from HTTPHacker from github, no need to reinvent the wheel -
 # Thank you Nathan: https://github.com/httphacker/gethead/blob/gh-pages/gethead.py
 # grabs headers and validates the current settings against known weaknesses
 # Echos the gethead.py file to the system if it is not already found in the ~/scripts/ directory
@@ -194,7 +194,7 @@ fi
 #
 #
 ####
-# HTTPS version, uses gethead.py from HTTPHacker from github, no need to reinvent the wheel -
+# HTTPS version, uses modified gethead.py from HTTPHacker from github, no need to reinvent the wheel -
 # Thank you Nathan: https://github.com/httphacker/gethead/blob/gh-pages/gethead.py
 # grabs headers and validates the current settings against known weaknesses
 # Echos the gethead.py file to the system if it is not already found in the ~/scripts/ directory
@@ -302,7 +302,7 @@ fi
 } # HTTPSgetheaders myhostlist
 #
 ####
-# HTTP version, uses gethead.py from HTTPHacker from github, no need to reinvent the wheel -
+# HTTP version, uses modified gethead.py from HTTPHacker from github, no need to reinvent the wheel -
 # Thank you Nathan: https://github.com/httphacker/gethead/blob/gh-pages/gethead.py
 # grabs headers and validates the current settings against known weaknesses
 # Echos the gethead.py file to the system if it is not already found in the ~/scripts/ directory
