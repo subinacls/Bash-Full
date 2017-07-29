@@ -55,6 +55,7 @@ a=`echo $durl | cut -d"-" -f2 | cut -d"." -f1`
 echo -e "\t\t[-] Script has found the Hosting location of: $a"
 b=`curl -s $durl | grep -i base64.decode | cut -d '"' -f4 | cut -d '"' -f1 | base64 -D | cut -d'"' -f8 | cut -d'"' -f1`
 echo -e "\t{([#])} Prepairing to downloading file from: $b"
-c=`curl -s $b | grep \.mp4\" | cut -d'"' -f2` && curl -k -X $'GET' -H $'User-Agent: Unknown UA' -H $'Referer: $b' -H $'Range: bytes=0-' -L -O --retry 999 --retry-max-time 0 $c
-echo -r "\t{([#])} File has finished downloading, you can view the file now"
+c=`curl -s $b | grep \.mp4\" | cut -d'"' -f2`
+curl -k -X $'GET' -H $'User-Agent: Unknown UA' -H $'Referer: $b' -H $'Range: bytes=0-' -L -O --retry 999 --retry-max-time 0 $c
+echo -r "\t{([#])} File has finished downloading, you can now watch $a"
 
