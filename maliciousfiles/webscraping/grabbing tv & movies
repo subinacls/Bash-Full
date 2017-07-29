@@ -32,8 +32,6 @@ downthemovie () {
     $b -o $c;
 } # Example: downthemovie https://somesite.tld/vid/random_bits_movie_title
 ###
-# original example used to download movie, make sure to have adblocker
-openmovie () { a=`echo $1 | cut -d"-" -f2- | cut -d"." -f1` &&  b=`curl -s $1 | grep -i base64.decode | cut -d '"' -f4 | cut -d '"' -f1 | base64 -D | cut -d'"' -f8 | cut -d'"' -f1` && c=`curl -s $b | grep \.mp4\" | cut -d'"' -f2` && open -a Google\ Chrome $c;}
 #
 # Explination:
 #
@@ -67,7 +65,27 @@ openmovie () { a=`echo $1 | cut -d"-" -f2- | cut -d"." -f1` &&  b=`curl -s $1 | 
 #  This script does not use anything outside basic Linux commands available to almost all users (*Nix/OSX/BSD)
 #  This script is intended to be viewed and modified for persons wanting to learn BASH Scripting
 ###
-# Bash script to take user input
+# original example used to open chrome and play video, make sure to have adblocker and block any malicious JS or ad's
+openmovie () { 
+  a=`echo $1 |\
+    cut -d"-" -f2- |\
+    cut -d"." -f1`;
+  b=`curl -s $1 |\
+    grep -i base64.decode |\
+    cut -d '"' -f4 |\
+    cut -d '"' -f1 |\
+    base64 -D |\
+    cut -d'"' -f8 |\
+    cut -d'"' -f1`;
+  c=`curl -s $b |\
+    grep \.mp4\" |\
+    cut -d'"' -f2`;
+  open -a Google\ Chrome $c;
+} # Example openmovie somesite.tlb/vid/moviename.html 
+#
+### useful for a MBP - will need different syntax for other *Nix variants
+#
+# Bash script to take user input and download the relevant MP4 file
 #!/bin/bash
 echo -e "[!] Please enter the URL from movie search:" 1>&2
 read durl
@@ -81,7 +99,13 @@ curl -k -X $'GET' -H $'User-Agent: NOUA' -H $'Referer: $b' -H $'Range: bytes=0-'
 echo -r "\t{([#])} File has finished downloading, you can now watch $a" 1>&2
 #
 ### searchsite
-#
+# I dont like rendering the sites which are known to have malicious JS to use their search function
+# So I wrote my own to handle the request and dump the results to STDOUT
+# This will help when trying to find that movie or series you want to download
+# If your searching is accurate you can smile and create a FOR loop and grab everything in one swoop
+# Example:
+# for x in $(searchseason) do downtheseason $x; done
+# just some food for though
 #
 searchseason () { 
   echo "Please enter the search string below and press [ENTER]:" 1>&2;
@@ -96,7 +120,9 @@ searchseason () {
     grep href |\
     cut -d'"' -f2 |\
     sort -u;
-}
+} # Example searchseason ## follow onscreen instructions
+#
+#
 ### downtheseason
 #
 # Used to get the entire season from the first listing of the show
