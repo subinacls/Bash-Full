@@ -9,25 +9,10 @@
 # for your own TV/Movie sites as most will follow these same constructs.
 #
 ###
-downthemovie () {
-  a=`curl -s $1 | \
-    grep -i base64.decode | \
-    cut -d '"' -f4 | \
-    cut -d '"' -f1 | \
-    base64 -D | \
-    cut -d'"' -f8 | \
-    cut -d'"' -f1` ;
-  b=`curl -s $a | \
-    grep mp4 | \
-    cut -d'"' -f2` ;
-  curl -k -X $'GET' \
-    -H $'User-Agent: Unknown UA' \
-    -H $'Referer: $a' \
-    -H $'Range: bytes=0-' \
-    -L -O --retry 999 \
-    --retry-max-time 0 $b ;
-} # Example: downthemovie https://somesite.tld/vid/random_bits_movie_title
+downthemovie () { a=`curl -s $1 | grep -i base64.decode | cut -d '"' -f4 | cut -d '"' -f1 | base64 -D | cut -d'"' -f8 | cut -d'"' -f1`; b=`curl -s $a | grep \.mp4\" | cut -d'"' -f2`; curl -k -X $'GET' -H $'User-Agent: NOUA' -H $'Referer: $a' -H $'Range: bytes=0-' -L --retry 999 --retry-max-time 0 -O $b ;} # Example: downthemovie https://somesite.tld/vid/random_bits_movie_title
 ###
+# original example used to download movie, make sure to have adblocker
+openmovie () { a=`echo $1 | cut -d"-" -f2- | cut -d"." -f1` &&  b=`curl -s $1 | grep -i base64.decode | cut -d '"' -f4 | cut -d '"' -f1 | base64 -D | cut -d'"' -f8 | cut -d'"' -f1` && c=`curl -s $b | grep \.mp4\" | cut -d'"' -f2` && open -a Google\ Chrome $c;}
 #
 # Explination:
 #
@@ -61,3 +46,15 @@ downthemovie () {
 #  This script does not use anything outside basic Linux commands available to almost all users (*Nix/OSX/BSD)
 #  This script is intended to be viewed and modified for persons wanting to learn BASH Scripting
 ###
+# Bash script to take user input
+#!/bin/bash
+echo -e "[!] Please enter the URL from movie search:"
+read durl
+echo -e "\t{([#])} Scraping: $durl for the download location"
+a=`echo $durl | cut -d"-" -f2 | cut -d"." -f1`
+echo -e "\t\t[-] Script has found the Hosting location of: $a"
+b=`curl -s $durl | grep -i base64.decode | cut -d '"' -f4 | cut -d '"' -f1 | base64 -D | cut -d'"' -f8 | cut -d'"' -f1`
+echo -e "\t{([#])} Prepairing to downloading file from: $b"
+c=`curl -s $b | grep \.mp4\" | cut -d'"' -f2` && curl -k -X $'GET' -H $'User-Agent: Unknown UA' -H $'Referer: $b' -H $'Range: bytes=0-' -L -O --retry 999 --retry-max-time 0 $c
+echo -r "\t{([#])} File has finished downloading, you can view the file now"
+
