@@ -51,7 +51,7 @@ openmovie () { a=`echo $1 | cut -d"-" -f2- | cut -d"." -f1` &&  b=`curl -s $1 | 
 echo -e "[!] Please enter the URL from movie search:"
 read durl
 echo -e "\t{([#])} Scraping: $durl for the download location"
-a=`echo $durl | cut -d"-" -f2 | cut -d"." -f1`
+a=`echo $durl | cut -d"-" -f2- | cut -d"." -f1`
 echo -e "\t\t[-] Script has found the Hosting location of: $a"
 b=`curl -s $durl | grep -i base64.decode | cut -d '"' -f4 | cut -d '"' -f1 | base64 -D | cut -d'"' -f8 | cut -d'"' -f1`
 echo -e "\t{([#])} Prepairing to downloading file from: $b"
