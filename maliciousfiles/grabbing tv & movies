@@ -9,7 +9,28 @@
 # for your own TV/Movie sites as most will follow these same constructs.
 #
 ###
-downthemovie () { a=`curl -s $1 | grep -i base64.decode | cut -d '"' -f4 | cut -d '"' -f1 | base64 -D | cut -d'"' -f8 | cut -d'"' -f1`; b=`curl -s $a | grep \.mp4\" | cut -d'"' -f2`; curl -k -X $'GET' -H $'User-Agent: NOUA' -H $'Referer: $a' -H $'Range: bytes=0-' -L --retry 999 --retry-max-time 0 -O $b ;} # Example: downthemovie https://somesite.tld/vid/random_bits_movie_title
+downthemovie () { 
+  a=`curl -s $1 |\
+    grep -i base64.decode |\
+    cut -d '"' -f4 |\
+    cut -d '"' -f1 |\
+    base64 -D |\
+    cut -d'"' -f8 |\
+    cut -d'"' -f1`;
+  b=`curl -s $a |\
+    grep \.mp4\" |\
+    cut -d'"' -f2`;
+  c=`echo $e |\
+    cut -d"/" -f5- |\
+    sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
+  curl -k -X $'GET' \
+    -H $'User-Agent: NOUA' \
+    -H $'Referer: $a' \
+    -H $'Range: bytes=0-' \
+    -L --retry 999 \
+    --retry-max-time 0 \
+    $b -o $c;
+} # Example: downthemovie https://somesite.tld/vid/random_bits_movie_title
 ###
 # original example used to download movie, make sure to have adblocker
 openmovie () { a=`echo $1 | cut -d"-" -f2- | cut -d"." -f1` &&  b=`curl -s $1 | grep -i base64.decode | cut -d '"' -f4 | cut -d '"' -f1 | base64 -D | cut -d'"' -f8 | cut -d'"' -f1` && c=`curl -s $b | grep \.mp4\" | cut -d'"' -f2` && open -a Google\ Chrome $c;}
@@ -48,14 +69,74 @@ openmovie () { a=`echo $1 | cut -d"-" -f2- | cut -d"." -f1` &&  b=`curl -s $1 | 
 ###
 # Bash script to take user input
 #!/bin/bash
-echo -e "[!] Please enter the URL from movie search:"
+echo -e "[!] Please enter the URL from movie search:" 1>&2
 read durl
-echo -e "\t{([#])} Scraping: $durl for the download location"
+echo -e "\t{([#])} Scraping: $durl for the download location" 1>&2
 a=`echo $durl | cut -d"-" -f2- | cut -d"." -f1`
-echo -e "\t\t[-] Script has found the Hosting location of: $a"
+echo -e "\t\t[-] Script has found the Hosting location of: $a" 1>&2
 b=`curl -s $durl | grep -i base64.decode | cut -d '"' -f4 | cut -d '"' -f1 | base64 -D | cut -d'"' -f8 | cut -d'"' -f1`
-echo -e "\t{([#])} Prepairing to downloading file from: $b"
+echo -e "\t{([#])} Prepairing to downloading file from: $b" 1>&2
 c=`curl -s $b | grep \.mp4\" | cut -d'"' -f2`
 curl -k -X $'GET' -H $'User-Agent: NOUA' -H $'Referer: $b' -H $'Range: bytes=0-' -L -O --retry 999 --retry-max-time 0 $c
-echo -r "\t{([#])} File has finished downloading, you can now watch $a"
-
+echo -r "\t{([#])} File has finished downloading, you can now watch $a" 1>&2
+#
+### searchsite
+#
+#
+searchseason () { 
+  echo "Please enter the search string below and press [ENTER]:" 1>&2;
+  site="myfav.tv";
+  read search; 
+  curl -s -k -L 
+    $site/search-movies/`echo $search | tr -s " " "+"`.html |\
+    grep `echo $search |\
+    tr -s " " "-"` |\
+    grep -i season |\
+    grep -v movie\.html |\
+    grep href |\
+    cut -d'"' -f2 |\
+    sort -u;
+}
+### downtheseason
+#
+# Used to get the entire season from the first listing of the show
+# Find the show and season URL you wish to download in its entirity 
+# used the getseason function and it wills parse and scrape the required URLS from the site
+# and pull all the related files from the server just as the downthemovie / openmovie scripts
+#
+downtheseason () { 
+  a=`curl -k -L $1 -o - |\
+  grep -Ei 'class="episode episode_series_link active'`;
+  b=`echo $a |\
+    tr -s " " "\n" |\
+    grep href |\
+    cut -d'"' -f2 |\
+    sort -u`; 
+  for c in $(echo $b | tr -s " " "\n"); 
+    do 
+      d=`curl -s $c |\
+        grep -i base64.decode |\
+        cut -d '"' -f4 |\
+        cut -d '"' -f1 |\
+        base64 -D |\
+        cut -d'"' -f8 |\
+        cut -d'"' -f1`; 
+      e=`curl -s $d |\
+        grep \.mp4\" |\
+        cut -d'"' -f2`;
+      f=`echo $e |\
+        cut -d"/" -f5- |\
+        sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
+      curl -k -X $'GET' \
+        -H $'User-Agent: NOUA' \
+        -H $'Referer: $d' \
+        -H $'Range: bytes=0-' \
+        -L --retry 999 \
+        --retry-max-time 0 \
+        $e -o $f; 
+  done;
+}
+# 
+# 
+# 
+# 
