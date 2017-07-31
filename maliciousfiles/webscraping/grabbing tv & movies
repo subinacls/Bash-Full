@@ -73,15 +73,8 @@ c=`curl -s $b | grep \.mp4\" | cut -d'"' -f2`
 curl -k -X $'GET' -H $'User-Agent: NOUA' -H $'Referer: $b' -H $'Range: bytes=0-' -L -O --retry 999 --retry-max-time 0 $c
 echo -r "\t{([#])} File has finished downloading, you can now watch $a" 1>&2
 #
-### 
-# searchsite
-# I dont like rendering the sites which are known to have malicious JS to use their search function
-# So I wrote my own to handle the request and dump the results to STDOUT
+### searchsite
 # This will help when trying to find that movie or series you want to download
-# If your searching is accurate you can smile and create a FOR loop and grab everything in one swoop
-# Example:
-# for x in $(searchseason) do downtheseason $x; done
-# just some food for though
 #
 searchsite () { 
   echo "Please enter the search string below and press [ENTER]:" 1>&2;
@@ -100,10 +93,7 @@ searchsite () {
 #
 ### downtheseason
 #
-# Used to get the entire season from the first listing of the show
-# Find the show and season URL you wish to download in its entirity 
-# used the getseason function and it wills parse and scrape the required URLS from the site
-# and pull all the related files from the server just as the downthemovie / openmovie scripts
+# Used to get the entire season from the first listing of the show, found with the searchsite function
 #
 downtheseason () { 
   a=`curl -k -L $1 -o - |\
@@ -143,31 +133,123 @@ downtheseason () {
 ########################## *Nix Versions (to include Bash on Ubuntu on Windows 10) #################################
 # It became evident these would not work in bash with other Nix variants so, these should be able to dropin
 # To make these sticky for the system, you should add these functions to your .bashrc file per user
+# 
+# Some functionality is provided by 'lynx' a textual browser used to parse pages for information
+# So lets get started!
 #
+###
 # Does as it says, downloads a single movie or part of a series based on provided URL
+# downloads individual movies / tv show from given URL
 #
-downthemovie () { 
-  a=`curl -s $1 |\
-    grep -i base64.decode |\
-    cut -d '"' -f4 |\
-    cut -d '"' -f1 |\
-    base64 -d |\
-    cut -d'"' -f8 |\
-    cut -d'"' -f1`;
-  b=`curl -s $a |\
-    grep \.mp4\" |\
-    cut -d'"' -f2`;
-  c=`echo $b |\
-    cut -d"/" -f5- |\
-    sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
-  curl -k -X $'GET' \
-    -H $'User-Agent: NOUA' \
-    -H $'Referer: $a' \
-    -H $'Range: bytes=0-' \
-    -L --retry 999 \
-    --retry-max-time 0 \
-    $b -o $c;
+downthemovie () {
+    a=`curl -s $1 |\
+      grep -i base64.decode |\
+      cut -d '"' -f4 |\
+      cut -d '"' -f1 |\
+      base64 -d |\
+      cut -d'"' -f8 |\
+      cut -d'"' -f1`;
+    b=`curl -s $a |\
+      grep \.mp4\" |\
+      cut -d'"' -f2`;
+    c=`echo $b |\
+      cut -d"/" -f5- |\
+      sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
+    curl -k -X $'GET' \
+      -H $'User-Agent: NOUA' \
+      -H $'Referer: $a' \
+      -H $'Range: bytes=0-' \
+      -L --retry 999 \
+      --retry-max-time 0 \
+      $b -o /mnt/c/Users/Admin/Desktop/$c;
 } # Example: downthemovie http(|s)://somesite.tld/vid/random_bits_(movie|episode)_name
+# search site for movies and tv series urls
 #
-### downtheseason
+searchsite () {
+    echo "Please enter the search string below and press [ENTER]:" 1>&2;
+    site="myfav.tv";
+    read search;
+    curl -s -k -L $site/search-movies/`echo $search | tr -s " " "+"`.html |\
+    grep `echo $search | tr -s " " "-"` |\
+    grep -iE "(season|movie)" |\
+    grep href |\
+    cut -d'"' -f2 |\
+    sort -u -V -t "/" -k5;
+}
+# listepisodes shows all episodes for a tv series
 #
+listepisodes() {
+    curl -s -k -L $1 |\
+    grep -Ei 'class="episode episode_series_link active' |\
+    tr -s " " "\n" |\
+    grep href |\
+    cut -d '"' -f2 |\
+    sort -u -V -t "/" -k6;
+}
+# downtheseason is used to download the entire season of a TV show given from the Season URL
+#
+downtheseason () {
+    a=`curl -k -L $1 -o - |\
+      grep -Ei 'class="episode episode_series_link active'`;
+    b=`echo $a |\
+      tr -s " " "\n" |\
+      grep href |\
+      cut -d'"' -f2 |\
+      sort -u -V -t "/" -k6`;
+    for c in $(echo $b | tr -s " " "\n");
+      do
+        echo -e "[#] Downloading file: $c";
+        d=`curl -s $c |\
+          grep -i base64.decode |\
+          cut -d '"' -f4 |\
+          cut -d '"' -f1 |\
+          base64 -d |\
+          cut -d'"' -f8 |\
+          cut -d'"' -f1`;
+        e=`curl -s $d |\
+          grep \.mp4\" |\
+          cut -d'"' -f2`;
+        f=`echo $e |\
+          cut -d"/" -f5- |\
+          sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
+          curl -k -X $'GET' \
+            -H $'User-Agent: NOUA' \
+            -H $'Referer: $d' \
+            -H $'Range: bytes=0-' \
+            -L --retry 999 \
+            --retry-max-time 0 \
+            $e -o /mnt/c/Users/Admin/Desktop/$f;
+    done;
+}
+# getinfo is used to display information about a specific URL given at the commandline
+getinfo () {
+    a=`curl -s -k -L $1`;
+    story=`echo $a |\
+      lynx --dump --stdin |\
+      awk "/Storyline/" RS= |\
+      tr -s "\n" " " |\
+      head -n 1`;
+    syn=`echo $a |\
+      lynx --dump --stdin |\
+      awk "/Synopsis/" RS= |\
+      tr -s "\n" " "`;
+    act=`echo $a |\
+      lynx --dump --stdin |\
+      awk "/Actors/" RS= |\
+      tr -s "\n" " "`;
+    dur=`echo $a |\
+      lynx --dump --stdin |\
+      awk "/Duration/" RS= |\
+      tr -s "\n" " "`;
+    year=`echo $a |\
+      lynx --dump --stdin |\
+      awk "/Release Year/" RS= |\
+      tr -s "\n" " "`;
+    echo;
+    if [ ! -z "${year}" ]; then echo $year; fi;
+    if [ ! -z "${act}" ]; then echo $act; fi;
+    if [ ! -z "${syn}" ]; then echo $story; fi;
+    if [ ! -z "${story}" ]; then echo $syn; fi;
+    if [ ! -z "${dur}" ]; then echo $dur; fi;
+    echo;
+}
