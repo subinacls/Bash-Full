@@ -3,12 +3,18 @@
 # Used to download movies from a hosting site which does a decent job at preventing the person from actually being able
 # to automate the download process, however with a little bash/commandline fu one can grab the file from their CDN
 # and then view the file offline. This server is always buffering the videos and running Malicious JS on the end users.
+#
 # Also to note that some people just dont understand how to actually save the files or even grab them from these services
 # without using a browser. This script can be used in such a way it only pulls the content you are seeking without the use 
 # of python and JS or other languages. Simply enough, if you can follow this concept here, you can make / modify this script
-# for your own TV/Movie sites as most will follow these same constructs.
+# for your own TV/Movie sites as most will follow these same constructs. 
 #
-### OS X version
+# Please find your appropiate OS variant below ( OS X / *Nix ) within their respective section
+#
+####################################### OSX (Darwin) #######################################################################
+#
+# Does as it says, downloads a single movie or part of a series based on provided URL
+#
 downthemovie () { 
   a=`curl -s $1 |\
     grep -i base64.decode |\
@@ -30,42 +36,11 @@ downthemovie () {
     -L --retry 999 \
     --retry-max-time 0 \
     $b -o $c;
-} # Example: downthemovie https://somesite.tld/vid/random_bits_movie_title
-###
+} # Example: downthemovie http(|s)://somesite.tld/vid/random_bits_(movie|episode)_name
 #
-# Explination:
-#
-# downthemovie takes a single user supplied variable 'URL'
-#  The script downloads the URL via curl given at the command line 
-#    Using curl to download the given variable at $1 and pipes the results
-#    Locates a string without case sensitivity "base64.decode" using grep and piped to the next command
-#    Cuts the location of the base64 encoded string at the 4th position of the " character
-#    Cuts the remained of the base64 encoded string at the 1st postion of the " character
-#    Pipes the string into base64 with the decode option set to reveal the location of the file
-#    Cuts the decoded string at the 8th position of the " character to grab the start of the movie URL
-#    Cuts the decoded string at the 1st postion of the " character to single out the movie URL
-#      Stows this information in the $a variable
-#  The script then calls this location with curl and further processes the resulting page
-#    Locates a string "mp4" using grep and pipes the results
-#    Cuts the movies location from the string at the 2nd postion of the " character
-#      Stows this information in the $b variable
-#  The script then proceeds to download the movie file via curl and stores it on the end users system
-#    The script sets the User-Agent header to "Unknown UA"
-#      Useful to avoid filtering form the site as well hide the curl signature
-#    The script sets curl to accept connecting to any insecure site incase of redirects to failed HTTPS certs
-#    The script sets the HTTP Verb to GET 
-#    The script sets the Referer header to the appropiate site which MUST be set 
-#    The script sets the Range header to 0- to grab the file from the first bit and continues
-#    The script is set to follow any redirects
-#    The script is set to name the file to that of the remote end filename
-#    The script uses other switches to attempt a retry if interruption happens (lost wifi)
-#    The script sets max-retry-time to 0 to avoide any timeouts
-#  This script is not intended to be used in any way to avoid paying for movies or pirate materials
-#  This script was developed to show how one could defeat simple protections for such sites
-#  This script does not use anything outside basic Linux commands available to almost all users (*Nix/OSX/BSD)
-#  This script is intended to be viewed and modified for persons wanting to learn BASH Scripting
 ###
-# original example used to open chrome and play video, make sure to have adblocker and block any malicious JS or ad's
+# Used for finding the correct URL and then open's chrome to play video location from their CDN
+#
 openmovie () { 
   a=`echo $1 |\
     cut -d"-" -f2- |\
@@ -81,7 +56,7 @@ openmovie () {
     grep \.mp4\" |\
     cut -d'"' -f2`;
   open -a Google\ Chrome $c;
-} # Example openmovie somesite.tlb/vid/moviename.html 
+} # Example: openmovie http(|s)://somesite.tld/vid/random_bits_(movie|episode)_name 
 #
 ### useful for a MBP - will need different syntax for other *Nix variants
 #
@@ -98,7 +73,8 @@ c=`curl -s $b | grep \.mp4\" | cut -d'"' -f2`
 curl -k -X $'GET' -H $'User-Agent: NOUA' -H $'Referer: $b' -H $'Range: bytes=0-' -L -O --retry 999 --retry-max-time 0 $c
 echo -r "\t{([#])} File has finished downloading, you can now watch $a" 1>&2
 #
-### searchsite
+### 
+# searchsite
 # I dont like rendering the sites which are known to have malicious JS to use their search function
 # So I wrote my own to handle the request and dump the results to STDOUT
 # This will help when trying to find that movie or series you want to download
@@ -107,7 +83,7 @@ echo -r "\t{([#])} File has finished downloading, you can now watch $a" 1>&2
 # for x in $(searchseason) do downtheseason $x; done
 # just some food for though
 #
-searchseason () { 
+searchsite () { 
   echo "Please enter the search string below and press [ENTER]:" 1>&2;
   site="myfav.tv";
   read search; 
@@ -120,8 +96,7 @@ searchseason () {
     grep href |\
     cut -d'"' -f2 |\
     sort -u;
-} # Example searchseason ## follow onscreen instructions
-#
+} # Example searchsite [Press Enter] ## Type your search string in when prompted [Press Enter]
 #
 ### downtheseason
 #
@@ -161,11 +136,16 @@ downtheseason () {
         --retry-max-time 0 \
         $e -o $f; 
   done;
-}
+} # Example: downtheseason http(|s)://somesite.tld/vid/random_bits_season_(number).html
 # 
 # 
 # 
-### Ubuntu on Windows Linux SubSystem
+########################## *Nix Versions (to include Bash on Ubuntu on Windows 10) #################################
+# It became evident these would not work in bash with other Nix variants so, these should be able to dropin
+# To make these sticky for the system, you should add these functions to your .bashrc file per user
+#
+# Does as it says, downloads a single movie or part of a series based on provided URL
+#
 downthemovie () { 
   a=`curl -s $1 |\
     grep -i base64.decode |\
@@ -187,10 +167,7 @@ downthemovie () {
     -L --retry 999 \
     --retry-max-time 0 \
     $b -o $c;
-} # Example: downthemovie https://somesite.tld/vid/random_bits_movie_title
-
-########################## *Nix Versions (to include Bash on Ubuntu on Windows 10) #################################
-# It became evident these would not work in bash with other Nix variants so, these should be able to dropin
-# To make these sticky for the system, you should add these functions to your .bashrc file per user
+} # Example: downthemovie http(|s)://somesite.tld/vid/random_bits_(movie|episode)_name
 #
-
+### downtheseason
+#
