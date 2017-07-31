@@ -8,7 +8,7 @@
 # of python and JS or other languages. Simply enough, if you can follow this concept here, you can make / modify this script
 # for your own TV/Movie sites as most will follow these same constructs.
 #
-###
+### OS X version
 downthemovie () { 
   a=`curl -s $1 |\
     grep -i base64.decode |\
@@ -20,7 +20,7 @@ downthemovie () {
   b=`curl -s $a |\
     grep \.mp4\" |\
     cut -d'"' -f2`;
-  c=`echo $e |\
+  c=`echo $b |\
     cut -d"/" -f5- |\
     sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
   curl -k -X $'GET' \
@@ -165,4 +165,32 @@ downtheseason () {
 # 
 # 
 # 
-# 
+### Ubuntu on Windows Linux SubSystem
+downthemovie () { 
+  a=`curl -s $1 |\
+    grep -i base64.decode |\
+    cut -d '"' -f4 |\
+    cut -d '"' -f1 |\
+    base64 -d |\
+    cut -d'"' -f8 |\
+    cut -d'"' -f1`;
+  b=`curl -s $a |\
+    grep \.mp4\" |\
+    cut -d'"' -f2`;
+  c=`echo $b |\
+    cut -d"/" -f5- |\
+    sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
+  curl -k -X $'GET' \
+    -H $'User-Agent: NOUA' \
+    -H $'Referer: $a' \
+    -H $'Range: bytes=0-' \
+    -L --retry 999 \
+    --retry-max-time 0 \
+    $b -o $c;
+} # Example: downthemovie https://somesite.tld/vid/random_bits_movie_title
+
+########################## *Nix Versions (to include Bash on Ubuntu on Windows 10) #################################
+# It became evident these would not work in bash with other Nix variants so, these should be able to dropin
+# To make these sticky for the system, you should add these functions to your .bashrc file per user
+#
+
