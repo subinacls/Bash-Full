@@ -229,15 +229,15 @@ getinfo () {
       awk "/Storyline/" RS= |\
       tr -s "\n" " " |\
       head -n 1`;
-    syn=`echo $a |\
+    synopsis=`echo $a |\
       lynx --dump --stdin |\
       awk "/Synopsis/" RS= |\
       tr -s "\n" " "`;
-    act=`echo $a |\
+    actors=`echo $a |\
       lynx --dump --stdin |\
       awk "/Actors/" RS= |\
       tr -s "\n" " "`;
-    dur=`echo $a |\
+    duration=`echo $a |\
       lynx --dump --stdin |\
       awk "/Duration/" RS= |\
       tr -s "\n" " "`;
@@ -247,9 +247,9 @@ getinfo () {
       tr -s "\n" " "`;
     echo;
     if [ ! -z "${year}" ]; then echo $year; fi;
-    if [ ! -z "${act}" ]; then echo $act; fi;
-    if [ ! -z "${syn}" ]; then echo $story; fi;
-    if [ ! -z "${story}" ]; then echo $syn; fi;
-    if [ ! -z "${dur}" ]; then echo $dur; fi;
+    if [ ! -z "${actors}" ]; then echo $actors; fi;
+    if [ ! -z "${synopsis}" ]; then echo $synopsis; fi;
+    if [ ! -z "${story}" ]; then echo $story; fi;
+    if [ ! -z "${duration}" ]; then echo $duration; fi;
     echo;
 }
