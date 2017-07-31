@@ -128,8 +128,6 @@ downtheseason () {
   done;
 } # Example: downtheseason http(|s)://somesite.tld/vid/random_bits_season_(number).html
 # 
-# 
-# 
 ########################## *Nix Versions (to include Bash on Ubuntu on Windows 10) #################################
 # It became evident these would not work in bash with other Nix variants so, these should be able to dropin
 # To make these sticky for the system, you should add these functions to your .bashrc file per user
@@ -161,8 +159,9 @@ downthemovie () {
       -H $'Range: bytes=0-' \
       -L --retry 999 \
       --retry-max-time 0 \
-      $b -o /mnt/c/Users/Admin/Desktop/$c;
+      $b -o /some/file/location/$c;
 } # Example: downthemovie http(|s)://somesite.tld/vid/random_bits_(movie|episode)_name
+#
 # search site for movies and tv series urls
 #
 searchsite () {
@@ -175,7 +174,8 @@ searchsite () {
     grep href |\
     cut -d'"' -f2 |\
     sort -u -V -t "/" -k5;
-}
+} # Example searchsite [Press Enter] ## Type your search string in when prompted [Press Enter]
+#
 # listepisodes shows all episodes for a tv series
 #
 listepisodes() {
@@ -185,7 +185,8 @@ listepisodes() {
     grep href |\
     cut -d '"' -f2 |\
     sort -u -V -t "/" -k6;
-}
+} # Example: listepisodes http(|s)://somesite.tld/vid/random_bits_(movie|episode)_name
+#
 # downtheseason is used to download the entire season of a TV show given from the Season URL
 #
 downtheseason () {
@@ -218,10 +219,12 @@ downtheseason () {
             -H $'Range: bytes=0-' \
             -L --retry 999 \
             --retry-max-time 0 \
-            $e -o /mnt/c/Users/Admin/Desktop/$f;
+            $e -o /some/file/location/$f;
     done;
-}
+} # Example: downtheseason http(|s)://somesite.tld/vid/random_bits_season_(num)_episode_(num)
+#
 # getinfo is used to display information about a specific URL given at the commandline
+#
 getinfo () {
     a=`curl -s -k -L $1`;
     story=`echo $a |\
