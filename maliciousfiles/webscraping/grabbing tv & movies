@@ -35,7 +35,7 @@ downthemovie () {
     -H $'Range: bytes=0-' \
     -L --retry 999 \
     --retry-max-time 0 \
-    $b -o $c;
+    $b -o /some/file/location/$c;
 } # Example: downthemovie http(|s)://somesite.tld/vid/random_bits_(movie|episode)_name
 #
 ###
@@ -124,7 +124,7 @@ downtheseason () {
         -H $'Range: bytes=0-' \
         -L --retry 999 \
         --retry-max-time 0 \
-        $e -o $f; 
+        $e -o /some/file/location/$f; 
   done;
 } # Example: downtheseason http(|s)://somesite.tld/vid/random_bits_season_(number).html
 # 
