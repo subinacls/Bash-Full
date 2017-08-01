@@ -284,3 +284,60 @@ getinfo () {
     if [ ! -z "${duration}" ]; then echo $duration; fi;
     echo;
 }
+#
+### Find Movies By Country
+#
+# Useful to search for movies released in specific countries.
+# Saves data to a file on your system for easier digestion
+# If you run this script and the file exist, it will be blanked & overwritten
+#
+findmoviesbycountry() {
+   country="";
+   if [ -z $1 ];
+    then
+     echo "[!] Please enter the country you would like to search movies in and press {ENTER}";
+     read country;
+     country=`echo $country | tr '[:upper:]' '[:lower:]'`
+   else
+     country=`echo $1 | tr '[:upper:]' '[:lower:]'`
+   fi;
+   fname="./my-$country-movies.txt";
+   echo "" > ./$fname;
+   startpage=`echo "http://myfav.tv/movies-countries/$country.html"`;
+   getstartpage=`curl -s -k -L $startpage`;
+   pagecount=`echo $getstartpage |\
+     sed -r 's/(href|<b>)/\n\n/g' |\
+     grep showFilm |\
+     tail -n1 |\
+     cut -d" " -f1 |\
+     cut -d"=" -f2 |\
+     sed -r 's/(.*)page-(.*)\.html/\2/g'` ;
+   echo;
+   for page in $(seq 1 `echo $pagecount`);
+      do
+       echo "    Parsing data from page: $page of total pages: $pagecount";
+       getpage="curl -s -k -L http://myfav.tv/movies-countries/$country/page-$page.html";
+       $getpage |\
+       grep -aE '<p><b><a href\="http:\/\/myfav.tv\/watch\/(.*)' |\
+       sed -r 's/<p><b><a href="(.*)\"/\nURL\: \1/'|\
+       sed -r 's/<img src\=http:\/\/myfav.tv\/themes\/movies\/img\/white.png width=100% height\=1>//g' |\
+       sed -r 's/ onmouseout\="UnTip\(\)" onmouseover\=\"//g' |\
+       sed -r "s/Tip\('<b><i>(.*)/\nTitle: \1/g" |\
+       sed -r "s/<\/i><\/b><br><b>/\n/g" |\
+       sed -r "s/<\/b><br><b>/\n/g" |\
+       sed -r "s/<\/b><br><div style\=padding-top\:5px\;padding-bottom\:5px\;><\/div>/\nSynopsis: '/g" |\
+       sed -r "s/, WIDTH, -300, FONTFACE, 'Arial, Tahoma', FONTSIZE, '13px'\)(.*)\/a><\/b><\/p>//g" |\
+       sed -r 's/\.html"/\.html/g' >> $fname
+   done;
+   cat $fname;
+   echo;
+   echo "[!] Finished";
+   echo;
+   echo "    [*] Information saved to $fname";
+   echo;
+}  # Example: findmoviesbycountry [ENTER] follow prompt and enter country name to search for
+#
+###
+#
+#
+#
