@@ -15,24 +15,27 @@
 #
 # Does as it says, downloads a single movie or part of a series based on provided URL
 #
-downthemovie () { 
+downthemovie () {
+  newua=$(randomUA);
   a=`curl -s $1 \
-      -H $'User-Agent: $(randomUA)' |\
+      -H $'User-Agent: $newua' |\
     grep -i base64.decode |\
     cut -d '"' -f4 |\
     cut -d '"' -f1 |\
     base64 -D |\
     cut -d'"' -f8 |\
     cut -d'"' -f1`;
+  newua=$(randomUA);
   b=`curl -s $a \
-      -H $'User-Agent: $(randomUA)' |\
+      -H $'User-Agent: $newua' |\
     grep \.mp4\" |\
     cut -d'"' -f2`;
   c=`echo $b |\
     cut -d"/" -f5- |\
     sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
+  newua=$(randomUA);
   curl -k -X $'GET' \
-    -H $'User-Agent: $(randomUA)' \
+    -H $'User-Agent: $newua' \
     -H $'Referer: $a' \
     -H $'Range: bytes=0-' \
     -L --retry 999 \
@@ -47,16 +50,18 @@ openmovie () {
   a=`echo $1 |\
     cut -d"-" -f2- |\
     cut -d"." -f1`;
+  newua=$(randomUA);
   b=`curl -s $1 \
-      -H $'User-Agent: $(randomUA)' |\
+      -H $'User-Agent: $newua' |\
     grep -i base64.decode |\
     cut -d '"' -f4 |\
     cut -d '"' -f1 |\
     base64 -D |\
     cut -d'"' -f8 |\
     cut -d'"' -f1`;
+  newua=$(randomUA);
   c=`curl -s $b \
-      -H $'User-Agent: $(randomUA)' |\
+      -H $'User-Agent: $newua' |\
     grep \.mp4\" |\
     cut -d'"' -f2`;
   open -a Google\ Chrome $c;
@@ -83,9 +88,10 @@ echo -r "\t{([#])} File has finished downloading, you can now watch $a" 1>&2
 searchsite () { 
   echo "Please enter the search string below and press [ENTER]:" 1>&2;
   site="myfav.tv";
-  read search; 
+  read search;
+  newua=$(randomUA);
   curl -s -k -L \
-    -H $'User-Agent: $(randomUA)' \
+    -H $'User-Agent: $newua' \
     $site/search-movies/`echo $search | tr -s " " "+"`.html |\
     grep `echo $search |\
     tr -s " " "-"` |\
@@ -100,9 +106,10 @@ searchsite () {
 #
 # Used to get the entire season from the first listing of the show, found with the searchsite function
 #
-downtheseason () { 
+downtheseason () {
+  newua=$(randomUA);
   a=`curl -k -L $1 -o - \
-      -H $'User-Agent: $(randomUA)' |\
+      -H $'User-Agent: $newua' |\
   grep -Ei 'class="episode episode_series_link active'`;
   b=`echo $a |\
     tr -s " " "\n" |\
@@ -110,9 +117,10 @@ downtheseason () {
     cut -d'"' -f2 |\
     sort -u`; 
   for c in $(echo $b | tr -s " " "\n"); 
-    do 
+    do
+      newua=$(randomUA);
       d=`curl -s $c \
-          -H $'User-Agent: $(randomUA)' |\
+          -H $'User-Agent: $newua' |\
         grep -i base64.decode |\
         cut -d '"' -f4 |\
         cut -d '"' -f1 |\
@@ -120,14 +128,15 @@ downtheseason () {
         cut -d'"' -f8 |\
         cut -d'"' -f1`; 
       e=`curl -s $d \
-          -H $'User-Agent: $(randomUA)' |\
+          -H $'User-Agent: $newua' |\
         grep \.mp4\" |\
         cut -d'"' -f2`;
       f=`echo $e |\
         cut -d"/" -f5- |\
         sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
+      newua=$(randomUA);
       curl -k -X $'GET' \
-        -H $'User-Agent: $(randomUA)' \
+        -H $'User-Agent: $newua' \
         -H $'Referer: $d' \
         -H $'Range: bytes=0-' \
         -L --retry 999 \
@@ -155,24 +164,28 @@ downthemovie () {
       else
         durl=$1
     fi;
+    newua=$(randomUA);
     a=`curl -s $durl \
-         -H $'User-Agent: $(randomUA)' |\
+         -H $'User-Agent: $newua' |\
       grep -i base64.decode |\
       cut -d '"' -f4 |\
       cut -d '"' -f1 |\
       base64 -d |\
       cut -d'"' -f8 |\
       cut -d'"' -f1`;
+    newua=$(randomUA);
     b=`curl -s $a \
-         -H $'User-Agent: $(randomUA)' |\
+         -H $'User-Agent: $newua' |\
       grep \.mp4\" |\
       cut -d'"' -f2`;
+    newua=$(randomUA);
     c=`echo $b \
-         -H $'User-Agent: $(randomUA)' |\
+         -H $'User-Agent: $newua' |\
       cut -d"/" -f5- |\
       sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
+    newua=$(randomUA);
     curl -k -X $'GET' \
-      -H $'User-Agent: $(randomUA)' \
+      -H $'User-Agent: $newua' \
       -H $'Referer: $a' \
       -H $'Range: bytes=0-' \
       -L --retry 999 \
@@ -186,8 +199,9 @@ searchsite () {
     echo "Please enter the search string below and press [ENTER]:" 1>&2;
     site="myfav.tv";
     read search;
+    newua=$(randomUA);
     curl -s -k -L \
-         -H $'User-Agent: $(randomUA)' \
+         -H $'User-Agent: $newua' \
          $site/search-movies/`echo $search |\
     tr -s " " "+"`.html |\
     grep `echo $search | tr -s " " "-"` |\
@@ -207,8 +221,8 @@ listepisodes() {
       else
         durl=$1
     fi;
-    curl -s -k -L $durl \
-      -H $'User-Agent: $(randomUA)'|\
+    newua=$(randomUA);
+    curl -s -k -L $durl -H $'User-Agent: $newua'|\
     grep -Ei 'class="episode episode_series_link active' |\
     tr -s " " "\n" |\
     grep href |\
@@ -227,8 +241,8 @@ downtheseason () {
       else
         durl=$1
     fi;
-    a=`curl -k -L $durl -o - \
-        -H $'User-Agent: $(randomUA)'|\
+    newua=$(randomUA);
+    a=`curl -k -L $durl -o - -H $'User-Agent: $newua'|\
       grep -Ei 'class="episode episode_series_link active'`;
     b=`echo $a |\
       tr -s " " "\n" |\
@@ -238,23 +252,24 @@ downtheseason () {
     for c in $(echo $b | tr -s " " "\n");
       do
         echo -e "[#] Downloading file: $c";
-        d=`curl -s $c \
-            -H $'User-Agent: $(randomUA)'|\
+        newua=$(randomUA);
+        d=`curl -s $c -H $'User-Agent: $(randomUA)'|\
           grep -i base64.decode |\
           cut -d '"' -f4 |\
           cut -d '"' -f1 |\
           base64 -d |\
           cut -d'"' -f8 |\
           cut -d'"' -f1`;
-        e=`curl -s $d \
-            -H $'User-Agent: $(randomUA)'|\
+        newua=$(randomUA);
+        e=`curl -s $d -H $'User-Agent: $newua'|\
           grep \.mp4\" |\
           cut -d'"' -f2`;
         f=`echo $e |\
           cut -d"/" -f5- |\
           sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
+          newua=$(randomUA);
           curl -k -X $'GET' \
-            -H $'User-Agent: $(randomUA)' \
+            -H $'User-Agent: $newua' \
             -H $'Referer: $d' \
             -H $'Range: bytes=0-' \
             -L --retry 999 \
@@ -291,8 +306,9 @@ getinfo () {
       else
         durl=$1
     fi;
+    newua=$(randomUA);
     a=`curl -s -k -L $durl \
-      -H $'User-Agent: $(randomUA)'`;
+      -H $'User-Agent: $newua'`;
     story=`echo $a |\
       lynx --dump --stdin |\
       awk "/Storyline/" RS= |\
@@ -344,8 +360,8 @@ findmoviesbycountry() {
    URLOnly="./my-$country-movies-URLs.txt";
    echo "" > ./$fname;
    startpage=`echo "http://$site/movies-countries/$country.html"`;
-   getstartpage=`curl -s -k -L $startpage \
-      -H $'User-Agent: $(randomUA)'`;
+   newua=$(randomUA);
+   getstartpage=`curl -s -k -L $startpage -H $'User-Agent: $newua'`;
    pagecount=`echo $getstartpage |\
      sed -r 's/(href|<b>)/\n\n/g' |\
      grep showFilm |\
@@ -357,7 +373,8 @@ findmoviesbycountry() {
    for page in $(seq 1 `echo $pagecount`);
       do
        echo "    Grabbing info from page: $page of total pages: $pagecount";
-       getpage="curl -s -k -L -H $'User-Agent: $(randomUA)' http://$site/movies-countries/$country/page-$page.html";
+       newua=$(randomUA);
+       getpage="curl -s -k -L -H $'User-Agent: $newua' http://$site/movies-countries/$country/page-$page.html";
        $getpage |\
        grep -aE '<p><b><a href\="http:\/\/(.*)\/watch\/(.*)' |\
        sed -r 's/<p><b><a href="(.*)\"/\nURL\: \1/'|\
@@ -399,8 +416,8 @@ findmoviesbyyear() {
    URLOnly="./my-$year-movies-URLs.txt";
    echo "" > ./$fname;
    startpage=`echo "http://$site/search-movies/$year.html"`;
-   getstartpage=`curl -s -k -L $startpage \
-     -H $'User-Agent: $(randomUA)'`;
+   newua=$(randomUA);
+   getstartpage=`curl -s -k -L $startpage -H $'User-Agent: $newua'`;
    pagecount=`echo $getstartpage |\
      sed -r 's/(href|<b>)/\n\n/g' |\
      grep showFilm |\
@@ -412,7 +429,8 @@ findmoviesbyyear() {
    for page in $(seq 1 `echo $pagecount`);
       do
        echo "    Grabbing info from page: $page of total pages: $pagecount";
-       getpage="curl -s -k -L -H $'User-Agent: $(randomUA)' http://$site/search-movies/$year/page-$page.html";
+       newua=$(randomUA);
+       getpage="curl -s -k -L -H $'User-Agent: $newua' http://$site/search-movies/$year/page-$page.html";
        $getpage |\
        grep -aE '<p><b><a href\="http:\/\/(.*)\/watch\/(.*)' |\
        sed -r 's/<p><b><a href="(.*)\"/\nURL\: \1/'|\
@@ -7926,6 +7944,6 @@ randomUA() {
     do
       echo ${ARRAY[$index]}
   done
-} # Example: $(randomUA)
+} # Example Usage: newua=$(randomUA); echo $newua
 # Use this in a bash script to choose a random UserAgent string for Curl/Wget or other useage ..
 # Great for Fuzzing Web Applications ... Just saying ...
