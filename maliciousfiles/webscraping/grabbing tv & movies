@@ -17,7 +17,7 @@
 #
 downthemovie () { 
   a=`curl -s $1 \
-      -H $'User-Agent: NOUA' |\
+      -H $'User-Agent: $(randomUA)' |\
     grep -i base64.decode |\
     cut -d '"' -f4 |\
     cut -d '"' -f1 |\
@@ -25,14 +25,14 @@ downthemovie () {
     cut -d'"' -f8 |\
     cut -d'"' -f1`;
   b=`curl -s $a \
-      -H $'User-Agent: NOUA' |\
+      -H $'User-Agent: $(randomUA)' |\
     grep \.mp4\" |\
     cut -d'"' -f2`;
   c=`echo $b |\
     cut -d"/" -f5- |\
     sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
   curl -k -X $'GET' \
-    -H $'User-Agent: NOUA' \
+    -H $'User-Agent: $(randomUA)' \
     -H $'Referer: $a' \
     -H $'Range: bytes=0-' \
     -L --retry 999 \
@@ -48,7 +48,7 @@ openmovie () {
     cut -d"-" -f2- |\
     cut -d"." -f1`;
   b=`curl -s $1 \
-      -H $'User-Agent: NOUA' |\
+      -H $'User-Agent: $(randomUA)' |\
     grep -i base64.decode |\
     cut -d '"' -f4 |\
     cut -d '"' -f1 |\
@@ -56,7 +56,7 @@ openmovie () {
     cut -d'"' -f8 |\
     cut -d'"' -f1`;
   c=`curl -s $b \
-      -H $'User-Agent: NOUA' |\
+      -H $'User-Agent: $(randomUA)' |\
     grep \.mp4\" |\
     cut -d'"' -f2`;
   open -a Google\ Chrome $c;
@@ -85,7 +85,7 @@ searchsite () {
   site="myfav.tv";
   read search; 
   curl -s -k -L \
-    -H $'User-Agent: NOUA' \
+    -H $'User-Agent: $(randomUA)' \
     $site/search-movies/`echo $search | tr -s " " "+"`.html |\
     grep `echo $search |\
     tr -s " " "-"` |\
@@ -102,7 +102,7 @@ searchsite () {
 #
 downtheseason () { 
   a=`curl -k -L $1 -o - \
-      -H $'User-Agent: NOUA' |\
+      -H $'User-Agent: $(randomUA)' |\
   grep -Ei 'class="episode episode_series_link active'`;
   b=`echo $a |\
     tr -s " " "\n" |\
@@ -112,7 +112,7 @@ downtheseason () {
   for c in $(echo $b | tr -s " " "\n"); 
     do 
       d=`curl -s $c \
-          -H $'User-Agent: NOUA' |\
+          -H $'User-Agent: $(randomUA)' |\
         grep -i base64.decode |\
         cut -d '"' -f4 |\
         cut -d '"' -f1 |\
@@ -120,14 +120,14 @@ downtheseason () {
         cut -d'"' -f8 |\
         cut -d'"' -f1`; 
       e=`curl -s $d \
-          -H $'User-Agent: NOUA' |\
+          -H $'User-Agent: $(randomUA)' |\
         grep \.mp4\" |\
         cut -d'"' -f2`;
       f=`echo $e |\
         cut -d"/" -f5- |\
         sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
       curl -k -X $'GET' \
-        -H $'User-Agent: NOUA' \
+        -H $'User-Agent: $(randomUA)' \
         -H $'Referer: $d' \
         -H $'Range: bytes=0-' \
         -L --retry 999 \
@@ -156,7 +156,7 @@ downthemovie () {
         durl=$1
     fi;
     a=`curl -s $durl \
-         -H $'User-Agent: NOUA' |\
+         -H $'User-Agent: $(randomUA)' |\
       grep -i base64.decode |\
       cut -d '"' -f4 |\
       cut -d '"' -f1 |\
@@ -164,15 +164,15 @@ downthemovie () {
       cut -d'"' -f8 |\
       cut -d'"' -f1`;
     b=`curl -s $a \
-         -H $'User-Agent: NOUA' |\
+         -H $'User-Agent: $(randomUA)' |\
       grep \.mp4\" |\
       cut -d'"' -f2`;
     c=`echo $b \
-         -H $'User-Agent: NOUA' |\
+         -H $'User-Agent: $(randomUA)' |\
       cut -d"/" -f5- |\
       sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
     curl -k -X $'GET' \
-      -H $'User-Agent: NOUA' \
+      -H $'User-Agent: $(randomUA)' \
       -H $'Referer: $a' \
       -H $'Range: bytes=0-' \
       -L --retry 999 \
@@ -187,7 +187,7 @@ searchsite () {
     site="myfav.tv";
     read search;
     curl -s -k -L \
-         -H $'User-Agent: NOUA' \
+         -H $'User-Agent: $(randomUA)' \
          $site/search-movies/`echo $search |\
     tr -s " " "+"`.html |\
     grep `echo $search | tr -s " " "-"` |\
@@ -208,7 +208,7 @@ listepisodes() {
         durl=$1
     fi;
     curl -s -k -L $durl \
-      -H $'User-Agent: NOUA'|\
+      -H $'User-Agent: $(randomUA)'|\
     grep -Ei 'class="episode episode_series_link active' |\
     tr -s " " "\n" |\
     grep href |\
@@ -228,7 +228,7 @@ downtheseason () {
         durl=$1
     fi;
     a=`curl -k -L $durl -o - \
-        -H $'User-Agent: NOUA'|\
+        -H $'User-Agent: $(randomUA)'|\
       grep -Ei 'class="episode episode_series_link active'`;
     b=`echo $a |\
       tr -s " " "\n" |\
@@ -239,7 +239,7 @@ downtheseason () {
       do
         echo -e "[#] Downloading file: $c";
         d=`curl -s $c \
-            -H $'User-Agent: NOUA'|\
+            -H $'User-Agent: $(randomUA)'|\
           grep -i base64.decode |\
           cut -d '"' -f4 |\
           cut -d '"' -f1 |\
@@ -247,14 +247,14 @@ downtheseason () {
           cut -d'"' -f8 |\
           cut -d'"' -f1`;
         e=`curl -s $d \
-            -H $'User-Agent: NOUA'|\
+            -H $'User-Agent: $(randomUA)'|\
           grep \.mp4\" |\
           cut -d'"' -f2`;
         f=`echo $e |\
           cut -d"/" -f5- |\
           sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/"`;
           curl -k -X $'GET' \
-            -H $'User-Agent: NOUA' \
+            -H $'User-Agent: $(randomUA)' \
             -H $'Referer: $d' \
             -H $'Range: bytes=0-' \
             -L --retry 999 \
@@ -292,7 +292,7 @@ getinfo () {
         durl=$1
     fi;
     a=`curl -s -k -L $durl \
-      -H $'User-Agent: NOUA'`;
+      -H $'User-Agent: $(randomUA)'`;
     story=`echo $a |\
       lynx --dump --stdin |\
       awk "/Storyline/" RS= |\
@@ -330,7 +330,7 @@ getinfo () {
 # If you run this script and the file exist, it will be blanked & overwritten
 #
 findmoviesbycountry() {
-   site="putlockertv.ist
+   site="myfav.tv"
    country="";
    if [ -z $1 ];
     then
@@ -345,7 +345,7 @@ findmoviesbycountry() {
    echo "" > ./$fname;
    startpage=`echo "http://$site/movies-countries/$country.html"`;
    getstartpage=`curl -s -k -L $startpage \
-      -H $'User-Agent: NOUA'`;
+      -H $'User-Agent: $(randomUA)'`;
    pagecount=`echo $getstartpage |\
      sed -r 's/(href|<b>)/\n\n/g' |\
      grep showFilm |\
@@ -357,7 +357,7 @@ findmoviesbycountry() {
    for page in $(seq 1 `echo $pagecount`);
       do
        echo "    Grabbing info from page: $page of total pages: $pagecount";
-       getpage="curl -s -k -L http://$site/movies-countries/$country/page-$page.html";
+       getpage="curl -s -k -L -H $'User-Agent: $(randomUA)' http://$site/movies-countries/$country/page-$page.html";
        $getpage |\
        grep -aE '<p><b><a href\="http:\/\/(.*)\/watch\/(.*)' |\
        sed -r 's/<p><b><a href="(.*)\"/\nURL\: \1/'|\
@@ -386,7 +386,7 @@ findmoviesbycountry() {
 # Much like finding by the country, just a slight modification used to search their site
 # Useful for when your browsing and do not wish to 
 findmoviesbyyear() {
-   site="putlockertv.ist"
+   site="myfav.tv"
    year="";
    if [ -z $1 ];
     then
@@ -400,7 +400,7 @@ findmoviesbyyear() {
    echo "" > ./$fname;
    startpage=`echo "http://$site/search-movies/$year.html"`;
    getstartpage=`curl -s -k -L $startpage \
-     -H $'User-Agent: NOUA'`;
+     -H $'User-Agent: $(randomUA)'`;
    pagecount=`echo $getstartpage |\
      sed -r 's/(href|<b>)/\n\n/g' |\
      grep showFilm |\
@@ -412,8 +412,7 @@ findmoviesbyyear() {
    for page in $(seq 1 `echo $pagecount`);
       do
        echo "    Grabbing info from page: $page of total pages: $pagecount";
-       getpage="curl -s -k -L http://$site/search-movies/$year/page-$page.html \
-         -H $'User-Agent: NOUA'";
+       getpage="curl -s -k -L -H $'User-Agent: $(randomUA)' http://$site/search-movies/$year/page-$page.html";
        $getpage |\
        grep -aE '<p><b><a href\="http:\/\/(.*)\/watch\/(.*)' |\
        sed -r 's/<p><b><a href="(.*)\"/\nURL\: \1/'|\
