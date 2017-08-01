@@ -247,6 +247,24 @@ downtheseason () {
 # getinfo is used to display information about a specific URL given at the commandline
 #
 getinfo () {
+    checkup() {
+      whichlynx=`which lynx`;
+      if [ -z $whichlynx ]; 
+        then 
+          echo "[*] The application 'Lynx' is not installed on your system"; 
+          echo "    [!] Please use: 'sudo apt-get -y install lynx' to use this script";
+          read -p "      [?] Would you like to install 'Lynx' on your system (y/n)? " answer;
+          case ${answer:0:1} in
+            y|Y )
+              sudo apt-get install -y lynx
+            ;;
+            * )
+              exit
+            ;;
+          esac;
+        fi; 
+    }
+    checkup;
     if [ -z $1 ];
       then
         echo "[!] Please enter the URL for the show you wish to see info about and then {ENTER}" 1>&2
@@ -395,4 +413,4 @@ findmoviesbyyear() {
    echo;
    echo "    [*] Urls saved to $URLOnly";
    echo;
-}
+} Example: findmoviesbyyear [ENTER] follow prompt and enter year to search for
