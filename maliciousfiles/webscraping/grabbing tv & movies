@@ -292,6 +292,7 @@ getinfo () {
 # If you run this script and the file exist, it will be blanked & overwritten
 #
 findmoviesbycountry() {
+   site="myfav.tv"
    country="";
    if [ -z $1 ];
     then
@@ -302,8 +303,9 @@ findmoviesbycountry() {
      country=`echo $1 | tr '[:upper:]' '[:lower:]'`
    fi;
    fname="./my-$country-movies.txt";
+   URLOnly="./my-$country-movies-URLs.txt";
    echo "" > ./$fname;
-   startpage=`echo "http://myfav.tv/movies-countries/$country.html"`;
+   startpage=`echo "http://$site/movies-countries/$country.html"`;
    getstartpage=`curl -s -k -L $startpage`;
    pagecount=`echo $getstartpage |\
      sed -r 's/(href|<b>)/\n\n/g' |\
@@ -315,29 +317,82 @@ findmoviesbycountry() {
    echo;
    for page in $(seq 1 `echo $pagecount`);
       do
-       echo "    Parsing data from page: $page of total pages: $pagecount";
-       getpage="curl -s -k -L http://myfav.tv/movies-countries/$country/page-$page.html";
+       echo "    Grabbing info from page: $page of total pages: $pagecount";
+       getpage="curl -s -k -L http://$site/movies-countries/$country/page-$page.html";
        $getpage |\
-       grep -aE '<p><b><a href\="http:\/\/myfav.tv\/watch\/(.*)' |\
+       grep -aE '<p><b><a href\="http:\/\/(.*)\/watch\/(.*)' |\
        sed -r 's/<p><b><a href="(.*)\"/\nURL\: \1/'|\
-       sed -r 's/<img src\=http:\/\/myfav.tv\/themes\/movies\/img\/white.png width=100% height\=1>//g' |\
+       sed -r 's/<img src\=http:\/\/(.*)\/themes\/movies\/img\/white.png width=100% height\=1>//g' |\
        sed -r 's/ onmouseout\="UnTip\(\)" onmouseover\=\"//g' |\
        sed -r "s/Tip\('<b><i>(.*)/\nTitle: \1/g" |\
        sed -r "s/<\/i><\/b><br><b>/\n/g" |\
        sed -r "s/<\/b><br><b>/\n/g" |\
        sed -r "s/<\/b><br><div style\=padding-top\:5px\;padding-bottom\:5px\;><\/div>/\nSynopsis: '/g" |\
        sed -r "s/, WIDTH, -300, FONTFACE, 'Arial, Tahoma', FONTSIZE, '13px'\)(.*)\/a><\/b><\/p>//g" |\
-       sed -r 's/\.html"/\.html/g' >> $fname
+       sed -r 's/\.html"/\.html/g' >> $fname;
    done;
-   cat $fname;
+   cat $fname |\
+   grep URL |\
+   sort -V -t"-" --key=2 > $URLOnly;
    echo;
    echo "[!] Finished";
    echo;
-   echo "    [*] Information saved to $fname";
+   echo "    [*] Full information saved to $fname";
    echo;
-}  # Example: findmoviesbycountry [ENTER] follow prompt and enter country name to search for
+   echo "    [*] Urls saved to $URLOnly";
+   echo;
+}#  Example: findmoviesbycountry [ENTER] follow prompt and enter country name to search for
 #
-###
-#
-#
-#
+### Find Movies By Year
+# Much like finding by the country, just a slight modification used to search their site
+# Useful for when your browsing and do not wish to 
+findmoviesbyyear() {
+   site="myfav.tv"
+   year="";
+   if [ -z $1 ];
+    then
+     echo "[!] Please enter the year you would like to search movies in and press {ENTER}";
+     read year;
+   else
+     year=$1
+   fi;
+   fname="./my-$year-movies.txt";
+   URLOnly="./my-$year-movies-URLs.txt";
+   echo "" > ./$fname;
+   startpage=`echo "http://$site/search-movies/$year.html"`;
+   getstartpage=`curl -s -k -L $startpage`;
+   pagecount=`echo $getstartpage |\
+     sed -r 's/(href|<b>)/\n\n/g' |\
+     grep showFilm |\
+     tail -n1 |\
+     cut -d" " -f1 |\
+     cut -d"=" -f2 |\
+     sed -r 's/(.*)page-(.*)\.html/\2/g'` ;
+   echo;
+   for page in $(seq 1 `echo $pagecount`);
+      do
+       echo "    Grabbing info from page: $page of total pages: $pagecount";
+       getpage="curl -s -k -L http://$site/search-movies/$year/page-$page.html";
+       $getpage |\
+       grep -aE '<p><b><a href\="http:\/\/(.*)\/watch\/(.*)' |\
+       sed -r 's/<p><b><a href="(.*)\"/\nURL\: \1/'|\
+       sed -r 's/<img src\=http:\/\/(.*)\/themes\/movies\/img\/white.png width=100% height\=1>//g' |\
+       sed -r 's/ onmouseout\="UnTip\(\)" onmouseover\=\"//g' |\
+       sed -r "s/Tip\('<b><i>(.*)/\nTitle: \1/g" |\
+       sed -r "s/<\/i><\/b><br><b>/\n/g" |\
+       sed -r "s/<\/b><br><b>/\n/g" |\
+       sed -r "s/<\/b><br><div style\=padding-top\:5px\;padding-bottom\:5px\;><\/div>/\nSynopsis: '/g" |\
+       sed -r "s/, WIDTH, -300, FONTFACE, 'Arial, Tahoma', FONTSIZE, '13px'\)(.*)\/a><\/b><\/p>//g" |\
+       sed -r 's/\.html"/\.html/g' >> $fname;
+   done;
+   cat $fname |\
+   grep URL |\
+   sort -V -t"-" --key=2 > $URLOnly;
+   echo;
+   echo "[!] Finished";
+   echo;
+   echo "    [*] Full information saved to $fname";
+   echo;
+   echo "    [*] Urls saved to $URLOnly";
+   echo;
+}
