@@ -140,7 +140,14 @@ downtheseason () {
 # downloads individual movies / tv show from given URL
 #
 downthemovie () {
-    a=`curl -s $1 |\
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the movie you wish to download and then {ENTER}" 1>&2
+        read durl
+      else
+        durl=$1
+    fi;
+    a=`curl -s $durl |\
       grep -i base64.decode |\
       cut -d '"' -f4 |\
       cut -d '"' -f1 |\
@@ -179,7 +186,14 @@ searchsite () {
 # listepisodes shows all episodes for a tv series
 #
 listepisodes() {
-    curl -s -k -L $1 |\
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the series you wish to see episodes for and then {ENTER}" 1>&2
+        read durl
+      else
+        durl=$1
+    fi;
+    curl -s -k -L $durl |\
     grep -Ei 'class="episode episode_series_link active' |\
     tr -s " " "\n" |\
     grep href |\
@@ -190,7 +204,14 @@ listepisodes() {
 # downtheseason is used to download the entire season of a TV show given from the Season URL
 #
 downtheseason () {
-    a=`curl -k -L $1 -o - |\
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the series you wish to download and then {ENTER}" 1>&2
+        read durl
+      else
+        durl=$1
+    fi;
+    a=`curl -k -L $durl -o - |\
       grep -Ei 'class="episode episode_series_link active'`;
     b=`echo $a |\
       tr -s " " "\n" |\
@@ -226,7 +247,14 @@ downtheseason () {
 # getinfo is used to display information about a specific URL given at the commandline
 #
 getinfo () {
-    a=`curl -s -k -L $1`;
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the show you wish to see info about and then {ENTER}" 1>&2
+        read durl
+      else
+        durl=$1
+    fi;
+    a=`curl -s -k -L $durl`;
     story=`echo $a |\
       lynx --dump --stdin |\
       awk "/Storyline/" RS= |\
