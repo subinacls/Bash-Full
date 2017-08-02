@@ -1,5 +1,5 @@
 rem Set the 'audit' variable to the output directory
-set audit="D:\audit\V3"
+set audit="C:\"
 
 pushd %audit%
 
