@@ -25,7 +25,10 @@
 #     getinfo              - (Gets information about the Movie/Series found from searchsite)
 #     listepisodes         - (List all the episodes of a season to choose individual episodes)
 #     downthemovie         - (Downloads an individual Movie/Series from the searchsite URL)
+#     downmoviefromfile    - (Downloads movies from a user supplied file, FOR loop over contents)
+#     downseriesfromfile   - (Downloads series from a user supplied file, FOR loop over contents)
 #     downtheseries        - (Downlaods an entire Season from the searchsite URL)
+#     downseriesfromfile   - (Downloads series from a user supplied file FOR loop over contents)
 #     findmoviesbyyear     - (Searches the site for Movies/Series based on the year released)
 #     findmoviesbycountry  - (Searches the site for Movies/Series based on the Country where released)
 #
@@ -7672,15 +7675,14 @@ downthemovie () {
          -H $'User-Agent: $(randomUA)' |\
       grep \.mp4\" |\
       cut -d'"' -f2);
-    c=$(echo $b \
-         -H $'User-Agent: $(randomUA)' |\
+    c=$(echo $b |\
       cut -d"/" -f5- |\
       sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
     curl -k -L -X $'GET' \
       -H $'User-Agent: $(randomUA)' \
       -H $'Referer: $a' \
       -H $'Range: bytes=0-' \
-      -L --retry 999 \
+      --retry 999 \
       --retry-max-time 0 \
       $b -o $c;
 }
@@ -7725,7 +7727,7 @@ downtheseason () {
             -H $'User-Agent: $(randomUA)' \
             -H $'Referer: $d' \
             -H $'Range: bytes=0-' \
-            -L --retry 999 \
+            --retry 999 \
             --retry-max-time 0 \
             $e -o $f;
     done;
@@ -7881,6 +7883,91 @@ showreallocation () {
     echo;
     echo -e "[-] the true location of this file is:\n\t$b" 1>&2;
     echo;
+}
+################################################################################
+# Downloads movies from a file containing URL's for their locations
+# Example Usage: dowmoviefromfile /some/file/namere_here
+downmoviefromfile () {
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the filename for the list you wish to download from and then {ENTER}" 1>&2
+        read dfile
+      else
+        dfile=$1
+    fi;
+    for downURL in $(cat $dfile);
+      do
+        a=$(curl -s -K -L $downURL \
+             -H $'User-Agent: $(randomUA)' |\
+          grep -i base64.decode |\
+          cut -d '"' -f4 |\
+          cut -d '"' -f1 |\
+          base64 -d |\
+          cut -d'"' -f8 |\
+          cut -d'"' -f1);
+        b=$(curl -s -k -L $a \
+             -H $'User-Agent: $(randomUA)' |\
+          grep \.mp4\" |\
+          cut -d'"' -f2);
+        c=$(echo $b |\
+          cut -d"/" -f5- |\
+          sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
+        curl -k -L -X $'GET' \
+          -H $'User-Agent: $(randomUA)' \
+          -H $'Referer: $a' \
+          -H $'Range: bytes=0-' \
+          --retry 999 \
+          --retry-max-time 0 \
+          $b -o $c;
+    done; 
+}
+################################################################################
+# Downloads series from a file containing URL's for their locations
+# Example Usage: downseriesfromfile /some/file/namere_here
+downseasonfromfile () {
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the series you wish to download and then {ENTER}" 1>&2
+        read dfile
+      else
+        dfile=$1
+    fi;
+    for downURL in $(cat $dfile);
+      do
+        a=$(curl -k -L $downURL -o - \
+            -H $'User-Agent: $(randomUA)' |\
+          grep -Ei 'class="episode episode_series_link active');
+        b=$(echo $a |\
+          tr -s " " "\n" |\
+          grep href |\
+          cut -d'"' -f2 |\
+          sort -u -V -t "/" -k6);
+        for c in $(echo $b | tr -s " " "\n");
+          do
+            echo -e "[#] Downloading file: $c";
+            d=$(curl -s $c \
+                -H $'User-Agent: $(randomUA)' |\
+              grep -i base64.decode |\
+              cut -d '"' -f4 |\
+              cut -d '"' -f1 |\
+              base64 -d |\
+              cut -d'"' -f8 |\
+              cut -d'"' -f1);
+            e=$(curl -s $d |\
+              grep \.mp4\" |\
+              cut -d'"' -f2);
+            f=$(echo $e |\
+              cut -d"/" -f5- |\
+              sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
+              curl -k -L -X $'GET' \
+                -H $'User-Agent: $(randomUA)' \
+                -H $'Referer: $d' \
+                -H $'Range: bytes=0-' \
+                --retry 999 \
+                --retry-max-time 0 \
+                $e -o $f;
+        done;
+    done;
 }
 ################################################################################
 # Used to set the $site variable, needed in some of the scripts to keep the lenght shorter
