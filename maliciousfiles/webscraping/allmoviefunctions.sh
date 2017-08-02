@@ -6,7 +6,7 @@
 # This script does not function out of the box as intended as the setsite()
 # is not currently set to the correct site as required by this script
 # If you put forth the time and effort to find the site, your use of this script
-# is your own discression/choice which I am to be held harmless for your actions.
+# is your own discression/choice which I am not liable for your actions.
 #
 # To make these temp within the users terminal use the following command:
 #    source allmoviefunctions.sh
@@ -18,6 +18,7 @@
 #
 # List of Bash functions found in this script:
 #------------------------------------------------------------------------------
+#
 #     randomUA             - (Chooses a random User-Agent String)
 #     setsite              - (Sets the Domain to use within the scripts {"CHANGEME"})
 #     searchsite           - (Searches across the site for user supplied query)
