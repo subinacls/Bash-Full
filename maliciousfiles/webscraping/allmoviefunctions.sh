@@ -7659,7 +7659,7 @@ downthemovie () {
       else
         durl=$1
     fi;
-    a=$(curl -s $durl \
+    a=$(curl -s -k -L $durl \
          -H $'User-Agent: $(randomUA)' |\
       grep -i base64.decode |\
       cut -d '"' -f4 |\
@@ -7667,7 +7667,7 @@ downthemovie () {
       base64 -d |\
       cut -d'"' -f8 |\
       cut -d'"' -f1);
-    b=$(curl -s $a \
+    b=$(curl -s -k -L $a \
          -H $'User-Agent: $(randomUA)' |\
       grep \.mp4\" |\
       cut -d'"' -f2);
@@ -7675,7 +7675,7 @@ downthemovie () {
          -H $'User-Agent: $(randomUA)' |\
       cut -d"/" -f5- |\
       sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
-    curl -k -X $'GET' \
+    curl -k -L -X $'GET' \
       -H $'User-Agent: $(randomUA)' \
       -H $'Referer: $a' \
       -H $'Range: bytes=0-' \
@@ -7694,7 +7694,7 @@ downtheseason () {
       else
         durl=$1
     fi;
-    a=$(curl -k -L $durl -o - \
+    a=$(curl -s -k -L $durl -o - \
         -H $'User-Agent: $(randomUA)' |\
       grep -Ei 'class="episode episode_series_link active');
     b=$(echo $a |\
@@ -7705,7 +7705,7 @@ downtheseason () {
     for c in $(echo $b | tr -s " " "\n");
       do
         echo -e "[#] Downloading file: $c";
-        d=$(curl -s $c \
+        d=$(curl -s -k -L $c \
             -H $'User-Agent: $(randomUA)' |\
           grep -i base64.decode |\
           cut -d '"' -f4 |\
@@ -7713,14 +7713,14 @@ downtheseason () {
           base64 -d |\
           cut -d'"' -f8 |\
           cut -d'"' -f1);
-        e=$(curl -s $d \
+        e=$(curl -s -k -L $d \
             -H $'User-Agent: $(randomUA)' |\
           grep \.mp4\" |\
           cut -d'"' -f2);
         f=$(echo $e |\
           cut -d"/" -f5- |\
           sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
-          curl -k -X $'GET' \
+          curl -k -L -X $'GET' \
             -H $'User-Agent: $(randomUA)' \
             -H $'Referer: $d' \
             -H $'Range: bytes=0-' \
@@ -7865,7 +7865,7 @@ showreallocation () {
       else
         durl=$1
     fi;
-    a=$(curl -s $durl \
+    a=$(curl -s -k -L $durl \
          -H $'User-Agent: $(randomUA)' |\
       grep -i base64.decode |\
       cut -d '"' -f4 |\
@@ -7873,7 +7873,7 @@ showreallocation () {
       base64 -d |\
       cut -d'"' -f8 |\
       cut -d'"' -f1);
-    b=$(curl -s $a \
+    b=$(curl -s -k -L $a \
          -H $'User-Agent: $(randomUA)' |\
       grep \.mp4\" |\
       cut -d'"' -f2);
