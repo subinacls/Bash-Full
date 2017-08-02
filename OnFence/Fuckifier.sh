@@ -6,7 +6,7 @@
 echo -e "[*]"
 echo -e "[*] Labs Fuckifier...err Verifier Script"
 echo -e "[*] Intellectual Property of Myself, Coded in: 2011"
-echo -e "[*]\tWritten by: William SubINacls Coppola"
+echo -e "[*]\tWritten by: William no1special Coppola"
 echo -e "[*]\t\tRESEARCH IS THE KEY TO UNLOCK KNOWLEDGE\n[*]"
 echo -e "[*] For proper use of this script, you should understand the source...."
 echo;
@@ -1340,7 +1340,7 @@ if [ `echo $uip | cut -d"." -f4` == "201" ];
 
         else
 
-# start trixbox root shell from offsec 0day 
+# start trixbox root shell from SOME 0day 
 
          if [ `echo $uip | cut -d"." -f4` == "211" ]; then
 
@@ -1374,13 +1374,13 @@ if [ `echo $uip | cut -d"." -f4` == "201" ];
 # Start MSFBOX1
 
            if [ $uip == "10.10.11.213" ]; then
-            echo -e "MSFPRO BOX\nu:offsecpwb p:w00ts3cr3tmsfpro!!\nhttps:\\localhost:3790 u:offsecpwb p: 2995b743d7dafdb0bd436f3418daea1\n\n\tto get root: sudo su"
+            echo -e "MSFPRO BOX\nu:SOMEPWD p:PASSWORD\nhttps:\\localhost:3790 u:SOMEPWD p: SOMEPASSWORD\n\n\tto get root: sudo su"
            fi
            if [ $uip == "10.10.13.213" ]; then
-            echo -e "MSFPRO BOX\nu:offsecpwb p:w00ts3cr3tmsfpro!!\nhttps:\\localhost:3790 u:offsecpwb p: 2995b743d7dafdb0bd436f3418daea1b\n\n\tto get root: sudo su"
+            echo -e "MSFPRO BOX\nu:SOMEPWD p:PASSWORD\nhttps:\\localhost:3790 u:SOMEPWD p: SOMEPASSWORD\n\n\tto get root: sudo su"
            fi
            if [ $uip == "10.10.15.213" ]; then
-            echo -e "MSFPRO BOX\nu:offsecpwb p:w00ts3cr3tmsfpro!!\nhttps:\\localhost:3790 u:offsecpwb p: 2995b743d7dafdb0bd436f3418daea1\n\n\tto get root: sudo su"
+            echo -e "MSFPRO BOX\nu:SOMEPWD p:PASSWORD!!\nhttps:\\localhost:3790 u:SOMEPWD p: SOMEPASSWORD\n\n\tto get root: sudo su"
            fi
           else
 
@@ -1388,13 +1388,13 @@ if [ `echo $uip | cut -d"." -f4` == "201" ];
 
            if [ `echo $uip | cut -d"." -f4` == "214" ]; then
             if [ $uip == "10.10.11.214" ]; then
-            echo -e "MSFPRO BOX\nu:offsecpwb p:w00ts3cr3tmsfpro!!\nhttps:\\localhost:3790 u:offsecpwb p: 2995b743d7dafdb0bd436f3418daea1b\n\n\tto get root: sudo su"
+            echo -e "MSFPRO BOX\nu:SOMEPWD p:PASSWORD!!\nhttps:\\localhost:3790 u:SOMEPWD p: SOMEPASSWORD\n\n\tto get root: sudo su"
             fi
             if [ $uip == "10.10.13.214" ]; then
-            echo -e "MSFPRO BOX\nu:offsecpwb p:w00ts3cr3tmsfpro!!\nhttps:\\localhost:3790 u:offsecpwb p: 2995b743d7dafdb0bd436f3418daea1b\n\n\tto get root: sudo su"
+            echo -e "MSFPRO BOX\nu:SOMEPWD p:PASSWORD!!\nhttps:\\localhost:3790 u:SOMEPWD p: SOMEPASSWORD\n\n\tto get root: sudo su"
             fi
             if [ $uip == "10.10.15.214" ]; then
-            echo -e "MSFPRO BOX\nu:offsecpwb p:w00ts3cr3tmsfpro!!\nhttps:\\localhost:3790 u:offsecpwb p: 2995b743d7dafdb0bd436f3418daea1b\n\n\tto get root: sudo su"
+            echo -e "MSFPRO BOX\nu:SOMEPWD p:PASSWORD!!\nhttps:\\localhost:3790 u:SOMEPWD p: SOMEPASSWORD\n\n\tto get root: sudo su"
             fi
            else
 
