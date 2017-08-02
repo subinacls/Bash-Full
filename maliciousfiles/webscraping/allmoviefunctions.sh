@@ -7551,18 +7551,20 @@ echo $(randomUA) 1>/dev/null;
 # Searches the site for movies by year released, useful if your just trying to find something by known year
 # Example Usage: findmoviebyyear [PRESS ENTER], Input when prompted for the year (ex: 2017)
 findmoviesbyyear() {
+   echo;
    year="";
    if [ -z $1 ];
     then
      echo "[!] Please enter the year you would like to search movies in and press {ENTER}";
      echo;
      read year;
+     echo;
    else
      year=$1
    fi;
-   fname="./my-$year-movies.txt";
-   URLOnly="./my-$year-movies-URLs.txt";
-   echo "" > ./$fname 1>&2;
+   fname="my-$year-movies.txt";
+   URLOnly="my-$year-movies-URLs.txt";
+   echo "" > $location$fname 1>&2;
    startpage=$(echo "http://$site/search-movies/$year.html");
    getstartpage=$(curl -s -k -L $startpage -H $'User-Agent: $(randomUA)');
    pagecount=$(echo $getstartpage |\
@@ -7587,36 +7589,38 @@ findmoviesbyyear() {
        sed -r "s/<\/b><br><b>/\n/g" |\
        sed -r "s/<\/b><br><div style\=padding-top\:5px\;padding-bottom\:5px\;><\/div>/\nSynopsis: '/g" |\
        sed -r "s/, WIDTH, -300, FONTFACE, 'Arial, Tahoma', FONTSIZE, '13px(.*)\/a><\/b><\/p>//g" |\
-       sed -r 's/\.html\"/\.html/g' >> $fname;
+       sed -r 's/\.html\"/\.html/g' >> $location$fname;
    done;
    cat $fname |\
      grep URL |\
-     sort -V -t"-" --key=2 > $URLOnly;
+     sort -V -t"-" --key=2 > $location$URLOnly;
    echo;
    echo "[!] Finished";
    echo;
-   echo "    [*] Full information saved to $fname";
+   echo "    [*] Full information saved to $location$fname";
    echo;
-   echo "    [*] Urls saved to $URLOnly";
+   echo "    [*] Urls saved to $location$URLOnly";
    echo;
 }
 ################################################################################
 # Searches the site for movies Country released, useful if your just trying to find something by Language
 # Example Usage: findmoviebycountry [PRESS ENTER], Input when prompted for the year (ex: USA)
 findmoviesbycountry() {
+   echo;
    country="";
    if [ -z $1 ];
     then
      echo "[!] Please enter the country you would like to search movies in and press {ENTER}";
      echo;
      read country;
+     echo;
      country=$(echo $country | tr '[:upper:]' '[:lower:]');
    else
      country=$(echo $1 | tr '[:upper:]' '[:lower:]');
    fi;
-   fname="./my-$country-movies.txt";
-   URLOnly="./my-$country-movies-URLs.txt";
-   echo "" > ./$fname;
+   fname="my-$country-movies.txt";
+   URLOnly="my-$country-movies-URLs.txt";
+   echo "" > $location$fname;
    startpage=$(echo "http://$site/movies-countries/$country.html");
    getstartpage=$(curl -s -k -L $startpage -H $'User-Agent: $(randomUA)');
    pagecount=$(echo $getstartpage |\
@@ -7641,17 +7645,17 @@ findmoviesbycountry() {
        sed -r "s/<\/b><br><b>/\n/g" |\
        sed -r "s/<\/b><br><div style\=padding-top\:5px\;padding-bottom\:5px\;><\/div>/\nSynopsis: '/g" |\
        sed -r "s/, WIDTH, -300, FONTFACE, 'Arial, Tahoma', FONTSIZE, '13px(.*)\/a><\/b><\/p>//g" |\
-       sed -r 's/\.html"/\.html/g' >> $fname;
+       sed -r 's/\.html"/\.html/g' >> $location$fname;
    done;
    cat $fname |\
      grep URL |\
-     sort -V -t"-" --key=2 > $URLOnly;
+     sort -V -t"-" --key=2 > $location$URLOnly;
    echo;
    echo "[!] Finished" 1>&2;
    echo;
-   echo "    [*] Full information saved to $fname" 1>&2;
+   echo "    [*] Full information saved to $location$fname" 1>&2;
    echo;
-   echo "    [*] Urls saved to $URLOnly" 1>&2;
+   echo "    [*] Urls saved to $location$URLOnly" 1>&2;
    echo;
 }
 ################################################################################
@@ -7663,6 +7667,7 @@ downthemovie () {
         echo "[!] Please enter the URL for the movie you wish to download and then {ENTER}" 1>&2
         echo;
         read durl
+        echo;
       else
         durl=$1
     fi;
@@ -7674,8 +7679,7 @@ downthemovie () {
       base64 -d |\
       cut -d'"' -f8 |\
       cut -d'"' -f1);
-    b=$(curl -s -k -L $a \
-         -H $'User-Agent: $(randomUA)' |\
+    b=$(curl -s -k -L $a -H $'User-Agent: $(randomUA)' |\
       grep \.mp4\" |\
       cut -d'"' -f2);
     c=$(echo $b |\
@@ -7698,11 +7702,11 @@ downtheseason () {
         echo "[!] Please enter the URL for the series you wish to download and then {ENTER}" 1>&2
         echo;
         read durl
+        echo;
       else
         durl=$1
     fi;
-    a=$(curl -s -k -L $durl -o - \
-        -H $'User-Agent: $(randomUA)' |\
+    a=$(curl -s -k -L $durl -o - -H $'User-Agent: $(randomUA)' |\
       grep -Ei 'class="episode episode_series_link active');
     b=$(echo $a |\
       tr -s " " "\n" |\
@@ -7712,16 +7716,14 @@ downtheseason () {
     for c in $(echo $b | tr -s " " "\n");
       do
         echo -e "[#] Downloading file: $c";
-        d=$(curl -s -k -L $c \
-            -H $'User-Agent: $(randomUA)' |\
+        d=$(curl -s -k -L $c -H $'User-Agent: $(randomUA)' |\
           grep -i base64.decode |\
           cut -d '"' -f4 |\
           cut -d '"' -f1 |\
           base64 -d |\
           cut -d'"' -f8 |\
           cut -d'"' -f1);
-        e=$(curl -s -k -L $d \
-            -H $'User-Agent: $(randomUA)' |\
+        e=$(curl -s -k -L $d -H $'User-Agent: $(randomUA)' |\
           grep \.mp4\" |\
           cut -d'"' -f2);
         f=$(echo $e |\
@@ -7740,6 +7742,7 @@ downtheseason () {
 # Gathers infomation about the given Movie / Series URL and outputs to STDOUT
 # Example Usage: getinfo http(s|)://somedomain.tld/folder/movie_title
 getinfo () {
+    echo;
     checkup() {
       whichlynx=$(which lynx);
       if [ -z $whichlynx ]; 
@@ -7760,14 +7763,15 @@ getinfo () {
     checkup;
     if [ -z $1 ];
       then
+        echo;
         echo "[!] Please enter the URL for the show you wish to see info about and then {ENTER}" 1>&2
         echo;
         read durl
+        echo;
       else
         durl=$1
     fi;
-    a=$(curl -s -k -L $durl \
-      -H $'User-Agent: $(randomUA)');
+    a=$(curl -s -k -L $durl -H $'User-Agent: $(randomUA)');
     story=$(echo $a |\
       lynx --dump --stdin |\
       awk "/Storyline/" RS= |\
@@ -7814,17 +7818,17 @@ getinfo () {
 listepisodes() {
     if [ -z $1 ];
       then
+        echo;
         echo "[!] Please enter the URL for the series you wish to see episodes for and then {ENTER}" 1>&2
         read durl
+        echo;
       else
         durl=$1
     fi;
     echo;
-    echo;
     echo "---------------------- {Episode URLS are provided below} ----------------------" 1>&2;
     echo;
-    curl -s -k -L $durl \
-      -H $'User-Agent: $(randomUA)'|\
+    curl -s -k -L $durl -H $'User-Agent: $(randomUA)'|\
     grep -Ei 'class="episode episode_series_link active' |\
     tr -s " " "\n" |\
     grep href |\
@@ -7852,15 +7856,13 @@ searchsite () {
     echo;
     echo "---------------------- {Results are listed below} ----------------------" 1>&2;
     echo;
-    curl -s -k -L \
-         -H $'User-Agent: $(randomUA)' \
-         $site/search-movies/$(echo $search |\
-            tr -s " " "+").html |\
-            grep $(echo $search | tr -s " " "-") |\
-            grep -iE "(season|movie)" |\
-            grep href |\
-            cut -d'"' -f2 |\
-            sort -u -V -t "/" -k5;
+    curl -s -k -L -H $'User-Agent: $(randomUA)' $site/search-movies/$(echo $search |\
+      tr -s " " "+").html |\
+      grep $(echo $search | tr -s " " "-") |\
+      grep -iE "(season|movie)" |\
+      grep href |\
+      cut -d'"' -f2 |\
+      sort -u -V -t "/" -k5;
 }
 ################################################################################
 # Shows the real location of the movies / series offered by their CDN (Content Delivery Network)
@@ -7868,21 +7870,21 @@ searchsite () {
 showreallocation () {
     if [ -z $1 ];
       then
+        echo;
         echo "[!] Please enter the URL to reveal the real location it is stored on a CDN, then press {ENTER}" 1>&2
         read durl
+        echo;
       else
         durl=$1
     fi;
-    a=$(curl -s -k -L $durl \
-         -H $'User-Agent: $(randomUA)' |\
+    a=$(curl -s -k -L $durl -H $'User-Agent: $(randomUA)' |\
       grep -i base64.decode |\
       cut -d '"' -f4 |\
       cut -d '"' -f1 |\
       base64 -d |\
       cut -d'"' -f8 |\
       cut -d'"' -f1);
-    b=$(curl -s -k -L $a \
-         -H $'User-Agent: $(randomUA)' |\
+    b=$(curl -s -k -L $a -H $'User-Agent: $(randomUA)' |\
       grep \.mp4\" |\
       cut -d'"' -f2);
     echo;
@@ -7895,6 +7897,7 @@ showreallocation () {
 downmoviefromfile () {
     if [ -z $1 ];
       then
+        echo;
         echo "[!] Please enter the filename for the list you wish to download from and then {ENTER}" 1>&2
         read dfile
         echo;
@@ -7903,16 +7906,14 @@ downmoviefromfile () {
     fi;
     for downURL in $(cat $dfile);
       do
-        a=$(curl -s -K -L $downURL \
-             -H $'User-Agent: $(randomUA)' |\
+        a=$(curl -s -K -L $downURL -H $'User-Agent: $(randomUA)' |\
           grep -i base64.decode |\
           cut -d '"' -f4 |\
           cut -d '"' -f1 |\
           base64 -d |\
           cut -d'"' -f8 |\
           cut -d'"' -f1);
-        b=$(curl -s -k -L $a \
-             -H $'User-Agent: $(randomUA)' |\
+        b=$(curl -s -k -L $a -H $'User-Agent: $(randomUA)' |\
           grep \.mp4\" |\
           cut -d'"' -f2);
         c=$(echo $b |\
@@ -7933,6 +7934,7 @@ downmoviefromfile () {
 downseasonfromfile () {
     if [ -z $1 ];
       then
+        echo;
         echo "[!] Please enter the URL for the series you wish to download and then {ENTER}" 1>&2
         read dfile
         echo;
@@ -7941,8 +7943,7 @@ downseasonfromfile () {
     fi;
     for downURL in $(cat $dfile);
       do
-        a=$(curl -k -L $downURL -o - \
-            -H $'User-Agent: $(randomUA)' |\
+        a=$(curl -k -L $downURL -o - -H $'User-Agent: $(randomUA)' |\
           grep -Ei 'class="episode episode_series_link active');
         b=$(echo $a |\
           tr -s " " "\n" |\
