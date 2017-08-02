@@ -7555,6 +7555,7 @@ findmoviesbyyear() {
    if [ -z $1 ];
     then
      echo "[!] Please enter the year you would like to search movies in and press {ENTER}";
+     echo;
      read year;
    else
      year=$1
@@ -7607,6 +7608,7 @@ findmoviesbycountry() {
    if [ -z $1 ];
     then
      echo "[!] Please enter the country you would like to search movies in and press {ENTER}";
+     echo;
      read country;
      country=$(echo $country | tr '[:upper:]' '[:lower:]');
    else
@@ -7659,6 +7661,7 @@ downthemovie () {
     if [ -z $1 ];
       then
         echo "[!] Please enter the URL for the movie you wish to download and then {ENTER}" 1>&2
+        echo;
         read durl
       else
         durl=$1
@@ -7684,7 +7687,7 @@ downthemovie () {
       -H $'Range: bytes=0-' \
       --retry 999 \
       --retry-max-time 0 \
-      $b -o $c;
+      $b -o $location$c;
 }
 ################################################################################
 # Downloads an entire season by the given URL, if you only want 1 episode use downthemovie 
@@ -7693,6 +7696,7 @@ downtheseason () {
     if [ -z $1 ];
       then
         echo "[!] Please enter the URL for the series you wish to download and then {ENTER}" 1>&2
+        echo;
         read durl
       else
         durl=$1
@@ -7729,7 +7733,7 @@ downtheseason () {
             -H $'Range: bytes=0-' \
             --retry 999 \
             --retry-max-time 0 \
-            $e -o $f;
+            $e -o $location$f;
     done;
 }
 ################################################################################
@@ -7757,6 +7761,7 @@ getinfo () {
     if [ -z $1 ];
       then
         echo "[!] Please enter the URL for the show you wish to see info about and then {ENTER}" 1>&2
+        echo;
         read durl
       else
         durl=$1
@@ -7881,7 +7886,7 @@ showreallocation () {
       grep \.mp4\" |\
       cut -d'"' -f2);
     echo;
-    echo -e "[-] the true location of this file is:\n\t$b" 1>&2;
+    echo -e "[-] The true location of this file is:\n\t$b" 1>&2;
     echo;
 }
 ################################################################################
@@ -7892,6 +7897,7 @@ downmoviefromfile () {
       then
         echo "[!] Please enter the filename for the list you wish to download from and then {ENTER}" 1>&2
         read dfile
+        echo;
       else
         dfile=$1
     fi;
@@ -7918,7 +7924,7 @@ downmoviefromfile () {
           -H $'Range: bytes=0-' \
           --retry 999 \
           --retry-max-time 0 \
-          $b -o $c;
+          $b -o $location$c;
     done; 
 }
 ################################################################################
@@ -7929,6 +7935,7 @@ downseasonfromfile () {
       then
         echo "[!] Please enter the URL for the series you wish to download and then {ENTER}" 1>&2
         read dfile
+        echo;
       else
         dfile=$1
     fi;
@@ -7945,8 +7952,7 @@ downseasonfromfile () {
         for c in $(echo $b | tr -s " " "\n");
           do
             echo -e "[#] Downloading file: $c";
-            d=$(curl -s $c \
-                -H $'User-Agent: $(randomUA)' |\
+            d=$(curl -s $c -H $'User-Agent: $(randomUA)' |\
               grep -i base64.decode |\
               cut -d '"' -f4 |\
               cut -d '"' -f1 |\
@@ -7965,7 +7971,7 @@ downseasonfromfile () {
                 -H $'Range: bytes=0-' \
                 --retry 999 \
                 --retry-max-time 0 \
-                $e -o $f;
+                $e -o $location$f;
         done;
     done;
 }
@@ -7976,3 +7982,8 @@ setsite() {
     site="myfav.tv";
 }
 setsite;
+
+setlocation() {
+    location="/mnt/c/Users/Admin/Desktop/"
+}
+setlocation;
