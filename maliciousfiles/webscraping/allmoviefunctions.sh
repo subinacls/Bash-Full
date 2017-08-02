@@ -7846,6 +7846,36 @@ searchsite () {
             sort -u -V -t "/" -k5;
 }
 ################################################################################
+# Shows the real location of the movies / series offered by their CDN (Content Delivery Network)
+# Example Usage: showreallocation http(s|)://somedomain.tld/folder/movie_title
+showreallocation () {
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the movie you wish to download and then {ENTER}" 1>&2
+        read durl
+      else
+        durl=$1
+    fi;
+    a=$(curl -s $durl \
+         -H $'User-Agent: $(randomUA)' |\
+      grep -i base64.decode |\
+      cut -d '"' -f4 |\
+      cut -d '"' -f1 |\
+      base64 -d |\
+      cut -d'"' -f8 |\
+      cut -d'"' -f1);
+    b=$(curl -s $a \
+         -H $'User-Agent: $(randomUA)' |\
+      grep \.mp4\" |\
+      cut -d'"' -f2);
+    c=$(echo $b |\
+      cut -d"/" -f5- |\
+      sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
+    echo;
+    echo -e "[-] the true location of this file is:\n\t$b" 1>&2;
+    echo;
+}
+################################################################################
 # Used to set the $site variable, needed in some of the scripts to keep the lenght shorter
 # Example Usage: No Usage needed
 setsite() {
