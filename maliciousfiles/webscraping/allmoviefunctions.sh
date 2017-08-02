@@ -1,5 +1,13 @@
 ################################################################################
-# This script block is all the functions written for Bash (*Nix / Windows 10 SubSystem)
+# This script contains functions written for Bash (*Nix / Windows 10 SubSystem)
+#
+# These functions are intended to be used for educational purposes
+# Under no circuimstance do I support the piracy of (software/movies/shows/books/music/etc.)
+# This script does not function out of the box as intended as the setsite()
+# is not currently set to the correct site as required by this script
+# If you put forth the time and effort to find the site, your use of this script
+# is your own discression/choice which I am to be held harmless for your actions.
+#
 # To make these temp within the users terminal use the following command:
 #    source allmoviefunctions.sh
 #
@@ -8,16 +16,17 @@
 #
 # These functions can now be called on the commandline by the user or scripted
 #
-# List of functions:
-#     randomUA (Chooses a random UserAgent String)
-#     setsite (Sets the Domain to use within the scripts "CHANGEME")
-#     searchsite (Searches across the site for user supplied query)
-#     getinfo (Gets information about the Movie/Series found from searchsite)
-#     listepisodes (List all the episodes of a season to choose individual episodes)
-#     downthemovie (Downloads an individual Movie/Series from the searchsite URL)
-#     downtheseries (Downlaods an entire Season from the searchsite URL)
-#     findmoviesbyyear (Searches the site for Movies/Series based on the year released)
-#     findmoviesbycountry (Searches the site for Movies/Series based on the Country where released)
+# List of Bash functions found in this script:
+#------------------------------------------------------------------------------
+#     randomUA             - (Chooses a random User-Agent String)
+#     setsite              - (Sets the Domain to use within the scripts {"CHANGEME"})
+#     searchsite           - (Searches across the site for user supplied query)
+#     getinfo              - (Gets information about the Movie/Series found from searchsite)
+#     listepisodes         - (List all the episodes of a season to choose individual episodes)
+#     downthemovie         - (Downloads an individual Movie/Series from the searchsite URL)
+#     downtheseries        - (Downlaods an entire Season from the searchsite URL)
+#     findmoviesbyyear     - (Searches the site for Movies/Series based on the year released)
+#     findmoviesbycountry  - (Searches the site for Movies/Series based on the Country where released)
 #
 ################################################################################
 # A bit overkill but very useful function to make a random UserAgent String for Curl or Wget
