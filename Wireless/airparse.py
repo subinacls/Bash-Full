@@ -2,8 +2,7 @@
 import pdb, optparse, sys
 def airDumpOpen(file):
         """
-        Takes one argument (the input file) and opens it for reading
-        Returns a list full of data
+        Takes one argument (the input file) and opens it for reading, Returns a list full of data
         """
         openedFile = open(file, "r")
         data = openedFile.readlines()
@@ -15,8 +14,7 @@ def airDumpOpen(file):
 
 def airDumpParse(cleanedDump):
         """
-        Function takes parsed dump file list and does some more cleaning.
-        Returns a list of 2 dictionaries (Clients and APs)
+        Function takes parsed dump file list and does some more cleaning, Returns a list of 2 dictionaries (Clients and APs)
         """
         try: #some very basic error handeling to make sure they are loading up the correct file
                 try:
@@ -31,7 +29,6 @@ def airDumpParse(cleanedDump):
         except Exception:
                 print "You Seem to have provided an improper input file please make sure you are loading an airodump txt file and not a pcap"
                 sys.exit(1)
-
         #pdb.set_trace()
         del cleanedDump[stationStart] #Remove the heading line
         clientList = cleanedDump[stationStart:] #Splits all client data into its own list
@@ -76,8 +73,6 @@ def clientTag(devices):
                         dict[string_list[0]] = client
         return dict
 
-
-
 def usage():
 	"""
 	Funtion prints out program usage to the user
@@ -98,20 +93,17 @@ def printOutput(input,assoicated):
 
 if __name__ == "__main__":
         """
-        Main function.
-        Parses command line input for proper switches and arguments. Error checking is done in here.
+        Main function. Parses command line input for proper switches and arguments. Error checking is done in here.
         Variables are defined and all calls are made from MAIN.
         """
         if len(sys.argv) <= 1:
                 usage()
                 sys.exit(0)
-
         parser = optparse.OptionParser("usage: %prog [options] -i input .....")  #read up more on this
 	parser.add_option("-i", "--dump", dest="input", nargs=1 ,help="Airodump inputfile")
 	parser.add_option("-a", "--assoicated",dest="associated", action="store_true", default=False,help="Help disable showing of non assocated APs") 
 	#parser.add_option("-p", "--nopsyco",dest="pysco",action="store_false",default=True,help="Disable the use of Psyco JIT")
 	(options, args) = parser.parse_args()
-	
 	fileOpenResults = airDumpOpen(options.input)
 	parsedResults = airDumpParse(fileOpenResults)
 	printOutput(parsedResults,options.associated)
