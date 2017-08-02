@@ -7877,9 +7877,6 @@ showreallocation () {
          -H $'User-Agent: $(randomUA)' |\
       grep \.mp4\" |\
       cut -d'"' -f2);
-    c=$(echo $b |\
-      cut -d"/" -f5- |\
-      sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
     echo;
     echo -e "[-] the true location of this file is:\n\t$b" 1>&2;
     echo;
