@@ -1,0 +1,54 @@
+rem Set the 'audit' variable to the output directory
+set audit="D:\audit\V3"
+
+pushd %audit%
+
+Net accounts > %audit%\wmic_%computername%_accounts.txt
+
+Net config workstation >> %audit%\wmic_%computername%_config.txt
+
+Net config server >> %audit%\wmic_%computername%_config.txt
+
+gpresult /R /SCOPE USER  > %audit%\wmic_%computername%_GPO.txt
+
+Wmic LogicalDisk  > %audit%\wmic_%computername%_LogicalDisk.txt
+
+Wmic Netuse get localname, name > %audit%\wmic_%computername%_netuse.txt
+
+Wmic nic > %audit%\wmic_%computername%_nic.txt
+
+Wmic ntdomain > %audit%\wmic_%computername%_ntdomain.txt
+
+Wmic os > %audit%\wmic_%computername%_os.txt
+
+Wmic process > %audit%\wmic_%computername%_process.txt
+
+Wmic product > %audit%\wmic_%computername%_product.txt
+
+Wmic QFE > %audit%\wmic_%computername%_qfe.txt
+
+Wmic rdnic > %audit%\wmic_%computername%_rdnic.txt
+
+Wmic rdPermissions > %audit%\wmic_%computername%_rdPermissions.txt
+
+Wmic rdToggle > %audit%\wmic_%computername%_rdToggle.txt
+
+Wmic Service > %audit%\wmic_%computername%_service.txt
+
+Wmic Startup > %audit%\wmic_%computername%_startup.txt
+
+for /f "usebackq" %%d in (`wmic LOGICALDISK where "DriveType=3" get caption`) do dir %%d /s /a /O:n >> %audit%\WMIC_%computername%_dirlist_%%d.txt
+
+for /f "usebackq skip=1 delims=:" %%d in (`wmic LOGICALDISK where "DriveType=3" get caption`) do ICACLS %%d: /save aclfile_%%d /T /C /Q 
+
+net users  >> %audit%\WMIC_%computername%_Users.txt
+
+for /f "usebackq tokens=1-3 skip=3" %%u in (`net user`) do net user %%u >> %audit%\WMIC_%computername%_Users.txt && net user %v >> %audit%\WMIC_%computername%_Users.txt && net user %w >> %audit%\WMIC_%computername%_Users.txt
+
+net localgroup  >> %audit%\WMIC_%computername%_localgroup.txt
+
+for /f "usebackq delims=* skip=3" %%g in (`net localgroup`) do net localgroup "%%g" >> %audit%\WMIC_%computername%_localgroup.txt
+
+net share   >> %audit%\WMIC_%computername%_Share.txt
+
+for /f "usebackq skip=2 tokens=1-3" %%s in (`net share`) do net share %%s >> %audit%\WMIC_%computername%_Share.txt
