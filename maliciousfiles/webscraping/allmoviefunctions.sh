@@ -1,4 +1,4 @@
-#
+################################################################################
 # This script block is all the functions written for Bash (*Nix / Windows 10 SubSystem)
 # To make these temp within the users terminal use the following command:
 #    source allmoviefunctions.sh
@@ -21,6 +21,7 @@
 #
 ################################################################################
 # A bit overkill but very useful function to make a random UserAgent String for Curl or Wget
+# Example Usage: $(randomUA) 
 randomUA() {
     chkshuf() {
       whichshuf=$(which shuf);
@@ -7535,6 +7536,7 @@ Opera/9.99 (X11; U; sk)\n"""
 echo $(randomUA) 1>/dev/null;
 ################################################################################
 # Searches the site for movies by year released, useful if your just trying to find something by known year
+# Example Usage: findmoviebyyear [PRESS ENTER], Input when prompted for the year (ex: 2017)
 findmoviesbyyear() {
    year="";
    if [ -z $1 ];
@@ -7586,6 +7588,7 @@ findmoviesbyyear() {
 }
 ################################################################################
 # Searches the site for movies Country released, useful if your just trying to find something by Language
+# Example Usage: findmoviebycountry [PRESS ENTER], Input when prompted for the year (ex: USA)
 findmoviesbycountry() {
    country="";
    if [ -z $1 ];
@@ -7638,6 +7641,7 @@ findmoviesbycountry() {
 }
 ################################################################################
 # Downloads the movie to disk by a given URL, this is for single instances ONLY
+# Example Usage: downthemovie http(s|)://somedomain.tld/folder/movie_title.html
 downthemovie () {
     if [ -z $1 ];
       then
@@ -7672,6 +7676,7 @@ downthemovie () {
 }
 ################################################################################
 # Downloads an entire season by the given URL, if you only want 1 episode use downthemovie 
+# Example Usage: downtheseason http(s|)://somedomain.tld/folder/series_title.html
 downtheseason () {
     if [ -z $1 ];
       then
@@ -7717,6 +7722,7 @@ downtheseason () {
 }
 ################################################################################
 # Gathers infomation about the given Movie / Series URL and outputs to STDOUT
+# Example Usage: getinfo http(s|)://somedomain.tld/folder/movie_title
 getinfo () {
     checkup() {
       whichlynx=$(which lynx);
@@ -7787,6 +7793,7 @@ getinfo () {
 }
 ################################################################################
 # List all episodes to a given series, you should supply the URL to the specific series
+# Example Usage: listepisodes http(s|)://somedomain.tld/folder/movie_title
 listepisodes() {
     if [ -z $1 ];
       then
@@ -7819,6 +7826,7 @@ listepisodes() {
 }
 ################################################################################
 # used to search the site for information about movies / series contained in their Database
+# Example Usage: searchsite [PRESS ENTER], Input when prompted for the year (ex: game of thrones)
 searchsite () {
     echo;
     echo "Please enter the search string below and press [ENTER]:" 1>&2;
@@ -7839,6 +7847,7 @@ searchsite () {
 }
 ################################################################################
 # Used to set the $site variable, needed in some of the scripts to keep the lenght shorter
+# Example Usage: No Usage needed
 setsite() {
     site="myfav.tv";
 }
