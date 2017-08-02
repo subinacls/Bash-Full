@@ -7863,7 +7863,7 @@ searchsite () {
 showreallocation () {
     if [ -z $1 ];
       then
-        echo "[!] Please enter the URL for the movie you wish to download and then {ENTER}" 1>&2
+        echo "[!] Please enter the URL to reveal the real location it is stored on a CDN, then press {ENTER}" 1>&2
         read durl
       else
         durl=$1
