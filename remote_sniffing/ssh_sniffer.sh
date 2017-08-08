@@ -26,9 +26,9 @@
 if [ "$1" == "" ]; then
  echo
  echo " Usage:"
- echo "    Outline: $0 <interface> <user@hostname> <PEM file>"
+ echo "    Outline: $0 <reomte interface> <user@hostname> <PEM file>"
  echo "        W/ PEM:  $0 eth0 testuser@somehost.tld ./yourfile.pem"
- echo "    Outline: $0 <interface> <user@hostname>"
+ echo "    Outline: $0 <remote interface> <user@hostname>"
  echo "        W/O PEM: $0 eth0 testuser@somehost.tld"
  echo
  exit 1
