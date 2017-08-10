@@ -10,13 +10,16 @@ ip=$1;
 mkdir $ip 2&>/dev/null;
 for x in $(seq 1 255);do 
  # sets output filename
- y="./`echo $ip`/`echo $ip`.`echo $x`_output";
+ y="./`echo $ip`/`echo $ip | cut -d "." -f1-3`.`echo $x`_output";
  # sets iterated IP address
- z=`echo $ip`.`echo $x`;
+ z=`echo $ip | cut -d "." -f1-3`.`echo $x`;
  echo -e "\t[*] Scraping: `echo $z`";
  # makes wget call and saves results to disk
- wget -O $y https://www.shodan.io/host/`echo $z` 2&>/dev/null; 
+ wget -o /dev/null https://www.shodan.io/host/`echo $z` -O $y & 
  # finish the for loop
+ if [ "`ps -A xf | grep -v grep | grep wget`" != "" ]; then
+  sleep 1
+ fi
  done;
 # removes any file with size 0 (be careful)
 find ./`echo $ip` -maxdepth 1 -size 0 -print0 | xargs -0 rm; 
