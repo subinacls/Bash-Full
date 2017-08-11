@@ -1,0 +1,16 @@
+#
+# does bulk lookups for authoritice DNS Server for given domain
+bulk-dnstrace() {
+  if [ ! -d ./dnstrace ]; then 
+    mkdir ./dnstrace
+  fi;
+  for dname in $(cat $1); 
+    do 
+      dnstracer -o -C -c -q AAA -r 1 -4 $dname | tee ./dnstrace/dnstrace_$dname
+  done
+} # example: bulk-dnstrace ./somefilewithdomains.txt
+#
+# does single lookups for authoritice DNS Server for given domain
+dtracert() {
+  dnstracer -o -C -c -q AAA -r 1 -4 $1 | tee ./dnstrace/dnstrace_$1
+} # example: bulk-dnstrace some.domain.tld
