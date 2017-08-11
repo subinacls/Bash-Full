@@ -25,6 +25,7 @@ harvpwned() {
     # cuts results at the first ":" character, returns 2nd column
     # cuts results at the first '"' character, returns 2nd column
     # xargs echo the given email address and any results from query
+    echo -e "[-] Conducting email testing against haveibeenpwned.com"
     sleep `echo ${RANDOM} |\
       sed -r "s/([0-9])(.*)/\1/g"` ; 
     wget -o /dev/null -O - --user-agent="TheHarvester HIBP Validator" \
@@ -40,7 +41,6 @@ harvpwned() {
   theharv $1; 
   for x in $(cat $1.emails) ;
     do 
-      echo -e "\t[!] Testing email address $1"
       hibp $x 
   done | tee $1.pwnedlist;
   echo -e "[-] Finished\n"
