@@ -20,10 +20,10 @@ harvpwned() {
   hibp() { 
     # sleeps a random timeframe to avoid abuse of API
     # runs wget on haveibeenpwned API2 with given email addres
-    # replaces an , in the results with a newline
-    # greps insensitive for the word title
-    # cuts results at the first ":" character
-    # cuts results at the first '"' character
+    # replaces any "," in the results with a newline
+    # greps case-insensitive for the word title
+    # cuts results at the first ":" character, returns 2nd column
+    # cuts results at the first '"' character, returns 2nd column
     # xargs echo the given email address and any results from query
     sleep `echo ${RANDOM} |\
       sed -r "s/([0-9])(.*)/\1/g"` ; 
