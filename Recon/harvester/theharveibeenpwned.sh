@@ -10,11 +10,13 @@ harvpwned() {
     # saves theharvester output as domain.harvester
     # greps out the domain target
     # looks for email addresses by the @ character
-    # sourts unique and saved it to domain.email file
-    theharvester -d $1 -b all -l 500 > $1.harvester &&\
+    # translates from Upper to Lower case
+    # sorts unique and saved it to domain.email file
+    theharvester -d $1 -b google -l 1000 > $1.harvester &&\
     cat $1.harvester |\
       grep $1 |\
       grep "@" |\
+      tr [:upper:] [:lower:] |\
       sort -u > $1.emails; 
   }; 
   hibp() { 
@@ -25,7 +27,6 @@ harvpwned() {
     # cuts results at the first ":" character, returns 2nd column
     # cuts results at the first '"' character, returns 2nd column
     # xargs echo the given email address and any results from query
-    echo -e "[-] Conducting email testing against haveibeenpwned.com"
     sleep `echo ${RANDOM} |\
       sed -r "s/([0-9])(.*)/\1/g"` ; 
     wget -o /dev/null -O - --user-agent="TheHarvester HIBP Validator" \
@@ -39,10 +40,11 @@ harvpwned() {
   # runs the harvester function with given domain
   echo -e "\n[-] Running TheHarvester against $1\n"
   theharv $1; 
+  echo -e "[-] Conducting email testing against haveibeenpwned.com\n\t[!] Results are listed below:\n"
   for x in $(cat $1.emails) ;
     do 
       hibp $x 
-  done | tee $1.pwnedlist;
+  done | grep -Ev "^(.*),$" > $1.pwnedlist
   echo -e "[-] Finished\n"
 };
 harvpwned $1
