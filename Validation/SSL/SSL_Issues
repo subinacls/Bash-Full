@@ -15,6 +15,9 @@ sslmd5() { mkdir SSLCerts 2>/dev/null; echo | openssl s_client -connect $1 | ope
 ### basic information gathering on the certificte
 sslgather() { echo | openssl s_client -connect $1 | openssl x509 -noout -issuer -subject -dates | tee ./SSLCerts/`echo "SSL_Cert_Info_$1"`; }  # Example: sslgather server.net:port
 
+### CN found in the certificate
+sslgather() { echo | openssl s_client -connect $1 | openssl x509 -noout -issuer -subject -dates | tee ./SSLCerts/`echo "SSL_Cert_Info_$1"`; }  # Example: sslgather server.net:port
+
 ### DUMP of all information contained in the certificate
 sslall() { mkdir SSLCerts 2>/dev/null; echo | openssl s_client -connect $1 | openssl x509 -noout -text | tee ./SSLCerts/`echo "SSL_Cert_Dump_$1"`; }  # Example: sslall server.net:port
 
