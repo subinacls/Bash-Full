@@ -1,0 +1,33 @@
+msfkicker() {
+ setvars() {
+  msfc="/usr/share/metasploit-framework/msfconsole"
+  msfs="/usr/share/metasploit-framework/scripts" 
+  setrhosts="setg rhosts file:$1"
+  setthreads="setg threads 10"
+ }
+ setvars $1;
+ https_version() {
+  echo "Making https_version.rc file" 
+  echo "use auxiliary/scanner/http/http_version" > $msfs/https_version.rc
+  echo "set rport 443" >> $msfs/https_version.rc
+  echo "set ssl true" >> $msfs/https_version.rc
+  echo "$setrhosts" >> $msfs/https_version.rc
+  echo "$setthreads" >> $msfs/https_version.rc
+  echo "run" >> $msfs/https_version.rc
+  echo "exit" >> $msfs/https_version.rc
+  $msfc -r $msfs/https_version.rc
+ }
+ https_cert() {
+  echo "Making https_cert.rc file" 
+  echo "use auxiliary/scanner/http/cert" > $msfs/https_cert.rc
+  echo "$setrhosts" >> $msfs/https_cert.rc
+  echo "$setthreads" >> $msfs/https_cert.rc
+  echo "set showall true" >> $msfs/https_cert.rc
+  echo "run" >> $msfs/https_cert.rc
+  echo "exit" >> $msfs/https_cert.rc
+  $msfc -r $msfs/https_cert.rc
+ }
+ https_version
+ https_cert
+}
+msfkicker yourhostfile.txt
