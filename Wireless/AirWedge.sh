@@ -105,19 +105,43 @@ script_arg() {
 # kills all running programs that the script starts to remove conflicts
 die() { 
     echo "Kills some problem Applications " 
-    sleep 3 
-    ps -A | grep airbase | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep airodump | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep dhcpcd-bin | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep dhclient | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep knetworkmanager | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep dnsmasq | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep kismet_server | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep kismet_client | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep kismet | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep mdk3 | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep wpa_supp | cut -d " " -f2 | xargs kill -9 
-    ps -A | grep gpsd | cut -d " " -f2 | xargs kill -9 
+    sleep 3
+    if [ "`ps -A xf| grep -v grep |  tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep airbase | cut -d ' ' -f1`" != "" ]; then
+      ps -A xf| grep -v grep |  tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep airbase | cut -d " " -f1 | xargs kill -9 >/dev/null
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep airodump | cut -d ' ' -f1`" != "" ]; then
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep airodump | cut -d ' ' -f1 | xargs kill -9 >/dev/null
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep dhcpcd-bin | cut -d ' ' -f1`" != "" ]; then
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep dhcpcd-bin | cut -d ' ' -f1 | xargs kill -9 >/dev/null
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep dhclient | cut -d ' ' -f1`" != "" ]; then
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep dhclient | cut -d ' ' -f1 | xargs kill -9 >/dev/null
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep knetworkmanager | cut -d ' ' -f1`" != "" ]; then
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep knetworkmanager | cut -d ' ' -f1 | xargs kill -9 >/dev/null
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep dnsmasq | cut -d ' ' -f1`" != "" ]; then
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep dnsmasq | cut -d ' ' -f1 | xargs kill -9 >/dev/null
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep kismet_server | cut -d ' ' -f1`" != "" ]; then
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep kismet_server | cut -d ' ' -f1 | xargs kill -9 >/dev/null 
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep kismet_client | cut -d ' ' -f1`" != "" ]; then
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep kismet_client | cut -d ' ' -f1 | xargs kill -9 >/dev/null
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep kismet | cut -d ' ' -f1`" != "" ]; then
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep kismet | cut -d ' ' -f1 | xargs kill -9 >/dev/null 
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep mdk3 | cut -d ' ' -f1`" != "" ]; then 
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep mdk3 | cut -d ' ' -f1 | xargs kill -9 >/dev/null
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep wpa_supp | cut -d ' ' -f1`" != "" ]; then  
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep wpa_supp | cut -d ' ' -f1 | xargs kill -9 >/dev/null
+    fi
+    if [ "`ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep gpsd | cut -d ' ' -f1`" != "" ]; then 
+      ps -A xf| grep -v grep | tr -s ' ' | sed -r 's/^ (.*)/\1/g' | grep gpsd | cut -d ' ' -f1 | xargs kill -9  >/dev/null
+    fi
 } 
 ################################################################################################### 
 # Setup GPSD device
