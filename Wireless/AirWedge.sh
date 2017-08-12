@@ -5,7 +5,7 @@
 # Presents Options to the user
 usage() { 
         clear 
-        echo -e "MDDA.sh\n"
+        echo -e "$0\n"
         echo -e "\033[31m WARNING! This script will create a DoS condition when running!\n" 
         echo -e " WARNING! Some routers have been known to fail when attacked!\n" 
         echo -e "\033[0m usage: $PROG -w -b -H [options]\n" 
