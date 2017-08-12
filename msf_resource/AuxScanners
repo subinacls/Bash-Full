@@ -1,4 +1,24 @@
 msfkicker() {
+ makeXtermLog() {
+   if [ -f $1-log.txt ];
+     then
+       rm $1-log.txt >/dev/null;
+   fi;
+   xterm -bc \
+     -bd white \
+     -bg black \
+     -fg green \
+     -l \
+     -lf $1-log.txt \
+     -leftbar \
+     -ls \
+     -name $1 \
+     -ms yellow \
+     -selbg orange \
+     -selfg black \
+     -title $1 \
+     -e "$2"; 
+ }
  setvars() {
   msfc="/usr/share/metasploit-framework/msfconsole"
   msfs="/usr/share/metasploit-framework/scripts" 
@@ -15,7 +35,7 @@ msfkicker() {
   echo "$setthreads" >> $msfs/https_version.rc
   echo "run" >> $msfs/https_version.rc
   echo "exit" >> $msfs/https_version.rc
-  $msfc -r $msfs/https_version.rc
+  makeXtermLog "https_version" "$msfc -r $msfs/https_version.rc"
  }
  https_cert() {
   echo "Making https_cert.rc file" 
@@ -25,7 +45,7 @@ msfkicker() {
   echo "set showall true" >> $msfs/https_cert.rc
   echo "run" >> $msfs/https_cert.rc
   echo "exit" >> $msfs/https_cert.rc
-  $msfc -r $msfs/https_cert.rc
+  makeXtermLog "https_cert" "$msfc -r $msfs/https_cert.rc"
  }
  https_version
  https_cert
