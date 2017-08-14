@@ -1,0 +1,37 @@
+
+       Name: Windows Command, Double Reverse TCP Connection (via Perl)
+     Module: payload/cmd/windows/reverse_perl
+   Platform: Windows
+       Arch: cmd
+Needs Admin: No
+ Total size: 133
+       Rank: Normal
+
+Provided by:
+    cazz <bmc@shmoo.com>
+    patrick <patrick@osisecurity.com.au>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LHOST                   yes       The listen address
+LPORT  4444             yes       The listen port
+
+Description:
+  Creates an interactive shell via perl
+
+
+    Name                        Current Setting  Required  Description
+    ----                        ---------------  --------  -----------
+    AutoRunScript                                no        A script to run automatically on session creation.
+    InitialAutoRunScript                         no        An initial script to run on session creation (before AutoRunScript)
+    ReverseAllowProxy           false            yes       Allow reverse tcp even with Proxies specified. Connect back will NOT go through proxy but directly to LHOST
+    ReverseConnectRetries       5                yes       The number of connection attempts to try before exiting the process
+    ReverseListenerBindAddress                   no        The specific IP address to bind to on the local system
+    ReverseListenerBindPort                      no        The port to bind to on the local system if different from LPORT
+    ReverseListenerComm                          no        The specific communication channel to use for this listener
+    ReverseListenerThreaded     false            yes       Handle every connection in a new thread (experimental)
+    VERBOSE                     false            no        Enable detailed status messages
+    WORKSPACE                                    no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

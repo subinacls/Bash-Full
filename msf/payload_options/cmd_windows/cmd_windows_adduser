@@ -1,0 +1,39 @@
+
+       Name: Windows Execute net user /ADD CMD
+     Module: payload/cmd/windows/adduser
+   Platform: Windows
+       Arch: cmd
+Needs Admin: No
+ Total size: 97
+       Rank: Normal
+
+Provided by:
+    hdm <x@hdm.io>
+    scriptjunkie
+    Chris John Riley
+
+Basic options:
+Name    Current Setting  Required  Description
+----    ---------------  --------  -----------
+CUSTOM                   no        Custom group name to be used instead of default
+PASS    Metasploit$1     yes       The password for this user
+USER    metasploit       yes       The username to create
+WMIC    false            yes       Use WMIC on the target to resolve administrators group
+
+Description:
+  Create a new user and add them to local administration group. Note: 
+  The specified password is checked for common complexity requirements 
+  to prevent the target machine rejecting the user for failing to meet 
+  policy requirements. Complexity check: 8-14 chars (1 UPPER, 1 lower, 
+  1 digit/special)
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AutoRunScript                          no        A script to run automatically on session creation.
+    COMPLEXITY            true             yes       Check password for complexity rules
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

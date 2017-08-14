@@ -1,0 +1,32 @@
+
+       Name: Windows Executable Download and Execute (via .vbs)
+     Module: payload/cmd/windows/download_exec_vbs
+   Platform: Windows
+       Arch: cmd
+Needs Admin: No
+ Total size: 316
+       Rank: Normal
+
+Provided by:
+    scriptjunkie
+
+Basic options:
+Name        Current Setting  Required  Description
+----        ---------------  --------  -----------
+DELETE      true             yes       Delete created .vbs after download
+EXT         exe              yes       The extension to give the saved file
+INCLUDECMD  false            yes       Include the cmd /q /c
+URL                          yes       The pre-encoded URL to the executable
+
+Description:
+  Download an EXE from an HTTP(S) URL and execute it
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
