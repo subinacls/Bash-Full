@@ -1,0 +1,16 @@
+php/bind_perl
+php/bind_perl_ipv6
+php/bind_php
+php/bind_php_ipv6
+php/download_exec
+php/exec
+php/meterpreter/bind_tcp
+php/meterpreter/bind_tcp_ipv6
+php/meterpreter/bind_tcp_ipv6_uuid
+php/meterpreter/bind_tcp_uuid
+php/meterpreter/reverse_tcp
+php/meterpreter/reverse_tcp_uuid
+php/meterpreter_reverse_tcp
+php/reverse_perl
+php/reverse_php
+php/shell_findsock
