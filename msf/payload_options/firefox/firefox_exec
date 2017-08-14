@@ -1,0 +1,33 @@
+
+       Name: Firefox XPCOM Execute Command
+     Module: payload/firefox/exec
+   Platform: Firefox
+       Arch: firefox
+Needs Admin: No
+ Total size: 1028
+       Rank: Normal
+
+Provided by:
+    joev <joev@metasploit.com>
+
+Basic options:
+Name     Current Setting   Required  Description
+----     ---------------   --------  -----------
+CMD      touch /tmp/a.txt  yes       The command string to execute
+WSCRIPT  false             yes       On Windows, drop a vbscript to hide the cmd prompt
+
+Description:
+  This module runs a shell command on the target OS withough touching 
+  the disk. On Windows, this command will flash the command prompt 
+  momentarily. This can be avoided by setting WSCRIPT to true, which 
+  drops a jscript "launcher" to disk that hides the prompt.
+
+
+    Name           Current Setting  Required  Description
+    ----           ---------------  --------  -----------
+    JsIdentifiers                   no        Identifiers to preserve for JsObfu
+    JsObfuscate    0                no        Number of times to obfuscate JavaScript
+    VERBOSE        false            no        Enable detailed status messages
+    WORKSPACE                       no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
