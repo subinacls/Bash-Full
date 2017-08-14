@@ -1,0 +1,36 @@
+
+       Name: BSD Execute Command
+     Module: payload/bsd/x86/exec
+   Platform: BSD
+       Arch: x86
+Needs Admin: No
+ Total size: 16
+       Rank: Normal
+
+Provided by:
+    snagg <snagg@openssl.it>
+    argp <argp@census-labs.com>
+    joev <joev@metasploit.com>
+
+Basic options:
+Name  Current Setting  Required  Description
+----  ---------------  --------  -----------
+CMD                    yes       The command string to execute
+
+Description:
+  Execute an arbitrary command
+
+
+    Name              Current Setting  Required  Description
+    ----              ---------------  --------  -----------
+    AppendExit        false            no        Append a stub that executes the exit(0) system call
+    PrependSetgid     false            no        Prepend a stub that executes the setgid(0) system call
+    PrependSetregid   false            no        Prepend a stub that executes the setregid(0, 0) system call
+    PrependSetresgid  false            no        Prepend a stub that executes the setresgid(0, 0, 0) system call
+    PrependSetresuid  false            no        Prepend a stub that executes the setresuid(0, 0, 0) system call
+    PrependSetreuid   false            no        Prepend a stub that executes the setreuid(0, 0) system call
+    PrependSetuid     false            no        Prepend a stub that executes the setuid(0) system call
+    VERBOSE           false            no        Enable detailed status messages
+    WORKSPACE                          no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

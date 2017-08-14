@@ -1,0 +1,36 @@
+
+       Name: BSD Command Shell, Find Port Inline
+     Module: payload/bsd/x86/shell_find_port
+   Platform: BSD
+       Arch: x86
+Needs Admin: No
+ Total size: 60
+       Rank: Normal
+
+Provided by:
+    Ramon de C Valle <rcvalle@metasploit.com>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+CPORT  5633             no        The local client port
+
+Description:
+  Spawn a shell on an established connection
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AppendExit            false            no        Append a stub that executes the exit(0) system call
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    PrependSetgid         false            no        Prepend a stub that executes the setgid(0) system call
+    PrependSetregid       false            no        Prepend a stub that executes the setregid(0, 0) system call
+    PrependSetresgid      false            no        Prepend a stub that executes the setresgid(0, 0, 0) system call
+    PrependSetresuid      false            no        Prepend a stub that executes the setresuid(0, 0, 0) system call
+    PrependSetreuid       false            no        Prepend a stub that executes the setreuid(0, 0) system call
+    PrependSetuid         false            no        Prepend a stub that executes the setuid(0) system call
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
