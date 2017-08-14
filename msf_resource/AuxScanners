@@ -47,6 +47,8 @@ msfkicker() {
   echo "exit" >> $msfs/https_cert.rc
   makeXtermLog "https_cert" "$msfc -r $msfs/https_cert.rc"
  }
+ 
+ ./sorteddomained
  https_version
  https_cert
 }
