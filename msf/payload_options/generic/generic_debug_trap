@@ -1,0 +1,22 @@
+
+       Name: Generic x86 Debug Trap
+     Module: payload/generic/debug_trap
+   Platform: BSD, BSDi, Linux, OSX, Solaris, Windows
+       Arch: x86
+Needs Admin: No
+ Total size: 1
+       Rank: Normal
+
+Provided by:
+    robert <robertmetasploit@gmail.com>
+
+Description:
+  Generate a debug trap in the target process
+
+
+    Name       Current Setting  Required  Description
+    ----       ---------------  --------  -----------
+    VERBOSE    false            no        Enable detailed status messages
+    WORKSPACE                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

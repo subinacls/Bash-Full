@@ -1,0 +1,36 @@
+
+       Name: Generic Command Shell, Reverse TCP Inline
+     Module: payload/generic/shell_reverse_tcp
+   Platform: All
+       Arch: x86, x86_64, x64, mips, mipsle, mipsbe, mips64, mips64le, ppc, ppc64, ppc64le, cbea, cbea64, sparc, sparc64, armle, armbe, aarch64, cmd, php, java, ruby, dalvik, python, nodejs, firefox, zarch
+Needs Admin: No
+ Total size: 0
+       Rank: Normal
+
+Provided by:
+    skape <mmiller@hick.org>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LHOST                   yes       The listen address
+LPORT  4444             yes       The listen port
+
+Description:
+  Connect back to attacker and spawn a command shell
+
+
+    Name                        Current Setting  Required  Description
+    ----                        ---------------  --------  -----------
+    ARCH                                         no        The architecture that is being targeted
+    PLATFORM                                     no        The platform that is being targeted
+    ReverseAllowProxy           false            yes       Allow reverse tcp even with Proxies specified. Connect back will NOT go through proxy but directly to LHOST
+    ReverseConnectRetries       5                yes       The number of connection attempts to try before exiting the process
+    ReverseListenerBindAddress                   no        The specific IP address to bind to on the local system
+    ReverseListenerBindPort                      no        The port to bind to on the local system if different from LPORT
+    ReverseListenerComm                          no        The specific communication channel to use for this listener
+    ReverseListenerThreaded     false            yes       Handle every connection in a new thread (experimental)
+    VERBOSE                     false            no        Enable detailed status messages
+    WORKSPACE                                    no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

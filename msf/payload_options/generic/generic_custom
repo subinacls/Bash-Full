@@ -1,0 +1,31 @@
+
+       Name: Custom Payload
+     Module: payload/generic/custom
+   Platform: All
+       Arch: x86, x86_64, x64, mips, mipsle, mipsbe, mips64, mips64le, ppc, ppc64, ppc64le, cbea, cbea64, sparc, sparc64, armle, armbe, aarch64, cmd, php, java, ruby, dalvik, python, nodejs, firefox, zarch
+Needs Admin: No
+ Total size: 0
+       Rank: Normal
+
+Provided by:
+    scriptjunkie <scriptjunkie@scriptjunkie.us>
+
+Basic options:
+Name         Current Setting  Required  Description
+----         ---------------  --------  -----------
+PAYLOADFILE                   no        The file to read the payload from
+PAYLOADSTR                    no        The string to use as a payload
+
+Description:
+  Use custom string or file as payload. Set either PAYLOADFILE or 
+  PAYLOADSTR.
+
+
+    Name       Current Setting  Required  Description
+    ----       ---------------  --------  -----------
+    ARCH                        no        The architecture that is being targeted
+    PLATFORM                    no        The platform that is being targeted
+    VERBOSE    false            no        Enable detailed status messages
+    WORKSPACE                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

@@ -1,0 +1,30 @@
+
+       Name: Generic Command Shell, Bind TCP Inline
+     Module: payload/generic/shell_bind_tcp
+   Platform: All
+       Arch: x86, x86_64, x64, mips, mipsle, mipsbe, mips64, mips64le, ppc, ppc64, ppc64le, cbea, cbea64, sparc, sparc64, armle, armbe, aarch64, cmd, php, java, ruby, dalvik, python, nodejs, firefox, zarch
+Needs Admin: No
+ Total size: 0
+       Rank: Normal
+
+Provided by:
+    skape <mmiller@hick.org>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LPORT  4444             yes       The listen port
+RHOST                   no        The target address
+
+Description:
+  Listen for a connection and spawn a command shell
+
+
+    Name       Current Setting  Required  Description
+    ----       ---------------  --------  -----------
+    ARCH                        no        The architecture that is being targeted
+    PLATFORM                    no        The platform that is being targeted
+    VERBOSE    false            no        Enable detailed status messages
+    WORKSPACE                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
