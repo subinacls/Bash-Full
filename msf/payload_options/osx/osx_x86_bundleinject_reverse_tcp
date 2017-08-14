@@ -1,0 +1,44 @@
+
+       Name: Mac OS X Inject Mach-O Bundle, Reverse TCP Stager
+     Module: payload/osx/x86/bundleinject/reverse_tcp
+   Platform: OSX
+       Arch: x86
+Needs Admin: No
+ Total size: 123
+       Rank: Normal
+
+Provided by:
+    ddz <ddz@theta44.org>
+
+Basic options:
+Name    Current Setting  Required  Description
+----    ---------------  --------  -----------
+BUNDLE                   yes       The local path to the Mach-O bundle to upload
+LHOST                    yes       The listen address
+LPORT   4444             yes       The listen port
+
+Description:
+  Inject a custom Mach-O bundle into the exploited process. Connect, 
+  read length, read buffer, execute
+
+
+    Name                        Current Setting  Required  Description
+    ----                        ---------------  --------  -----------
+    EnableStageEncoding         false            no        Encode the second stage payload
+    PayloadUUIDName                              no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                               no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                              no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking         false            yes       Whether or not to automatically register generated UUIDs
+    ReverseAllowProxy           false            yes       Allow reverse tcp even with Proxies specified. Connect back will NOT go through proxy but directly to LHOST
+    ReverseConnectRetries       5                yes       The number of connection attempts to try before exiting the process
+    ReverseListenerBindAddress                   no        The specific IP address to bind to on the local system
+    ReverseListenerBindPort                      no        The port to bind to on the local system if different from LPORT
+    ReverseListenerComm                          no        The specific communication channel to use for this listener
+    ReverseListenerThreaded     false            yes       Handle every connection in a new thread (experimental)
+    StageEncoder                                 no        Encoder to use if EnableStageEncoding is set
+    StageEncoderSaveRegisters                    no        Additional registers to preserve in the staged payload if EnableStageEncoding is set
+    StageEncodingFallback       true             no        Fallback to no encoding if the selected StageEncoder is not compatible
+    VERBOSE                     false            no        Enable detailed status messages
+    WORKSPACE                                    no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

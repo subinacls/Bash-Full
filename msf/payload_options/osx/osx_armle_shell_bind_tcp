@@ -1,0 +1,35 @@
+
+       Name: Apple iOS Command Shell, Bind TCP Inline
+     Module: payload/osx/armle/shell_bind_tcp
+   Platform: OSX
+       Arch: armle
+Needs Admin: No
+ Total size: 200
+       Rank: Normal
+
+Provided by:
+    hdm <x@hdm.io>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LPORT  4444             yes       The listen port
+RHOST                   no        The target address
+
+Description:
+  Listen for a connection and spawn a command shell
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AppendExit            false            no        Append a stub that executes the exit(0) system call
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    PrependSetgid         false            no        Prepend a stub that executes the setgid(0) system call
+    PrependSetregid       false            no        Prepend a stub that executes the setregid(0, 0) system call
+    PrependSetreuid       false            no        Prepend a stub that executes the setreuid(0, 0) system call
+    PrependSetuid         false            no        Prepend a stub that executes the setuid(0) system call
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

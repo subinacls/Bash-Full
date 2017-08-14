@@ -1,0 +1,36 @@
+
+       Name: OS X x64 Shell Bind TCP
+     Module: payload/osx/x64/shell_bind_tcp
+   Platform: OSX
+       Arch: x64
+Needs Admin: No
+ Total size: 136
+       Rank: Normal
+
+Provided by:
+    nemo <nemo@felinemenace.org>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+CMD    /bin/sh          yes       The command string to execute
+LPORT  4444             yes       The listen port
+RHOST                   no        The target address
+
+Description:
+  Bind an arbitrary command to an arbitrary port
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AppendExit            false            no        Append a stub that executes the exit(0) system call
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    PrependSetgid         false            no        Prepend a stub that executes the setgid(0) system call
+    PrependSetregid       false            no        Prepend a stub that executes the setregid(0, 0) system call
+    PrependSetreuid       false            no        Prepend a stub that executes the setreuid(0, 0) system call
+    PrependSetuid         false            no        Prepend a stub that executes the setuid(0) system call
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

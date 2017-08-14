@@ -1,0 +1,33 @@
+
+       Name: OS X Command Shell, Find Tag Stager
+     Module: payload/osx/ppc/shell/find_tag
+   Platform: OSX
+       Arch: ppc
+Needs Admin: No
+ Total size: 76
+       Rank: Normal
+
+Provided by:
+    hdm <x@hdm.io>
+
+Description:
+  Spawn a command shell (staged). Use an established connection
+
+
+    Name                       Current Setting  Required  Description
+    ----                       ---------------  --------  -----------
+    AutoRunScript                               no        A script to run automatically on session creation.
+    EnableStageEncoding        false            no        Encode the second stage payload
+    InitialAutoRunScript                        no        An initial script to run on session creation (before AutoRunScript)
+    PayloadUUIDName                             no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                              no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                             no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking        false            yes       Whether or not to automatically register generated UUIDs
+    StageEncoder                                no        Encoder to use if EnableStageEncoding is set
+    StageEncoderSaveRegisters                   no        Additional registers to preserve in the staged payload if EnableStageEncoding is set
+    StageEncodingFallback      true             no        Fallback to no encoding if the selected StageEncoder is not compatible
+    TAG                        OaTK             yes       The four byte tag to signify the connection.
+    VERBOSE                    false            no        Enable detailed status messages
+    WORKSPACE                                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
