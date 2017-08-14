@@ -1,0 +1,24 @@
+
+       Name: Unix Command, Interact with Established Connection
+     Module: payload/cmd/unix/interact
+   Platform: Unix
+       Arch: cmd
+Needs Admin: No
+ Total size: 0
+       Rank: Normal
+
+Provided by:
+    hdm <x@hdm.io>
+
+Description:
+  Interacts with a shell on an established socket connection
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

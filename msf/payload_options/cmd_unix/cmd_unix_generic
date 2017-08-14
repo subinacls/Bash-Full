@@ -1,0 +1,29 @@
+
+       Name: Unix Command, Generic Command Execution
+     Module: payload/cmd/unix/generic
+   Platform: Unix
+       Arch: cmd
+Needs Admin: No
+ Total size: 0
+       Rank: Normal
+
+Provided by:
+    hdm <x@hdm.io>
+
+Basic options:
+Name  Current Setting  Required  Description
+----  ---------------  --------  -----------
+CMD                    yes       The command string to execute
+
+Description:
+  Executes the supplied command
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

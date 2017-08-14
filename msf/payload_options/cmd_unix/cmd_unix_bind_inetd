@@ -1,0 +1,30 @@
+
+       Name: Unix Command Shell, Bind TCP (inetd)
+     Module: payload/cmd/unix/bind_inetd
+   Platform: Unix
+       Arch: cmd
+Needs Admin: Yes
+ Total size: 487
+       Rank: Normal
+
+Provided by:
+    hdm <x@hdm.io>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LPORT  4444             yes       The listen port
+RHOST                   no        The target address
+
+Description:
+  Listen for a connection and spawn a command shell (persistent)
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

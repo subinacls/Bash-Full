@@ -1,0 +1,37 @@
+
+       Name: Unix Command Shell, Double Reverse TCP SSL (telnet)
+     Module: payload/cmd/unix/reverse_ssl_double_telnet
+   Platform: Unix
+       Arch: cmd
+Needs Admin: No
+ Total size: 106
+       Rank: Normal
+
+Provided by:
+    hdm <x@hdm.io>
+    RageLtMan
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LHOST                   yes       The listen address
+LPORT  4444             yes       The listen port
+
+Description:
+  Creates an interactive shell through two inbound connections, 
+  encrypts using SSL via "-z" option
+
+
+    Name                        Current Setting  Required  Description
+    ----                        ---------------  --------  -----------
+    AutoRunScript                                no        A script to run automatically on session creation.
+    HandlerSSLCert                               no        Path to a SSL certificate in unified PEM format
+    InitialAutoRunScript                         no        An initial script to run on session creation (before AutoRunScript)
+    ReverseAllowProxy           false            yes       Allow reverse tcp even with Proxies specified. Connect back will NOT go through proxy but directly to LHOST
+    ReverseListenerBindAddress                   no        The specific IP address to bind to on the local system
+    ReverseListenerBindPort                      no        The port to bind to on the local system if different from LPORT
+    ReverseListenerComm                          no        The specific communication channel to use for this listener
+    VERBOSE                     false            no        Enable detailed status messages
+    WORKSPACE                                    no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

@@ -1,0 +1,31 @@
+
+       Name: Unix Command Shell, Bind TCP (via AWK)
+     Module: payload/cmd/unix/bind_awk
+   Platform: Unix
+       Arch: cmd
+Needs Admin: No
+ Total size: 96
+       Rank: Normal
+
+Provided by:
+    espreto <robertoespreto@gmail.com>
+    Ulisses Castro <uss.thebug@gmail.com>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LPORT  4444             yes       The listen port
+RHOST                   no        The target address
+
+Description:
+  Listen for a connection and spawn a command shell via GNU AWK
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

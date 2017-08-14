@@ -1,0 +1,37 @@
+
+       Name: Unix Command Shell, Reverse TCP SSL (via Ruby)
+     Module: payload/cmd/unix/reverse_ruby_ssl
+   Platform: Unix
+       Arch: cmd
+Needs Admin: No
+ Total size: 170
+       Rank: Normal
+
+Provided by:
+    RageLtMan
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LHOST                   yes       The listen address
+LPORT  4444             yes       The listen port
+
+Description:
+  Connect back and create a command shell via Ruby, uses SSL
+
+
+    Name                        Current Setting  Required  Description
+    ----                        ---------------  --------  -----------
+    AutoRunScript                                no        A script to run automatically on session creation.
+    HandlerSSLCert                               no        Path to a SSL certificate in unified PEM format
+    InitialAutoRunScript                         no        An initial script to run on session creation (before AutoRunScript)
+    ReverseAllowProxy           false            yes       Allow reverse tcp even with Proxies specified. Connect back will NOT go through proxy but directly to LHOST
+    ReverseConnectRetries       5                yes       The number of connection attempts to try before exiting the process
+    ReverseListenerBindAddress                   no        The specific IP address to bind to on the local system
+    ReverseListenerBindPort                      no        The port to bind to on the local system if different from LPORT
+    ReverseListenerComm                          no        The specific communication channel to use for this listener
+    ReverseListenerThreaded     false            yes       Handle every connection in a new thread (experimental)
+    VERBOSE                     false            no        Enable detailed status messages
+    WORKSPACE                                    no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
