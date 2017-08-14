@@ -47,8 +47,40 @@ msfkicker() {
   echo "exit" >> $msfs/https_cert.rc
   makeXtermLog "https_cert" "$msfc -r $msfs/https_cert.rc"
  }
- 
- ./sorteddomained
+ make_email_scraper() {
+   if [ ! -f "$1" ]; 
+     then
+       d=$1;
+       ofile="`echo $d`_outfile";
+       single_email_scrape() {
+         echo "Making email_scrape.rc file" ;
+         echo "use auxiliary/gather/search_email_collector" > $msfs/email_scrape.rc;
+         echo "set domain $d" >> $msfs/email_scrape.rc;
+         echo "set outfile $ofile" >> $msfs/email_scrape.rc;
+         echo "run" >> $msfs/email_scrape.rc;
+         echo "exit" >> $msfs/email_scrape.rc;
+         makeXtermLog "email_scraper" "$msfc -r $msfs/email_scrape.rc";
+       };
+       single_email_scrape $1;
+     else
+       b=$1;
+       bulk_email_scrape() {
+         echo "Making bulk_email_scrape.rc file";
+         echo "use auxiliary/gather/search_email_collector" > $msfs/email_scrape.rc;
+         for x in $(cat $b);
+           do
+             ofile="`echo $x`_outfile";
+             echo "set domain $x" >> $msfs/email_scrape.rc;
+             echo "set outfile $ofile" >> $msfs/email_scrape.rc;
+             echo "run" >> $msfs/email_scrape.rc;
+         done;
+         echo "exit" >> $msfs/email_scrape.rc;
+         makeXtermLog "bulk_email_scraper" "$msfc -r $msfs/email_scrape.rc";
+       };
+       bulk_email_scrape $1;
+     fi;
+   } 
+ make_email_scraper ./sorteddomained
  https_version
  https_cert
 }
