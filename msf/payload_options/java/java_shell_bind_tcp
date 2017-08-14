@@ -1,0 +1,42 @@
+
+       Name: Command Shell, Java Bind TCP Stager
+     Module: payload/java/shell/bind_tcp
+   Platform: Java
+       Arch: java
+Needs Admin: No
+ Total size: 5105
+       Rank: Normal
+
+Provided by:
+    mihi
+    egypt <egypt@metasploit.com>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LPORT  4444             yes       The listen port
+RHOST                   no        The target address
+
+Description:
+  Spawn a piped command shell (cmd.exe on Windows, /bin/sh everywhere 
+  else). Listen for a connection
+
+
+    Name                       Current Setting  Required  Description
+    ----                       ---------------  --------  -----------
+    AESPassword                                 no        Password for encrypting communication
+    AutoRunScript                               no        A script to run automatically on session creation.
+    EnableStageEncoding        false            no        Encode the second stage payload
+    InitialAutoRunScript                        no        An initial script to run on session creation (before AutoRunScript)
+    PayloadUUIDName                             no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                              no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                             no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking        false            yes       Whether or not to automatically register generated UUIDs
+    Spawn                      2                yes       Number of subprocesses to spawn
+    StageEncoder                                no        Encoder to use if EnableStageEncoding is set
+    StageEncoderSaveRegisters                   no        Additional registers to preserve in the staged payload if EnableStageEncoding is set
+    StageEncodingFallback      true             no        Fallback to no encoding if the selected StageEncoder is not compatible
+    VERBOSE                    false            no        Enable detailed status messages
+    WORKSPACE                                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
