@@ -1,0 +1,22 @@
+
+       Name: Unix TTY, Interact with Established Connection
+     Module: payload/tty/unix/interact
+   Platform: Unix
+       Arch: tty
+Needs Admin: No
+ Total size: 0
+       Rank: Normal
+
+Provided by:
+    hdm <x@hdm.io>
+
+Description:
+  Interacts with a TTY on an established socket connection
+
+
+    Name       Current Setting  Required  Description
+    ----       ---------------  --------  -----------
+    VERBOSE    false            no        Enable detailed status messages
+    WORKSPACE                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
