@@ -1,0 +1,6 @@
+solaris/sparc/shell_bind_tcp
+solaris/sparc/shell_find_port
+solaris/sparc/shell_reverse_tcp
+solaris/x86/shell_bind_tcp
+solaris/x86/shell_find_port
+solaris/x86/shell_reverse_tcp
