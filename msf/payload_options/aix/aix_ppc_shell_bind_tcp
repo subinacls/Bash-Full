@@ -1,0 +1,31 @@
+
+       Name: AIX Command Shell, Bind TCP Inline
+     Module: payload/aix/ppc/shell_bind_tcp
+   Platform: AIX
+       Arch: ppc
+Needs Admin: No
+ Total size: 264
+       Rank: Normal
+
+Provided by:
+    Ramon de C Valle <rcvalle@metasploit.com>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+AIX    6.1.4            yes       IBM AIX Version
+LPORT  4444             yes       The listen port
+RHOST                   no        The target address
+
+Description:
+  Listen for a connection and spawn a command shell
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

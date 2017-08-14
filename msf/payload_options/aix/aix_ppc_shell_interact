@@ -1,0 +1,29 @@
+
+       Name: AIX execve Shell for inetd
+     Module: payload/aix/ppc/shell_interact
+   Platform: AIX
+       Arch: ppc
+Needs Admin: No
+ Total size: 56
+       Rank: Normal
+
+Provided by:
+    jduck <jduck@metasploit.com>
+
+Basic options:
+Name  Current Setting  Required  Description
+----  ---------------  --------  -----------
+AIX   6.1.4            yes       IBM AIX Version
+
+Description:
+  Simply execve /bin/sh (for inetd programs)
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
