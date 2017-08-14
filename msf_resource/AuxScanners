@@ -20,8 +20,8 @@ msfkicker() {
      -e "$2"; 
  }
  setvars() {
-  msfc="/usr/share/metasploit-framework/msfconsole"
-  msfs="/usr/share/metasploit-framework/scripts" 
+  msfc=`locate msfconsole | grep "metasploit"`
+  msfs=`locate msfconsole | grep "metasploit" | sed -r "s/msfconsole/scripts/g"` 
   setrhosts="setg rhosts file:$1"
   setthreads="setg threads 10"
  }
