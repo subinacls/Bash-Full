@@ -1,0 +1,52 @@
+
+       Name: Windows Upload/Execute, Reverse All-Port TCP Stager
+     Module: payload/windows/upexec/reverse_tcp_allports
+   Platform: Windows
+       Arch: x86
+Needs Admin: No
+ Total size: 282
+       Rank: Normal
+
+Provided by:
+    vlad902 <vlad902@gmail.com>
+    sf <stephen_fewer@harmonysecurity.com>
+    hdm <x@hdm.io>
+    skape <mmiller@hick.org>
+
+Basic options:
+Name      Current Setting  Required  Description
+----      ---------------  --------  -----------
+EXITFUNC  process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+LHOST                      yes       The listen address
+LPORT     1                yes       The starting port number to connect back on
+PEXEC                      yes       Full path to the file to upload and execute
+
+Description:
+  Uploads an executable and runs it (staged). Try to connect back to 
+  the attacker, on all possible ports (1-65535, slowly)
+
+
+    Name                        Current Setting  Required  Description
+    ----                        ---------------  --------  -----------
+    AutoRunScript                                no        A script to run automatically on session creation.
+    EnableStageEncoding         false            no        Encode the second stage payload
+    InitialAutoRunScript                         no        An initial script to run on session creation (before AutoRunScript)
+    PayloadUUIDName                              no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                               no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                              no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking         false            yes       Whether or not to automatically register generated UUIDs
+    PrependMigrate              false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                           no        Process to spawn and run shellcode in
+    ReverseAllowProxy           false            yes       Allow reverse tcp even with Proxies specified. Connect back will NOT go through proxy but directly to LHOST
+    ReverseConnectRetries       5                yes       The number of connection attempts to try before exiting the process
+    ReverseListenerBindAddress                   no        The specific IP address to bind to on the local system
+    ReverseListenerBindPort                      no        The port to bind to on the local system if different from LPORT
+    ReverseListenerComm                          no        The specific communication channel to use for this listener
+    ReverseListenerThreaded     false            yes       Handle every connection in a new thread (experimental)
+    StageEncoder                                 no        Encoder to use if EnableStageEncoding is set
+    StageEncoderSaveRegisters                    no        Additional registers to preserve in the staged payload if EnableStageEncoding is set
+    StageEncodingFallback       true             no        Fallback to no encoding if the selected StageEncoder is not compatible
+    VERBOSE                     false            no        Enable detailed status messages
+    WORKSPACE                                    no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

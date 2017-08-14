@@ -1,0 +1,41 @@
+
+       Name: Windows Interactive Powershell Session, Reverse TCP
+     Module: payload/windows/x64/powershell_reverse_tcp
+   Platform: Windows
+       Arch: x64
+Needs Admin: No
+ Total size: 1786
+       Rank: Normal
+
+Provided by:
+    Ben Turner
+    Dave Hardy
+    sf <stephen_fewer@harmonysecurity.com>
+
+Basic options:
+Name          Current Setting  Required  Description
+----          ---------------  --------  -----------
+EXITFUNC      process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+LHOST                          yes       The listen address
+LOAD_MODULES                   no        A list of powershell modules seperated by a comma to download over the web
+LPORT         4444             yes       The listen port
+
+Description:
+  Listen for a connection and spawn an interactive powershell session
+
+
+    Name                        Current Setting  Required  Description
+    ----                        ---------------  --------  -----------
+    HandlerSSLCert                               no        Path to a SSL certificate in unified PEM format
+    PrependMigrate              false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                           no        Process to spawn and run shellcode in
+    ReverseAllowProxy           false            yes       Allow reverse tcp even with Proxies specified. Connect back will NOT go through proxy but directly to LHOST
+    ReverseConnectRetries       5                yes       The number of connection attempts to try before exiting the process
+    ReverseListenerBindAddress                   no        The specific IP address to bind to on the local system
+    ReverseListenerBindPort                      no        The port to bind to on the local system if different from LPORT
+    ReverseListenerComm                          no        The specific communication channel to use for this listener
+    ReverseListenerThreaded     false            yes       Handle every connection in a new thread (experimental)
+    VERBOSE                     false            no        Enable detailed status messages
+    WORKSPACE                                    no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

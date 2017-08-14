@@ -1,0 +1,48 @@
+
+       Name: VNC Server (Reflective Injection), Bind TCP Stager with UUID Support (Windows x86)
+     Module: payload/windows/vncinject/bind_tcp_uuid
+   Platform: Windows
+       Arch: x86
+Needs Admin: No
+ Total size: 318
+       Rank: Normal
+
+Provided by:
+    sf <stephen_fewer@harmonysecurity.com>
+    hdm <x@hdm.io>
+    OJ Reeves
+
+Basic options:
+Name                  Current Setting  Required  Description
+----                  ---------------  --------  -----------
+AUTOVNC               true             yes       Automatically launch VNC viewer if present
+DisableCourtesyShell  true             no        Disables the Metasploit Courtesy shell
+EXITFUNC              process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+LPORT                 4444             yes       The listen port
+RHOST                                  no        The target address
+VNCHOST               127.0.0.1        yes       The local host to use for the VNC proxy
+VNCPORT               5900             yes       The local port to use for the VNC proxy
+ViewOnly              true             no        Runs the viewer in view mode
+
+Description:
+  Inject a VNC Dll via a reflective loader (staged). Listen for a 
+  connection with UUID Support (Windows x86)
+
+
+    Name                       Current Setting  Required  Description
+    ----                       ---------------  --------  -----------
+    DisableSessionTracking     false            no        Disables the VNC payload from following the active session as users log in an out of the input desktop
+    EnableStageEncoding        false            no        Encode the second stage payload
+    PayloadUUIDName                             no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                              no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                             no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking        false            yes       Whether or not to automatically register generated UUIDs
+    PrependMigrate             false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                          no        Process to spawn and run shellcode in
+    StageEncoder                                no        Encoder to use if EnableStageEncoding is set
+    StageEncoderSaveRegisters                   no        Additional registers to preserve in the staged payload if EnableStageEncoding is set
+    StageEncodingFallback      true             no        Fallback to no encoding if the selected StageEncoder is not compatible
+    VERBOSE                    false            no        Enable detailed status messages
+    WORKSPACE                                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

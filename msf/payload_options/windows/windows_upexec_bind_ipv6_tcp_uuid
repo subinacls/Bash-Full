@@ -1,0 +1,47 @@
+
+       Name: Windows Upload/Execute, Bind IPv6 TCP Stager with UUID Support (Windows x86)
+     Module: payload/windows/upexec/bind_ipv6_tcp_uuid
+   Platform: Windows
+       Arch: x86
+Needs Admin: No
+ Total size: 318
+       Rank: Normal
+
+Provided by:
+    vlad902 <vlad902@gmail.com>
+    sf <stephen_fewer@harmonysecurity.com>
+    hdm <x@hdm.io>
+    skape <mmiller@hick.org>
+    OJ Reeves
+
+Basic options:
+Name      Current Setting  Required  Description
+----      ---------------  --------  -----------
+EXITFUNC  process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+LPORT     4444             yes       The listen port
+PEXEC                      yes       Full path to the file to upload and execute
+RHOST                      no        The target address
+
+Description:
+  Uploads an executable and runs it (staged). Listen for an IPv6 
+  connection with UUID Support (Windows x86)
+
+
+    Name                       Current Setting  Required  Description
+    ----                       ---------------  --------  -----------
+    AutoRunScript                               no        A script to run automatically on session creation.
+    EnableStageEncoding        false            no        Encode the second stage payload
+    InitialAutoRunScript                        no        An initial script to run on session creation (before AutoRunScript)
+    PayloadUUIDName                             no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                              no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                             no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking        false            yes       Whether or not to automatically register generated UUIDs
+    PrependMigrate             false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                          no        Process to spawn and run shellcode in
+    StageEncoder                                no        Encoder to use if EnableStageEncoding is set
+    StageEncoderSaveRegisters                   no        Additional registers to preserve in the staged payload if EnableStageEncoding is set
+    StageEncodingFallback      true             no        Fallback to no encoding if the selected StageEncoder is not compatible
+    VERBOSE                    false            no        Enable detailed status messages
+    WORKSPACE                                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

@@ -1,0 +1,30 @@
+
+       Name: Windows x64 Execute Command
+     Module: payload/windows/x64/exec
+   Platform: Windows
+       Arch: x64
+Needs Admin: No
+ Total size: 268
+       Rank: Normal
+
+Provided by:
+    sf <stephen_fewer@harmonysecurity.com>
+
+Basic options:
+Name      Current Setting  Required  Description
+----      ---------------  --------  -----------
+CMD                        yes       The command string to execute
+EXITFUNC  process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+
+Description:
+  Execute an arbitrary command (Windows x64)
+
+
+    Name                Current Setting  Required  Description
+    ----                ---------------  --------  -----------
+    PrependMigrate      false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                   no        Process to spawn and run shellcode in
+    VERBOSE             false            no        Enable detailed status messages
+    WORKSPACE                            no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
