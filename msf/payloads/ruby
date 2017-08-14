@@ -1,0 +1,4 @@
+ruby/shell_bind_tcp
+ruby/shell_bind_tcp_ipv6
+ruby/shell_reverse_tcp
+ruby/shell_reverse_tcp_ssl
