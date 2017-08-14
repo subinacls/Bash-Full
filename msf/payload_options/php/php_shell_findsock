@@ -1,0 +1,32 @@
+
+       Name: PHP Command Shell, Find Sock
+     Module: payload/php/shell_findsock
+   Platform: PHP
+       Arch: php
+Needs Admin: No
+ Total size: 2222
+       Rank: Normal
+
+Provided by:
+    egypt <egypt@metasploit.com>
+
+Description:
+  Spawn a shell on the established connection to the webserver. 
+  Unfortunately, this payload can leave conspicuous evil-looking 
+  entries in the apache error logs, so it is probably a good idea to 
+  use a bind or reverse shell unless firewalls prevent them from 
+  working. The issue this payload takes advantage of (CLOEXEC flag not 
+  set on sockets) appears to have been patched on the Ubuntu version 
+  of Apache and may not work on other Debian-based distributions. Only 
+  tested on Apache but it might work on other web servers that leak 
+  file descriptors to child processes.
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

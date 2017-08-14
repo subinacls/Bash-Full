@@ -1,0 +1,27 @@
+
+       Name: PHP Executable Download and Execute
+     Module: payload/php/download_exec
+   Platform: PHP
+       Arch: php
+Needs Admin: No
+ Total size: 2658
+       Rank: Normal
+
+Provided by:
+    egypt <egypt@metasploit.com>
+
+Basic options:
+Name  Current Setting  Required  Description
+----  ---------------  --------  -----------
+URL                    yes       The pre-encoded URL to the executable
+
+Description:
+  Download an EXE from an HTTP URL and execute it
+
+
+    Name       Current Setting  Required  Description
+    ----       ---------------  --------  -----------
+    VERBOSE    false            no        Enable detailed status messages
+    WORKSPACE                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

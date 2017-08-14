@@ -1,0 +1,50 @@
+
+       Name: PHP Meterpreter, Bind TCP Stager with UUID Support
+     Module: payload/php/meterpreter/bind_tcp_uuid
+   Platform: PHP
+       Arch: php
+Needs Admin: No
+ Total size: 1362
+       Rank: Normal
+
+Provided by:
+    egypt <egypt@metasploit.com>
+    OJ Reeves
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LPORT  4444             yes       The listen port
+RHOST                   no        The target address
+
+Description:
+  Run a meterpreter server in PHP. Listen for a connection with UUID 
+  Support
+
+
+    Name                         Current Setting  Required  Description
+    ----                         ---------------  --------  -----------
+    AutoLoadStdapi               true             yes       Automatically load the Stdapi extension
+    AutoRunScript                                 no        A script to run automatically on session creation.
+    AutoSystemInfo               true             yes       Automatically capture system information on initialization.
+    AutoVerifySession            true             yes       Automatically verify and drop invalid sessions
+    AutoVerifySessionTimeout     30               no        Timeout period to wait for session validation to occur, in seconds
+    EnableStageEncoding          false            no        Encode the second stage payload
+    EnableUnicodeEncoding        false            yes       Automatically encode UTF-8 strings as hexadecimal
+    HandlerSSLCert                                no        Path to a SSL certificate in unified PEM format, ignored for HTTP transports
+    InitialAutoRunScript                          no        An initial script to run on session creation (before AutoRunScript)
+    PayloadUUIDName                               no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                                no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                               no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking          false            yes       Whether or not to automatically register generated UUIDs
+    SessionCommunicationTimeout  300              no        The number of seconds of no activity before this session should be killed
+    SessionExpirationTimeout     604800           no        The number of seconds before this session should be forcibly shut down
+    SessionRetryTotal            3600             no        Number of seconds try reconnecting for on network failure
+    SessionRetryWait             10               no        Number of seconds to wait between reconnect attempts
+    StageEncoder                                  no        Encoder to use if EnableStageEncoding is set
+    StageEncoderSaveRegisters                     no        Additional registers to preserve in the staged payload if EnableStageEncoding is set
+    StageEncodingFallback        true             no        Fallback to no encoding if the selected StageEncoder is not compatible
+    VERBOSE                      false            no        Enable detailed status messages
+    WORKSPACE                                     no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
