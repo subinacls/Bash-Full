@@ -1,0 +1,68 @@
+showpayloads() { 
+  msfvenom --list payloads |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==============================" |\
+  grep -v Payloads |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$";
+}
+
+showencoders() { 
+  msfvenom --list encoders |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==================" |\
+  grep -v Encoders |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$";
+}
+
+shownops() { 
+  msfvenom --list nops |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==================" |\
+  grep -v NOPs |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$";
+}
+
+searchpayloads() { 
+  msfvenom --list payloads |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==============================" |\
+  grep -v Payloads |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$" |\
+  grep "$1";
+}
+
+searchencoders() { 
+  msfvenom --list encoders |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==================" |\
+  grep -v Encoders |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$" |\
+  grep "$1";
+}
+
+serchnops() { 
+  msfvenom --list nops |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==================" |\
+  grep -v NOPs |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$" |\
+  grep "$1";
+}
