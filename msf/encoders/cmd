@@ -1,0 +1,6 @@
+cmd/echo
+cmd/generic_sh
+cmd/ifs
+cmd/perl
+cmd/powershell_base64
+cmd/printf_php_mq
