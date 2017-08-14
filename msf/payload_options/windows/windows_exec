@@ -1,0 +1,31 @@
+
+       Name: Windows Execute Command
+     Module: payload/windows/exec
+   Platform: Windows
+       Arch: x86
+Needs Admin: No
+ Total size: 185
+       Rank: Normal
+
+Provided by:
+    vlad902 <vlad902@gmail.com>
+    sf <stephen_fewer@harmonysecurity.com>
+
+Basic options:
+Name      Current Setting  Required  Description
+----      ---------------  --------  -----------
+CMD                        yes       The command string to execute
+EXITFUNC  process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+
+Description:
+  Execute an arbitrary command
+
+
+    Name                Current Setting  Required  Description
+    ----                ---------------  --------  -----------
+    PrependMigrate      false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                   no        Process to spawn and run shellcode in
+    VERBOSE             false            no        Enable detailed status messages
+    WORKSPACE                            no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

@@ -1,0 +1,34 @@
+
+       Name: Windows Drive Formatter
+     Module: payload/windows/format_all_drives
+   Platform: Windows
+       Arch: x86
+Needs Admin: Yes
+ Total size: 393
+       Rank: Manual
+
+Provided by:
+    Ashfaq Ansari <ashfaq_ansari1989@hotmail.com>
+    Ruei-Min Jiang <mike820324@gmail.com>
+
+Basic options:
+Name         Current Setting  Required  Description
+----         ---------------  --------  -----------
+VOLUMELABEL  PwNeD            no        Set the volume label
+
+Description:
+  This payload formats all mounted disks in Windows (aka 
+  ShellcodeOfDeath). After formatting, this payload sets the volume 
+  label to the string specified in the VOLUMELABEL option. If the code 
+  is unable to access a drive for any reason, it skips the drive and 
+  proceeds to the next volume.
+
+
+    Name                Current Setting  Required  Description
+    ----                ---------------  --------  -----------
+    PrependMigrate      false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                   no        Process to spawn and run shellcode in
+    VERBOSE             false            no        Enable detailed status messages
+    WORKSPACE                            no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

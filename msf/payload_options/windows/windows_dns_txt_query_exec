@@ -1,0 +1,30 @@
+
+       Name: DNS TXT Record Payload Download and Execution
+     Module: payload/windows/dns_txt_query_exec
+   Platform: Windows
+       Arch: x86
+Needs Admin: No
+ Total size: 275
+       Rank: Normal
+
+Provided by:
+    corelanc0d3r <peter.ve@corelan.be>
+
+Basic options:
+Name     Current Setting  Required  Description
+----     ---------------  --------  -----------
+DNSZONE                   yes       The DNS zone to query
+
+Description:
+  Performs a TXT query against a series of DNS record(s) and executes 
+  the returned payload
+
+
+    Name                Current Setting  Required  Description
+    ----                ---------------  --------  -----------
+    PrependMigrate      false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                   no        Process to spawn and run shellcode in
+    VERBOSE             false            no        Enable detailed status messages
+    WORKSPACE                            no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

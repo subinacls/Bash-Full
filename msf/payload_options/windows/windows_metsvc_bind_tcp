@@ -1,0 +1,43 @@
+
+       Name: Windows Meterpreter Service, Bind TCP
+     Module: payload/windows/metsvc_bind_tcp
+   Platform: Windows
+       Arch: x86
+Needs Admin: No
+ Total size: 0
+       Rank: Normal
+
+Provided by:
+    hdm <x@hdm.io>
+
+Basic options:
+Name      Current Setting  Required  Description
+----      ---------------  --------  -----------
+EXITFUNC  process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+LPORT     4444             yes       The listen port
+RHOST                      no        The target address
+
+Description:
+  Stub payload for interacting with a Meterpreter Service
+
+
+    Name                         Current Setting  Required  Description
+    ----                         ---------------  --------  -----------
+    AutoLoadStdapi               true             yes       Automatically load the Stdapi extension
+    AutoRunScript                                 no        A script to run automatically on session creation.
+    AutoSystemInfo               true             yes       Automatically capture system information on initialization.
+    AutoVerifySession            true             yes       Automatically verify and drop invalid sessions
+    AutoVerifySessionTimeout     30               no        Timeout period to wait for session validation to occur, in seconds
+    EnableUnicodeEncoding        false            yes       Automatically encode UTF-8 strings as hexadecimal
+    HandlerSSLCert                                no        Path to a SSL certificate in unified PEM format, ignored for HTTP transports
+    InitialAutoRunScript                          no        An initial script to run on session creation (before AutoRunScript)
+    PrependMigrate               false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                            no        Process to spawn and run shellcode in
+    SessionCommunicationTimeout  300              no        The number of seconds of no activity before this session should be killed
+    SessionExpirationTimeout     604800           no        The number of seconds before this session should be forcibly shut down
+    SessionRetryTotal            3600             no        Number of seconds try reconnecting for on network failure
+    SessionRetryWait             10               no        Number of seconds to wait between reconnect attempts
+    VERBOSE                      false            no        Enable detailed status messages
+    WORKSPACE                                     no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

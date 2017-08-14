@@ -1,0 +1,40 @@
+
+       Name: Reflective DLL Injection, Find Tag Ordinal Stager
+     Module: payload/windows/dllinject/find_tag
+   Platform: Windows
+       Arch: x86
+Needs Admin: No
+ Total size: 92
+       Rank: Normal
+
+Provided by:
+    sf <stephen_fewer@harmonysecurity.com>
+    skape <mmiller@hick.org>
+
+Basic options:
+Name      Current Setting  Required  Description
+----      ---------------  --------  -----------
+DLL                        yes       The local path to the Reflective DLL to upload
+EXITFUNC  process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+
+Description:
+  Inject a DLL via a reflective loader. Use an established connection
+
+
+    Name                       Current Setting  Required  Description
+    ----                       ---------------  --------  -----------
+    EnableStageEncoding        false            no        Encode the second stage payload
+    PayloadUUIDName                             no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                              no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                             no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking        false            yes       Whether or not to automatically register generated UUIDs
+    PrependMigrate             false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                          no        Process to spawn and run shellcode in
+    StageEncoder                                no        Encoder to use if EnableStageEncoding is set
+    StageEncoderSaveRegisters                   no        Additional registers to preserve in the staged payload if EnableStageEncoding is set
+    StageEncodingFallback      true             no        Fallback to no encoding if the selected StageEncoder is not compatible
+    TAG                        PIz0             yes       The four byte tag to signify the connection.
+    VERBOSE                    false            no        Enable detailed status messages
+    WORKSPACE                                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

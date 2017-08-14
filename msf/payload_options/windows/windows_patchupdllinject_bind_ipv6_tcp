@@ -1,0 +1,45 @@
+
+       Name: Windows Inject DLL, Bind IPv6 TCP Stager (Windows x86)
+     Module: payload/windows/patchupdllinject/bind_ipv6_tcp
+   Platform: Windows
+       Arch: x86
+Needs Admin: No
+ Total size: 285
+       Rank: Normal
+
+Provided by:
+    jt <jt@klake.org>
+    skape <mmiller@hick.org>
+    hdm <x@hdm.io>
+    sf <stephen_fewer@harmonysecurity.com>
+
+Basic options:
+Name      Current Setting  Required  Description
+----      ---------------  --------  -----------
+DLL                        yes       The local path to the DLL to upload
+EXITFUNC  process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+LPORT     4444             yes       The listen port
+RHOST                      no        The target address
+
+Description:
+  Inject a custom DLL into the exploited process. Listen for an IPv6 
+  connection (Windows x86)
+
+
+    Name                       Current Setting  Required  Description
+    ----                       ---------------  --------  -----------
+    EnableStageEncoding        false            no        Encode the second stage payload
+    LibraryName                msf.dll          no        The symbolic name of the library to upload
+    PayloadUUIDName                             no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                              no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                             no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking        false            yes       Whether or not to automatically register generated UUIDs
+    PrependMigrate             false            yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                          no        Process to spawn and run shellcode in
+    StageEncoder                                no        Encoder to use if EnableStageEncoding is set
+    StageEncoderSaveRegisters                   no        Additional registers to preserve in the staged payload if EnableStageEncoding is set
+    StageEncodingFallback      true             no        Fallback to no encoding if the selected StageEncoder is not compatible
+    VERBOSE                    false            no        Enable detailed status messages
+    WORKSPACE                                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

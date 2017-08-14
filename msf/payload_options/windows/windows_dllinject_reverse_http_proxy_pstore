@@ -1,0 +1,53 @@
+
+       Name: Reflective DLL Injection, Reverse HTTP Stager Proxy
+     Module: payload/windows/dllinject/reverse_http_proxy_pstore
+   Platform: Windows
+       Arch: x86
+Needs Admin: No
+ Total size: 650
+       Rank: Normal
+
+Provided by:
+    sf <stephen_fewer@harmonysecurity.com>
+    hdm <x@hdm.io>
+
+Basic options:
+Name      Current Setting  Required  Description
+----      ---------------  --------  -----------
+DLL                        yes       The local path to the Reflective DLL to upload
+EXITFUNC  process          yes       Exit technique (Accepted: '', seh, thread, process, none)
+LHOST                      yes       The local listener hostname
+LPORT     8080             yes       The local listener port
+LURI                       no        The HTTP Path
+
+Description:
+  Inject a DLL via a reflective loader. Tunnel communication over HTTP
+
+
+    Name                        Current Setting                                                Required  Description
+    ----                        ---------------                                                --------  -----------
+    EnableStageEncoding         false                                                          no        Encode the second stage payload
+    HttpUnknownRequestResponse  <html><body><h1>It works!</h1></body></html>                   no        The returned HTML response body when the handler receives a request that is not from a payload
+    IgnoreUnknownPayloads       false                                                          no        Whether to drop connections from payloads using unknown UUIDs
+    MeterpreterServerName       Apache                                                         no        The server header that the handler will send in response to requests
+    MeterpreterUserAgent        Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko  no        The user-agent that the payload should use for communication
+    OverrideLHOST                                                                              no        When OverrideRequestHost is set, use this value as the host name for secondary requests
+    OverrideLPORT                                                                              no        When OverrideRequestHost is set, use this value as the port number for secondary requests
+    OverrideRequestHost         false                                                          no        Forces a specific host and port instead of using what the client requests, defaults to LHOST:LPORT
+    OverrideScheme                                                                             no        When OverrideRequestHost is set, use this value as the scheme for secondary requests, e.g http or https
+    PayloadUUIDName                                                                            no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                                                                             no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                                                                            no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking         false                                                          yes       Whether or not to automatically register generated UUIDs
+    PrependMigrate              false                                                          yes       Spawns and runs shellcode in new process
+    PrependMigrateProc                                                                         no        Process to spawn and run shellcode in
+    ReverseAllowProxy           false                                                          yes       Allow reverse tcp even with Proxies specified. Connect back will NOT go through proxy but directly to LHOST
+    ReverseListenerBindAddress                                                                 no        The specific IP address to bind to on the local system
+    ReverseListenerBindPort                                                                    no        The port to bind to on the local system if different from LPORT
+    StageEncoder                                                                               no        Encoder to use if EnableStageEncoding is set
+    StageEncoderSaveRegisters                                                                  no        Additional registers to preserve in the staged payload if EnableStageEncoding is set
+    StageEncodingFallback       true                                                           no        Fallback to no encoding if the selected StageEncoder is not compatible
+    VERBOSE                     false                                                          no        Enable detailed status messages
+    WORKSPACE                                                                                  no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
