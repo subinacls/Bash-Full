@@ -1,0 +1,9 @@
+android/meterpreter/reverse_http
+android/meterpreter/reverse_https
+android/meterpreter/reverse_tcp
+android/meterpreter_reverse_http
+android/meterpreter_reverse_https
+android/meterpreter_reverse_tcp
+android/shell/reverse_http
+android/shell/reverse_https
+android/shell/reverse_tcp
