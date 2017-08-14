@@ -1,0 +1,38 @@
+
+       Name: Linux Read File
+     Module: payload/linux/x86/read_file
+   Platform: Linux
+       Arch: x86
+Needs Admin: No
+ Total size: 62
+       Rank: Normal
+
+Provided by:
+    hal
+
+Basic options:
+Name  Current Setting  Required  Description
+----  ---------------  --------  -----------
+FD    1                yes       The file descriptor to write output to
+PATH                   yes       The file path to read
+
+Description:
+  Read up to 4096 bytes from the local file system and write it back 
+  out to the specified file descriptor
+
+
+    Name                Current Setting  Required  Description
+    ----                ---------------  --------  -----------
+    AppendExit          false            no        Append a stub that executes the exit(0) system call
+    PrependChrootBreak  false            no        Prepend a stub that will break out of a chroot (includes setreuid to root)
+    PrependFork         false            no        Prepend a stub that executes: if (fork()) { exit(0); }
+    PrependSetgid       false            no        Prepend a stub that executes the setgid(0) system call
+    PrependSetregid     false            no        Prepend a stub that executes the setregid(0, 0) system call
+    PrependSetresgid    false            no        Prepend a stub that executes the setresgid(0, 0, 0) system call
+    PrependSetresuid    false            no        Prepend a stub that executes the setresuid(0, 0, 0) system call
+    PrependSetreuid     false            no        Prepend a stub that executes the setreuid(0, 0) system call
+    PrependSetuid       false            no        Prepend a stub that executes the setuid(0) system call
+    VERBOSE             false            no        Enable detailed status messages
+    WORKSPACE                            no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

@@ -1,0 +1,58 @@
+
+       Name: Linux Meterpreter, Reverse HTTPS Inline
+     Module: payload/linux/mips64/meterpreter_reverse_https
+   Platform: Linux
+       Arch: mips64
+Needs Admin: No
+ Total size: 1023816
+       Rank: Normal
+
+Provided by:
+    Adam Cammack <adam_cammack@rapid7.com>
+    Brent Cook <brent_cook@rapid7.com>
+
+Basic options:
+Name   Current Setting  Required  Description
+----   ---------------  --------  -----------
+LHOST                   yes       The local listener hostname
+LPORT  8443             yes       The local listener port
+LURI                    no        The HTTP Path
+
+Description:
+  Run the Meterpreter / Mettle server payload (stageless)
+
+
+    Name                         Current Setting                                                Required  Description
+    ----                         ---------------                                                --------  -----------
+    AutoLoadStdapi               true                                                           yes       Automatically load the Stdapi extension
+    AutoRunScript                                                                               no        A script to run automatically on session creation.
+    AutoSystemInfo               true                                                           yes       Automatically capture system information on initialization.
+    AutoVerifySession            true                                                           yes       Automatically verify and drop invalid sessions
+    AutoVerifySessionTimeout     30                                                             no        Timeout period to wait for session validation to occur, in seconds
+    EnableUnicodeEncoding        false                                                          yes       Automatically encode UTF-8 strings as hexadecimal
+    HandlerSSLCert                                                                              no        Path to a SSL certificate in unified PEM format, ignored for HTTP transports
+    HttpUnknownRequestResponse   <html><body><h1>It works!</h1></body></html>                   no        The returned HTML response body when the handler receives a request that is not from a payload
+    IgnoreUnknownPayloads        false                                                          no        Whether to drop connections from payloads using unknown UUIDs
+    InitialAutoRunScript                                                                        no        An initial script to run on session creation (before AutoRunScript)
+    MeterpreterServerName        Apache                                                         no        The server header that the handler will send in response to requests
+    MeterpreterUserAgent         Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko  no        The user-agent that the payload should use for communication
+    OverrideLHOST                                                                               no        When OverrideRequestHost is set, use this value as the host name for secondary requests
+    OverrideLPORT                                                                               no        When OverrideRequestHost is set, use this value as the port number for secondary requests
+    OverrideRequestHost          false                                                          no        Forces a specific host and port instead of using what the client requests, defaults to LHOST:LPORT
+    OverrideScheme                                                                              no        When OverrideRequestHost is set, use this value as the scheme for secondary requests, e.g http or https
+    PayloadUUIDName                                                                             no        A human-friendly name to reference this unique payload (requires tracking)
+    PayloadUUIDRaw                                                                              no        A hex string representing the raw 8-byte PUID value for the UUID
+    PayloadUUIDSeed                                                                             no        A string to use when generating the payload UUID (deterministic)
+    PayloadUUIDTracking          false                                                          yes       Whether or not to automatically register generated UUIDs
+    ReverseAllowProxy            false                                                          yes       Allow reverse tcp even with Proxies specified. Connect back will NOT go through proxy but directly to LHOST
+    ReverseListenerBindAddress                                                                  no        The specific IP address to bind to on the local system
+    ReverseListenerBindPort                                                                     no        The port to bind to on the local system if different from LPORT
+    SessionCommunicationTimeout  300                                                            no        The number of seconds of no activity before this session should be killed
+    SessionExpirationTimeout     604800                                                         no        The number of seconds before this session should be forcibly shut down
+    SessionRetryTotal            3600                                                           no        Number of seconds try reconnecting for on network failure
+    SessionRetryWait             10                                                             no        Number of seconds to wait between reconnect attempts
+    StagerVerifySSLCert                                                                         no        Whether to verify the SSL certificate in Meterpreter
+    VERBOSE                      false                                                          no        Enable detailed status messages
+    WORKSPACE                                                                                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

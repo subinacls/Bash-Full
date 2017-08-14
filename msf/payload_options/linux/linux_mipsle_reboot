@@ -1,0 +1,33 @@
+
+       Name: Linux Reboot
+     Module: payload/linux/mipsle/reboot
+   Platform: Linux
+       Arch: mipsle
+Needs Admin: No
+ Total size: 32
+       Rank: Normal
+
+Provided by:
+    Michael Messner <devnull@s3cur1ty.de>
+    rigan - <imrigan@gmail.com>
+
+Description:
+  A very small shellcode for rebooting the system. This payload is 
+  sometimes helpful for testing purposes.
+
+
+    Name                Current Setting  Required  Description
+    ----                ---------------  --------  -----------
+    AppendExit          false            no        Append a stub that executes the exit(0) system call
+    PrependChrootBreak  false            no        Prepend a stub that will break out of a chroot (includes setreuid to root)
+    PrependFork         false            no        Prepend a stub that executes: if (fork()) { exit(0); }
+    PrependSetgid       false            no        Prepend a stub that executes the setgid(0) system call
+    PrependSetregid     false            no        Prepend a stub that executes the setregid(0, 0) system call
+    PrependSetresgid    false            no        Prepend a stub that executes the setresgid(0, 0, 0) system call
+    PrependSetresuid    false            no        Prepend a stub that executes the setresuid(0, 0, 0) system call
+    PrependSetreuid     false            no        Prepend a stub that executes the setreuid(0, 0) system call
+    PrependSetuid       false            no        Prepend a stub that executes the setuid(0) system call
+    VERBOSE             false            no        Enable detailed status messages
+    WORKSPACE                            no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

@@ -1,0 +1,39 @@
+
+       Name: Linux Execute Command
+     Module: payload/linux/mipsle/exec
+   Platform: Linux
+       Arch: mipsle
+Needs Admin: No
+ Total size: 48
+       Rank: Normal
+
+Provided by:
+    Michael Messner <devnull@s3cur1ty.de>
+    entropy <entropy@phiral.net>
+
+Basic options:
+Name  Current Setting  Required  Description
+----  ---------------  --------  -----------
+CMD                    yes       The command string to execute
+
+Description:
+  A very small shellcode for executing commands. This module is 
+  sometimes helpful for testing purposes as well as on targets with 
+  extremely limited buffer space.
+
+
+    Name                Current Setting  Required  Description
+    ----                ---------------  --------  -----------
+    AppendExit          false            no        Append a stub that executes the exit(0) system call
+    PrependChrootBreak  false            no        Prepend a stub that will break out of a chroot (includes setreuid to root)
+    PrependFork         false            no        Prepend a stub that executes: if (fork()) { exit(0); }
+    PrependSetgid       false            no        Prepend a stub that executes the setgid(0) system call
+    PrependSetregid     false            no        Prepend a stub that executes the setregid(0, 0) system call
+    PrependSetresgid    false            no        Prepend a stub that executes the setresgid(0, 0, 0) system call
+    PrependSetresuid    false            no        Prepend a stub that executes the setresuid(0, 0, 0) system call
+    PrependSetreuid     false            no        Prepend a stub that executes the setreuid(0, 0) system call
+    PrependSetuid       false            no        Prepend a stub that executes the setuid(0) system call
+    VERBOSE             false            no        Enable detailed status messages
+    WORKSPACE                            no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
