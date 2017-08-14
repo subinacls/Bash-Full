@@ -1,0 +1,38 @@
+
+       Name: Generic JCL Test for Mainframe Exploits
+     Module: payload/cmd/mainframe/generic_jcl
+   Platform: Mainframe
+       Arch: cmd
+Needs Admin: No
+ Total size: 150
+       Rank: Normal
+
+Provided by:
+    Bigendian Smalls
+
+Basic options:
+Name      Current Setting       Required  Description
+----      ---------------       --------  -----------
+ACTNUM    MSFUSER-ACCTING-INFO  yes       Accounting info for JCL JOB card
+JCLASS    A                     yes       Job Class for JCL JOB card
+MSGCLASS  Z                     yes       Message Class for JCL JOB card
+MSGLEVEL  (0,0)                 yes       Message Level for JCL JOB card
+NOTIFY                          no        Notify User for JCL JOB card
+PGMNAME   programmer name       yes       Programmer name for JCL JOB card
+
+Description:
+  Provide JCL which can be used to submit a job to JES2 on z/OS which 
+  will exit and return 0. This can be used as a template for other JCL 
+  based payloads
+
+
+    Name                  Current Setting  Required  Description
+    ----                  ---------------  --------  -----------
+    AutoRunScript                          no        A script to run automatically on session creation.
+    InitialAutoRunScript                   no        An initial script to run on session creation (before AutoRunScript)
+    JOBNAME               DUMMY            yes       Job name for JCL JOB card
+    NTFYUSR               false            yes       Include NOTIFY Parm?
+    VERBOSE               false            no        Enable detailed status messages
+    WORKSPACE                              no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------

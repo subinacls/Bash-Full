@@ -1,0 +1,41 @@
+
+       Name: JCL to Escalate Privilages
+     Module: payload/cmd/mainframe/apf_privesc_jcl
+   Platform: Mainframe
+       Arch: cmd
+Needs Admin: No
+ Total size: 3000
+       Rank: Normal
+
+Provided by:
+    Bigendian Smalls
+    Ayoub
+
+Basic options:
+Name      Current Setting       Required  Description
+----      ---------------       --------  -----------
+ACTNUM    MSFUSER-ACCTING-INFO  yes       Accounting info for JCL JOB card
+APFLIB    SYS1.LINKLIB          yes       APF Authorized Library to use
+JCLASS    A                     yes       Job Class for JCL JOB card
+MSGCLASS  Z                     yes       Message Class for JCL JOB card
+MSGLEVEL  (0,0)                 yes       Message Level for JCL JOB card
+NOTIFY                          no        Notify User for JCL JOB card
+PGMNAME   programmer name       yes       Programmer name for JCL JOB card
+RPORT     21                    yes       The target port
+
+Description:
+  (Elevate privilages for user. Adds SYSTEM SPECIAL and BPX.SUPERUSER 
+  to user profile. Does this by using an unsecured/updateable APF 
+  authorized library (APFLIB) and updating the user's ACEE using this 
+  program/library. Note: This privesc only works with z/OS systems 
+  using RACF, no other ESM is supported.)
+
+
+    Name       Current Setting  Required  Description
+    ----       ---------------  --------  -----------
+    JOBNAME    DUMMY            yes       Job name for JCL JOB card
+    NTFYUSR    false            yes       Include NOTIFY Parm?
+    VERBOSE    false            no        Enable detailed status messages
+    WORKSPACE                   no        Specify the workspace for this module
+    Name  Current Setting  Required  Description
+    ----  ---------------  --------  -----------
