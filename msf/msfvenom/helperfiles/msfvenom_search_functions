@@ -1,0 +1,68 @@
+showpayloads() { 
+  msfvenom --list payloads |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==============================" |\
+  grep -v Payloads |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$";
+} # Example: showpayloads ( shows all payloads form msfvenom )
+
+showencoders() { 
+  msfvenom --list encoders |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==================" |\
+  grep -v Encoders |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$";
+} # Example: showencoders ( shows all encoders form msfvenom )
+
+shownops() { 
+  msfvenom --list nops |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==================" |\
+  grep -v NOPs |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$";
+} # Example: shownops ( shows all nops form msfvenom )
+
+searchpayloads() { 
+  msfvenom --list payloads |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==============================" |\
+  grep -v Payloads |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$" |\
+  grep "$1";
+} # Example: searchpayloads "patchup" ( searches all payloads form msfvenom )
+
+searchencoders() { 
+  msfvenom --list encoders |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==================" |\
+  grep -v Encoders |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$" |\
+  grep "$1";
+} # Example: searchencoders "xor" ( searches all encoders form msfvenom )
+
+searchnops() { 
+  msfvenom --list nops |\
+  tr -s " " |\
+  cut -d " " -f2 |\
+  grep -v "==================" |\
+  grep -v NOPs |\
+  grep -v Name |\
+  grep -v "\-\-\-\-" |\
+  grep -Ev "^$" |\
+  grep "$1";
+} # Example: searchnops "random" ( searches all encoders form msfvenom )
