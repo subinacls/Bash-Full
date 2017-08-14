@@ -1,0 +1,4 @@
+aix/ppc/shell_bind_tcp
+aix/ppc/shell_find_port
+aix/ppc/shell_interact
+aix/ppc/shell_reverse_tcp
