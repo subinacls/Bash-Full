@@ -1,0 +1,3 @@
+cmd/mainframe/apf_privesc_jcl
+cmd/mainframe/generic_jcl
+cmd/mainframe/reverse_shell_jcl
