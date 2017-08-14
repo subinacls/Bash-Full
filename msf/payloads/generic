@@ -1,0 +1,5 @@
+generic/custom
+generic/debug_trap
+generic/shell_bind_tcp
+generic/shell_reverse_tcp
+generic/tight_loop
