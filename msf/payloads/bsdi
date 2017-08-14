@@ -1,0 +1,5 @@
+bsdi/x86/shell/bind_tcp
+bsdi/x86/shell/reverse_tcp
+bsdi/x86/shell_bind_tcp
+bsdi/x86/shell_find_port
+bsdi/x86/shell_reverse_tcp
