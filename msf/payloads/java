@@ -1,0 +1,9 @@
+java/jsp_shell_bind_tcp
+java/jsp_shell_reverse_tcp
+java/meterpreter/bind_tcp
+java/meterpreter/reverse_http
+java/meterpreter/reverse_https
+java/meterpreter/reverse_tcp
+java/shell/bind_tcp
+java/shell/reverse_tcp
+java/shell_reverse_tcp
