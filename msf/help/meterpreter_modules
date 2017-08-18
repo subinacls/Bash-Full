@@ -11,3 +11,174 @@ python
 sniffer
 stdapi
 winpmem
+
+Espia Commands
+==============
+
+    Command       Description
+    -------       -----------
+    screengrab    Attempt to grab screen shot from process's active desktop
+
+Extapi: Window Management Commands
+==================================
+
+    Command       Description
+    -------       -----------
+    window_enum   Enumerate all current open windows
+
+
+Extapi: Service Management Commands
+===================================
+
+    Command          Description
+    -------          -----------
+    service_control  Control a single service (start/pause/resume/stop/restart)
+    service_enum     Enumerate all registered Windows services
+    service_query    Query more detail about a specific Windows service
+
+
+Extapi: Clipboard Management Commands
+=====================================
+
+    Command                   Description
+    -------                   -----------
+    clipboard_get_data        Read the target's current clipboard (text, files, images)
+    clipboard_monitor_dump    Dump all captured clipboard content
+    clipboard_monitor_pause   Pause the active clipboard monitor
+    clipboard_monitor_purge   Delete all captured cilpboard content without dumping it
+    clipboard_monitor_resume  Resume the paused clipboard monitor
+    clipboard_monitor_start   Start the clipboard monitor
+    clipboard_monitor_stop    Stop the clipboard monitor
+    clipboard_set_text        Write text to the target's clipboard
+
+
+Extapi: ADSI Management Commands
+================================
+
+    Command                      Description
+    -------                      -----------
+    adsi_computer_enum           Enumerate all computers on the specified domain.
+    adsi_dc_enum                 Enumerate all domain controllers on the specified domain.
+    adsi_domain_query            Enumerate all objects on the specified domain that match a filter.
+    adsi_group_enum              Enumerate all groups on the specified domain.
+    adsi_nested_group_user_enum  Recursively enumerate users who are effectively members of the group specified.
+    adsi_user_enum               Enumerate all users on the specified domain.
+
+
+Extapi: WMI Querying Commands
+=============================
+
+    Command       Description
+    -------       -----------
+    wmi_query     Perform a generic WMI query and return the results
+
+Incognito Commands
+==================
+
+    Command              Description
+    -------              -----------
+    add_group_user       Attempt to add a user to a global group with all tokens
+    add_localgroup_user  Attempt to add a user to a local group with all tokens
+    add_user             Attempt to add a user with all tokens
+    impersonate_token    Impersonate specified token
+    list_tokens          List tokens available under current user context
+    snarf_hashes         Snarf challenge/response hashes for every token
+
+
+Kiwi Commands
+=============
+
+    Command                Description
+    -------                -----------
+    creds_all              Retrieve all credentials (parsed)
+    creds_kerberos         Retrieve Kerberos creds (parsed)
+    creds_msv              Retrieve LM/NTLM creds (parsed)
+    creds_ssp              Retrieve SSP creds
+    creds_tspkg            Retrieve TsPkg creds (parsed)
+    creds_wdigest          Retrieve WDigest creds (parsed)
+    dcsync                 Retrieve user account information via DCSync (unparsed)
+    dcsync_ntlm            Retrieve user account NTLM hash, SID and RID via DCSync
+    golden_ticket_create   Create a golden kerberos ticket
+    kerberos_ticket_list   List all kerberos tickets (unparsed)
+    kerberos_ticket_purge  Purge any in-use kerberos tickets
+    kerberos_ticket_use    Use a kerberos ticket
+    kiwi_cmd               Execute an arbitary mimikatz command (unparsed)
+    lsa_dump_sam           Dump LSA SAM (unparsed)
+    lsa_dump_secrets       Dump LSA secrets (unparsed)
+    wifi_list              List wifi profiles/creds for the current user
+    wifi_list_shared       List shared wifi profiles/creds (requires SYSTEM)
+
+
+Lanattacks: DHCP Commands
+=========================
+
+    Command            Description
+    -------            -----------
+    dhcp_load_options  Load DHCP optionis from a datastore
+    dhcp_log           Log DHCP server activity
+    dhcp_reset         Reset the DHCP server
+    dhcp_set_option    Set a DHCP server option
+    dhcp_start         Start the DHCP server
+    dhcp_stop          Stop the DHCP server
+
+
+Lanattacks: TFTP Commands
+=========================
+
+    Command        Description
+    -------        -----------
+    tftp_add_file  Add a file to the TFTP server
+    tftp_reset     Reset the TFTP server
+    tftp_start     Start the TFTP server
+    tftp_stop      Stop the TFTP server
+
+Mimikatz Commands
+=================
+
+    Command           Description
+    -------           -----------
+    kerberos          Attempt to retrieve kerberos creds
+    livessp           Attempt to retrieve livessp creds
+    mimikatz_command  Run a custom command
+    msv               Attempt to retrieve msv creds (hashes)
+    ssp               Attempt to retrieve ssp creds
+    tspkg             Attempt to retrieve tspkg creds
+    wdigest           Attempt to retrieve wdigest creds
+
+Powershell Commands
+===================
+
+    Command             Description
+    -------             -----------
+    powershell_execute  Execute a Powershell command string
+    powershell_import   Import a PS1 script or .NET Assembly DLL
+    powershell_shell    Create an interactive Powershell prompt
+
+Python Commands
+===============
+
+    Command         Description
+    -------         -----------
+    python_execute  Execute a python command string
+    python_import   Import/run a python file or module
+    python_reset    Resets/restarts the Python interpreter
+
+Sniffer Commands
+================
+
+    Command             Description
+    -------             -----------
+    sniffer_dump        Retrieve captured packet data to PCAP file
+    sniffer_interfaces  Enumerate all sniffable network interfaces
+    sniffer_release     Free captured packets on a specific interface instead of downloading them
+    sniffer_start       Start packet capture on a specific interface
+    sniffer_stats       View statistics of an active capture
+    sniffer_stop        Stop packet capture on a specific interfac
+    
+
+Winpmem Commands
+================
+
+    Command       Description
+    -------       -----------
+    dump_ram      Dump victim RAM
