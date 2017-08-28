@@ -1,0 +1,118 @@
+checkdir() { 
+  if [ -d "./$1 " ]; then
+    mkdir ./$1/$2 2>/dev/null;
+  else
+    mkdir ./$1 2>/dev/null;
+    mkdir ./$1/$2 2>/dev/null; 
+  fi; 
+}
+
+nmaptopports() { `# takes two arguments HOST and PORTCOUNT`
+  HOST=$1 `# Sets HOST var from arg 1` ;
+  PORTCOUNT=$2 `# Sets PORTCOUNT var from arg 2` ;
+  checknmapdir $HOST `# Checking the DIR structure` ;
+  nmap `# Calling the nmap binary` \
+    -vv `# inline comment attempted` \
+    -n `# Do NOT Resolve DNS` \
+    -A `# Checks for Operating System` \
+    -sS `# Syn Scan (3-way handshake)` \
+    --open `# Only show open ports` \
+    --top-ports $PORTCOUNT `# Selects the top 2000 ports` \
+    -oA ./nmap/$HOST/top2k `# Output to this DIR and file` \
+    2>&1 `# Redirect STDERR to STDOUT` \
+    $HOST | `# Takes HOST argument` \
+    tee ./nmap/$HOST/top2k.stdout `# Tee all STDOUT to this DIR and file`;
+}
+
+nmaptopport2k() { `# takes ONE argument HOST`
+  HOST=$1 `# Sets HOST var from arg 1` ;
+  checknmapdir $HOST `# Checking the DIR structure` ;
+  nmap `# Calling the nmap binary` \
+    -vv `# inline comment attempted` \
+    -n `# Do NOT Resolve DNS` \
+    -A `# Checks for Operating System` \
+    -sS `# Syn Scan (3-way handshake)` \
+    --open `# Only show open ports` \
+    --top-ports 2000 `# Selects the top 2000 ports` \
+    -oA ./nmap/$HOST/top2k `# Output to this DIR and file` \
+    2>&1 `# Redirect STDERR to STDOUT` \
+    $HOST | `# Takes HOST argument` \
+    tee ./nmap/$HOST/top2k.stdout `# Tee all STDOUT to this DIR and file`;
+}
+
+dnsreconTLD() {
+  dnsrecon \
+  `# Sets application thread count` --threads 15 \
+  `# Sets reply life length` --lifetime 4 \
+  `# Sets scan type rege template` -t tld \
+  `# Sets the target domain` -d bookarestaurant.com ;
+}
+
+digdomain() {
+  dig $1 |\
+  tr -s "\t" " " |\
+  grep -v ";" |\
+  grep -Ev "^$" |\
+  grep -v CNAME |\
+  sed -r "s/(.*)IN(.*) (([0-9]{1,3}\.){3}[0-9]{1,3})/\3/g";
+}
+
+digdeeper() {
+  dig +noall +nocomment +answer $1 > ANSR ;
+  dig +noall +nocomment +question $1 > QUES ;
+  ISANSR=`cat ANSR | sed -r "s/(.*)\.( |\t){1,7}[0-9]{1,3}( |\t){1,7}(.*)( |\t){1,7}(.*)/\1\n\6/g" | sed -r "s/(.*)\.$/\1\n/g" ` ;
+  ISQUES=`cat QUES | sed -r "s/^;(.*)\.(.*)/\1/g" `;
+  ISQUEF=`cat QUES | sed -r "s/^;(.*)\. IN (.*) (.*)\./\3/g" | cut -d ";" -f2 | sed -r "s/(.*)\.(.*)/\1/g" `;
+  if [[ $ISANSR != "" ]]; then
+    ANSWER="$ISANSR" ;
+    if [[ $ISQUES != "" ]]; then
+      ANSWER="$ISANSR - $ISQUES";
+      if [[ $ISQUEF != "" ]]; then
+        if [[ "$ISQUEF" != "$ISQUES" ]]; then
+          ANSWER="$ISANSR - $ISQUES - $ISQUEF";
+        fi   
+      fi
+    fi
+  fi
+  echo -e $ANSWER | tr -s " " "\n" | sort -u;
+} 
+
+cleanBGPHE() {
+  checkdir bgp dnslist
+  LISTA=`cat $1 | sed -r "s/(.*)\t(.*)\t(.*)/\2 \3/g" | grep -Ev "^$" | sed -r "s/(,|\t|[ ]{1,7})/ \n/g" | sort -u`
+  echo $LISTA | tr -s " " "\n" > ./bgp/dnslist/$1_cleanlist
+}
+
+bulkdigger() { 
+  for x in $(cleanBGPHE $1); do 
+    digdeeper $x
+  done; 
+}
+
+getrange() {
+ HOST=$1 `# Sets HOST var from arg 1` ;
+ GETIP=`digdomain $1`
+ OUTPUT=`whois $GETIP`
+ COUNT=$(echo $OUTPUT | wc -l)
+ if ((`echo $COUNT` > 1)); then
+  LOW=$(echo $OUTPUT | grep CIDR | tail -n1 | cut -d":" -f2)
+  HIGH=$(echo $OUTPUT | grep CIDR | tail -n1 | cut -d":" -f2)
+  echo $COUNT
+  echo $LOW
+  echo $HIGH
+ else:
+  IPS=$(echo $OUTPUT | grep CIDR | tr -d " " | cut -d":" -f2)
+  echo $IPS
+ fi
+}
+
+
+bulk-dnstrace() {
+  if [ ! -d ./dnstrace ]; then 
+    mkdir ./dnstrace; 
+  fi;
+  for dname in $(cat $1); do 
+    dnstracer -o -C -c -q A -r 1 -4 $dname |\
+    tee ./dnstrace/$dname; 
+  done;
+}
