@@ -1,0 +1,67 @@
+# recursive open folders of web evidence dir form crawled target site
+# Extracts the HTTP(s) URI for mostly external sites.
+# Useful when looking for specific sites like:
+#    LinkedIN, Youtube, and other potential OSINT Resources
+getextlinks() { 
+ a=`for x in $(ls -aslR | grep -E "^.(.*)\:$" | grep ".:" | cut -d ":" -f1); do 
+  echo $x;cat $x/* 2>/dev/nul |\
+  tr -s " " "\n" |\
+  grep -n "href=" |\
+  sed -r "s/(.*)href=\"(.*)/\2/g" |\
+  grep -i http |\
+  cut -d'"' -f1 |\
+  sort -u ; \
+ done | \
+ grep -v "\./" |\
+ grep http`;
+ echo $a | \
+ tr -s " " "\n" | \
+ sort -u |\
+ tee external_links_`echo ${PWD##*/}`;
+} ## cd ./web/targetname/ && getextlinks 
+#
+#
+# examines a recursive download of a site and extracts the urls in relation to the site
+# useful to find more information about the followings:
+# entry point, folder layout, files hosted, technologies used ...
+getsitelinks() { 
+ for x in $(ls -aslR | grep -E "^\.(.*)\:$" | grep ".:" | cut -d ":" -f1); do 
+  cat $x/* 2>/dev/null | \
+  tr -s " " "\n" | \
+  grep -n "href=" | \
+  sed -r "s/(.*)href=\"(.*)/\2/g" 2>/dev/null | \
+  grep -iv http | \
+  cut -d'"' -f1 | \
+  sort -u | \
+  grep -Ev "(/$|#(!|)|^[a-zA-Z0-9]|^[?]|^[-]|^[,'.]$)" 2>/dev/null | \
+  sort -u | \
+  sed -r "s/(.*)/https\:\/\/`echo ${PWD##*/}`\1/g" | \
+  sed -r s"/\.\/(.*)/\/\1/g" ;
+ done |\
+ sed -r "s/\.\/(.*)/https\:\/\/`echo ${PWD##*/}`\1/g" |\
+ grep -v "tel:" |\
+ grep -v "mailto:" |\
+ grep -v "javascript:" |\
+ grep -v href |\
+ grep -vi hasclass | \
+ sort -u |\
+ tee internal_links_`echo ${PWD##*/}`;
+} ## cd ./web/targetdir/ && getsitelinks 
+#
+#
+# Takes the external_links file and processes it further to find external sites
+# Gives a weight based on how many times a link from the external service provider
+# has been seen within the site source code, this can be useful for OSINT
+getextweights() { 
+ for x in $(cat $1 | cut -d "." -f1-3 | cut -d "/" -f3| sort -u); do \
+  lines=$(grep $x $1 | wc -l); 
+  echo -e "Weight: $lines\t$x"; 
+ done |sort -t $' ' -k 2 -n;
+} ## getextweight ./external_links_filename
+
+getintweights() { 
+ for x in $(cat $1 | cut -d "." -f1-3 | cut -d "/" -f3| sort -u); do \
+  lines=$(grep $x ./$1 | wc -l); 
+  echo -e "Weight: $lines\t$x"; 
+ done |sort -t $' ' -k 2 -n;
+} ## getextweight ./internal_links_filename
