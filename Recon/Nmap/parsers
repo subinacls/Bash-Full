@@ -1,0 +1,8 @@
+nmap_sslcert() { 
+  datadump=`cat $1 | \
+    grep -i ssl-cert | \
+    sed -r "s/\| ssl-cert\: Subject\: (.*)/\1/g" | \
+    xargs echo -e | \
+    tr -s "\/" "\n"`;
+  OrgUnit=`echo $dumpdata | `
+}
