@@ -27,7 +27,7 @@ getexif() {
  }
  # runs exiftool and dumps a files with .exif extension of all found meta-rich sources
  exiffiledump() {
-  exiftool  -all -r ./* -txt -w exif > $comdir/author_output_${PWD##*/};
+  exiftool  -all -r ./* -txt -w exif > $comdir/author_output_${PWD##*/} 2>/dev/null;
  }
  # moves all exif files to the evidence directory
  moveexif() {
