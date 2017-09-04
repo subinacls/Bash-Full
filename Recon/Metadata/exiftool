@@ -30,12 +30,12 @@ getexif() {
   exiftool  -all -r ./* -txt -w exif > $comdir/author_output_${PWD##*/};
  }
  # moves all exif files to the evidence directory
- moveexif() { 
+ moveexif() {
   find ./ -name "*.exif" -print0 |\
   xargs -0 -I {} mv {} $alldir 2>/dev/null;
  }
  # gets all tags from exif files for additional processing
- gettags() { 
+ gettags() {
   cat $alldir/*.exif | \
   cut -d ":" -f1 | \
   sort -u | \
@@ -44,20 +44,20 @@ getexif() {
  }
  # takes all tags form gettags and does a grep across all files in evidence
  # this is to make individual files with all relevant into tag files in tag dir
- maketags() { 
-  IFS=$'\n'; 
-  for x in $(gettags); do 
+ maketags() {
+  IFS=$'\n';
+  for x in $(gettags); do
    a=`echo $x | \
    tr -s " " "_" | \
-   tr -s "\/" "_"`; 
-   grep $x $alldir/*.exif > $tagdir/tag_$a; 
-  done; 
+   tr -s "\/" "_"`;
+   grep $x $alldir/*.exif > $tagdir/tag_$a;
+  done;
   IFS=$' ';
  }
  # produces a csv file with all revelant information about the metadata found
  # examine file after running to get author, creator, and software as needed
- exifcsv() { 
-  exiftool -r -all -csv ./* > $comdir/csv_output_${PWD##*/}; 
+ exifcsv() {
+  exiftool -r -all -csv ./* > $comdir/csv_output_${PWD##*/};
  }
  # dumps creator information into a file
  exifcreator() {
@@ -84,8 +84,8 @@ getexif() {
   sed -r "s/ (.*)/\1/g" | \
   sort -u > $comdir/author_output_${PWD##*/};
  }
- # runs grep and strips out only the Software related information from the metadata 
- exifsoftware() { 
+ # runs grep and strips out only the Software related information from the metadata
+ exifsoftware() {
   grep -i software $alldir/*.exif | \
   cut -d":" -f3 | \
   tr -s "," "\n" | \
@@ -99,8 +99,8 @@ getexif() {
  (moveexif);
  (maketags);
  (exifcsv);
- (exifauthor); 
- (exifcreator); 
+ (exifauthor);
+ (exifcreator);
  (exifhistory);
  (exifsoftware);
 }
