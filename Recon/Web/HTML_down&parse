@@ -3,7 +3,7 @@
 # Useful when looking for specific sites like:
 #    LinkedIN, Youtube, and other potential OSINT Resources
 getextlinks() { 
- for x in $(ls -aslR | grep -E "^.(.*)\:$" | grep ".:" | cut -d ":" -f1); do 
+ a=`for x in $(ls -aslR | grep -E "^.(.*)\:$" | grep ".:" | cut -d ":" -f1); do 
   echo $x;cat $x/* 2>/dev/nul |\
   tr -s " " "\n" |\
   grep -En "href(=| = |= )" |\
@@ -14,7 +14,7 @@ getextlinks() {
   sort -u ; \
  done | \
  grep -v "\./" |\
- grep http;
+ grep http`;
  echo $a | \
  tr -s " " "\n" | \
  grep -Ev "${PWD##*/}" |\
