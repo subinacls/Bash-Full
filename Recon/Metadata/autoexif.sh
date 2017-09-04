@@ -28,7 +28,7 @@ getexif() {
  }
  # runs exiftool and dumps a files with .exif extension of all found meta-rich sources
  exiffiledump() {
-  exiftool  -all -r ./* -txt -w exif > $comdir/author_output_${PWD##*/} 2>/dev/null;
+  exiftool  -all -r ./* -txt -w exif > $comdir/exifdump_LOG_${PWD##*/} 2>/dev/null;
  }
  # moves all exif files to the evidence directory
  moveexif() {
@@ -58,7 +58,7 @@ getexif() {
  # produces a csv file with all revelant information about the metadata found
  # examine file after running to get author, creator, and software as needed
  exifcsv() {
-  exiftool -r -all -csv ./* > $comdir/csv_output_${PWD##*/};
+  exiftool -r -all -csv ./* > $comdir/csv_${PWD##*/};
  }
  # dumps creator information into a file
  exifcreator() {
@@ -67,7 +67,7 @@ getexif() {
   cut -d":" -f3 | \
   tr -s "," "\n" | \
   sed -r "s/ (.*)/\1/g" | \
-  sort -u > $comdir/creator_output_${PWD##*/};
+  sort -u > $comdir/creator_${PWD##*/};
  }
  # runs grep and strips out only the History related information from the metadata
  exifhistory() {
@@ -75,7 +75,7 @@ getexif() {
   cut -d":" -f3 | \
   tr -s "," "\n" | \
   sed -r "s/ (.*)/\1/g" | \
-  sort -u > $comdir/history_output_${PWD##*/};
+  sort -u > $comdir/history_${PWD##*/};
  }
  # runs grep and strips out only the Author related information from the metadata
  exifauthor() {
@@ -83,7 +83,7 @@ getexif() {
   cut -d":" -f3 | \
   tr -s "," "\n" | \
   sed -r "s/ (.*)/\1/g" | \
-  sort -u > $comdir/author_output_${PWD##*/};
+  sort -u > $comdir/author_${PWD##*/};
  }
  # runs grep and strips out only the Software related information from the metadata
  exifsoftware() {
@@ -91,7 +91,17 @@ getexif() {
   cut -d":" -f3 | \
   tr -s "," "\n" | \
   sed -r "s/ (.*)/\1/g" | \
-  sort -u > $comdir/software_output_${PWD##*/};
+  sort -u > $comdir/software_${PWD##*/};
+ }
+ # gathers usernames from creator and author dumps, saves to usernames file
+ exifnames() { 
+  cat $comdir/creator_* $comdir/author_* | \
+  grep -v " " | \
+  grep -E "(.*)(.| )(.*)$" | \
+  tr -s [:upper:] [:lower:] | \
+  tr -s " " "." | \
+  sort -u |\
+  grep -E "(.*)\.(.*)$" > $comdir/potential_usernames_${PWD##*/};
  }
  # runs the exif functions above, wrapped together for logical execution
  # run this in the parent directory where you downloaded a site
@@ -104,4 +114,5 @@ getexif() {
  (exifcreator);
  (exifhistory);
  (exifsoftware);
+ (exifnames);
 }
