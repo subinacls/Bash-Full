@@ -1,0 +1,7 @@
+exifall() { 
+ exiftool -r -all -csv ./* |\
+ tee exiftool_output_${PWD##*/}; 
+} ## run tool inside dir where you wget -r a site
+# produces a csv file with all revelant information about the metadata found
+# examine file after running to get author, creator, and software as needed
+
