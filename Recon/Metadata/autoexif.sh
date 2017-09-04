@@ -1,4 +1,5 @@
 getexif() {
+ echo -e "[-] Running exiftool against files in: ${PWD##*/}\n\t[!] Please wait till finished~\n"
  # automated exiftool metadata extraction
  # make and store files from downloaded sources supported by exiftool
  checkexifdir() {
