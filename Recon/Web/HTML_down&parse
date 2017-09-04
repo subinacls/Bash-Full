@@ -1,3 +1,7 @@
+webrecursive() {
+ wget -r $1; 
+}
+
 # recursive open folders of web evidence dir form crawled target site
 # Extracts the HTTP(s) URI for mostly external sites.
 # Useful when looking for specific sites like:
