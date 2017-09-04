@@ -90,7 +90,7 @@ getexif() {
   cut -d":" -f3 | \
   tr -s "," "\n" | \
   sed -r "s/ (.*)/\1/g" | \
-  sort -u > $comdir/author_output_${PWD##*/};
+  sort -u > $comdir/software_output_${PWD##*/};
  }
  # runs the exif functions above, wrapped together for logical execution
  # run this in the parent directory where you downloaded a site
