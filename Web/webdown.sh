@@ -71,3 +71,19 @@ getweights() {
   echo -e "Weight: $lines\t$x"; 
  done |sort -t $' ' -k 2 -n;
 } ## getextweight ./external_links_filename
+#
+# Attempts to parse downloaded content for email addresses
+# 
+getemails () { 
+ cat  * */* 2>/dev/null |\
+ tr -s " " "\n" |\
+ grep -E "((:|>|\"|\')(.*)\@(.*)\.(.*)(\"|\'|<))" 3>/dev/null |\
+ cut -d":" -f2 |\
+ cut -d ">" -f2 |\
+ cut -d "<" -f1 |\
+ cut -d '"' -f1|\
+ cut -d ";" -f1 |\
+ sort -u |\
+ grep -Ev "^$" |\
+ grep "@";
+}
