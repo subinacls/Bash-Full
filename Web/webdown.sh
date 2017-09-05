@@ -1,4 +1,7 @@
-webrecursive() {
+#
+# Attemptes to download ensite site with requisites 
+# good for throttle testing and parsing for helpful information
+webrec() {
  wget $1 --no-check-certificate --page-requisites -r -t 1 -T 5; 
 }
 # recursive open folders of web evidence dir form crawled target site
