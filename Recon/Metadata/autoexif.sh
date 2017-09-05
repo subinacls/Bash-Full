@@ -103,19 +103,6 @@ getexif() {
   sort -u |\
   grep -E "(.*)\.(.*)$" > $comdir/potential_usernames_${PWD##*/};
  }
- exifemails () { 
-  cat  * */* 2>/dev/null |\
-  tr -s " " "\n" |\
-  grep -E "((:|>|\"|\')(.*)\@(.*)\.(.*)(\"|\'|<))" 3>/dev/null |\
-  cut -d":" -f2 |\
-  cut -d ">" -f2 |\
-  cut -d "<" -f1 |\
-  cut -d '"' -f1|\
-  cut -d ";" -f1 |\
-  sort -u |\
-  grep -Ev "^$" |\
-  grep "@" > $comdir/potential_emailaddresses_${PWD##*/};
- }
  # runs the exif functions above, wrapped together for logical execution
  # run this in the parent directory where you downloaded a site
  (checkexifdir);
@@ -128,5 +115,4 @@ getexif() {
  (exifhistory);
  (exifsoftware);
  (exifnames);
- (exifemails);
 }
