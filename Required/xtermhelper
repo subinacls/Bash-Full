@@ -1,0 +1,19 @@
+makeXtermLog() {
+ if [ -f $1-log.txt ]; then
+  rm $1-log.txt >/dev/null;
+ fi;
+ xterm -bc \
+  -bd white \
+  -bg black \
+  -fg green \
+  -l \
+  -lf $1-log.txt \
+  -leftbar \
+  -ls \
+  -name $1 \
+  -ms yellow \
+  -selbg orange \
+  -selfg black \
+  -title $1 \
+  -e "$2"; 
+}
