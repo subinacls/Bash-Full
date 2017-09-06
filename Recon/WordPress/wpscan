@@ -1,19 +1,20 @@
-dowpscanS() {
- wpscan \
- --batch \
- --no-banner \
- --threads 50 \
- --url https://$1 \
- --enumerate p,tt,t,u 2>/dev/null |  \
- tee wpscanHTTPS_log_$1 ;
+patchwpscan() {
+ cat /usr/share/wpscan/wpscan.rb | \
+ sed -r "s/if \(input = Readline.readline\) =~ \/\^y\/i/input = input\n      if \(input == input\)/g" | \
+ sed -r "s/if wpscan_options.follow_redirection \|\| \(input = Readline.readline\) =~ \/\^y\/i/if \(input == input\)/g" > \
+ /usr/share/wpscan/wpautoredirect.rb;
+ chmod +x /usr/share/wpscan/wpautoredirect.rb;
 }
 
 dowpscan() {
- wpscan \
+ if [ ! -f /usr/share/wpscan/wpautoredirect.rb ]; then
+  patchwpscan;
+ fi
+ /usr/share/wpscan/wpautoredirect.rb \
  --batch \
  --no-banner \
  --threads 50 \
- --url http://$1 \
- --enumerate p,tt,t,u 2>/dev/null |  \
+ --url $1 \
+ --enumerate ap,tt,t,u 2>/dev/null |  \
  tee wpscanHTTP_log_$1 ;
 }
