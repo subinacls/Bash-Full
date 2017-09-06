@@ -1,0 +1,19 @@
+dowpscanS() {
+ wpscan \
+ --batch \
+ --no-banner \
+ --threads 50 \
+ --url https://$1 \
+ --enumerate p,tt,t,u 2>/dev/null |  \
+ tee wpscanHTTPS_log_$1 ;
+}
+
+dowpscan() {
+ wpscan \
+ --batch \
+ --no-banner \
+ --threads 50 \
+ --url http://$1 \
+ --enumerate p,tt,t,u 2>/dev/null |  \
+ tee wpscanHTTP_log_$1 ;
+}
