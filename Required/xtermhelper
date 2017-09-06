@@ -17,3 +17,15 @@ makeXtermLog() {
   -title $1 \
   -e "$2"; 
 }
+
+checkdir() { 
+  if [ -d "./$1 " ]; then
+    mkdir ./$1/$2 2>/dev/null;
+  else
+    mkdir ./$1 2>/dev/null;
+    mkdir ./$1/$2 2>/dev/null; 
+  fi; 
+}
+
+export -f makeXtermLog
+export -f checkdir
