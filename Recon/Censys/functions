@@ -1,3 +1,10 @@
+# file should be sources on the users ./.bashrc file
+# You must set your own variables as shown to use this properly on the API
+# CSECRET="!@#$%^&*(*&YTRFGHJU^%$EWS"
+# CAIID="#$%^&UYGFDVBGHJUI*Y"
+# export -f CSECRET
+# export -f CAIPID
+#
 runcensys() { 
  wget \
  --no-check-certificate \
@@ -10,34 +17,31 @@ runcensys() {
  grep -Ev "(([0-9]\.){1,3}\.[0-9])" | \
  sort -u; 
 } ## run censys query against a domain/cidr/ipaddress and get reflected information back
-runcensys 62.249.32.0/20 "443.https.tls.certificate.parsed.names.raw" > runcensys.test
-
-CSECRET="!@#$%^&*(*&YTRFGHJU^%$EWS"
-CAIIP="#$%^&UYGFDVBGHJUI*Y"
-
+## runcensys 62.249.32.0/20 "443.https.tls.certificate.parsed.names.raw" > runcensys.test
+#
 censys_raw_whois() {
- logname="censys_whois_log_$1"
+ censysrawwhois="censys_whois_log_$1"
  wget \
   --user=$CAIPID \
   --password=$CSECRET \
   --auth-no-challenge \
-  https://www.censys.io/ipv4/$1/whois/_data -O $logname 2>/dev/null;
+  https://www.censys.io/ipv4/$1/whois/_data -O $censysrawwhois 2>/dev/null;
 }
-
+#
 censys_raw_search() {
- logname="censys_rawsearch_log_$1"
+ crawsearchlog="censys_rawsearch_log_$1"
  wget \
-  https://www.censys.io/ipv4/_search?q=$1 -O $logname 2>/dev/null;
+  https://www.censys.io/ipv4/_search?q=$1 -O $crawsearchlog 2>/dev/null;
 }
-
+#
 censys_get_cird() {
- cat $logname | \
+ cat $crawsearchlog | \
  grep -i "asn cidr" | \
  tr -d " \t" | \
  cut -d "<" -f4 | \
  cut -d ">" -f2;
 }
-
+#
 censysparse_ip_proto() {
  echo $CensysOUT | \
  sed -r "s/( \"ip\"\: )/\n\1/g" | \
@@ -46,7 +50,7 @@ censysparse_ip_proto() {
  grep -Eiv "\"status\"\: \"ok\"\, \"results\"\:" | \
  sort -n -t"." -k3,4; 
 }
-
+#
 censysAPI_search_IPv4() { 
  QUERY='{"query":$1}';
  CensysOUT=`wget \
@@ -59,9 +63,9 @@ censysAPI_search_IPv4() {
   2>/dev/null`;
   censysparse_ip_proto;
 }
-
-QUERY="{"query":"SELECT * FROM * ;","format":"json","flatten":false}
+#
 censysAPI_export_IPv4() { 
+ # QUERY="{"query":"SELECT * FROM * ;","format":"json","flatten":false}
  QUERY='{"query":$1}';
  CensysOUT=`wget \
   --password=$CSECRET \
@@ -73,6 +77,7 @@ censysAPI_export_IPv4() {
   2>/dev/null`;
   censysparse_ip_proto;
 }
+#
 dobasics() {
  log="$PROJECT"; 
  echo "" > $log-ping_$x $log-dig_$x $log-nslookup_$x ;
@@ -85,37 +90,42 @@ dobasics() {
   tee -a $log-nslookup ; 
  done
 }
+#
+export -f runcensys
+export -f censys_raw_whois
+export -f censys_raw_search
+export -f censys_get_cird
+export -f censysparse_ip_proto
+export -f censysAPI_search_IPv4
+export -f censysAPI_export_IPv4
+export -f dobasics
+# runcensys 62.249.32.0/20 443.https.ssl_2.certificate.parsed.extensions.subject_alt_name.dns_names.raw >> SSL2_log
+# runcensys 62.249.32.0/20 443.https.tls.certificate.parsed.extensions.issuer_alt_name.dns_names.raw >> TLS_log
+# runcensys 62.249.32.0/20 443.https.tls.certificate.parsed.extensions.subject_alt_name.dns_names.raw >> TLS_log
+# runcensys 62.249.32.0/20 443.https.tls.chain.parsed.extensions.issuer_alt_name.dns_names.raw >> TLS_log
+# runcensys 62.249.32.0/20 443.https.tls.chain.parsed.extensions.subject_alt_name.dns_names.raw >> TLS_log
+# runcensys 62.249.36.0/20 443.https.ssl_2.certificate.parsed.extensions.subject_alt_name.dns_names.raw >> SSL2_log
+# runcensys 62.249.36.0/20 443.https.tls.certificate.parsed.extensions.issuer_alt_name.dns_names.raw >> TLS_log
+# runcensys 62.249.36.0/20 443.https.tls.certificate.parsed.extensions.subject_alt_name.dns_names.raw >> TLS_log
+# runcensys 62.249.36.0/20 443.https.tls.chain.parsed.extensions.issuer_alt_name.dns_names.raw >> TLS_log
+# runcensys 62.249.36.0/20 443.https.tls.chain.parsed.extensions.subject_alt_name.dns_names.raw >> TLS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.additionals.name | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.additionals.response.raw | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.additionals.type | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.answers.name | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.answers.response.raw | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.answers.type | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.authorities.name | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.authorities.response.raw | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.authorities.type | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.errors | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.metadata.description.raw | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.metadata.manufacturer.raw | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.metadata.product.raw | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.metadata.revision.raw | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.metadata.version.raw | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.open_resolver | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.questions.name | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.questions.type | tee -a DNS_log
+# runcensys 62.249.36.0/20 53.dns.lookup.resolves_correctly | tee -a DNS_log
 
-runcensys 62.249.32.0/20 443.https.ssl_2.certificate.parsed.extensions.subject_alt_name.dns_names.raw >> SSL2_log
-runcensys 62.249.32.0/20 443.https.tls.certificate.parsed.extensions.issuer_alt_name.dns_names.raw >> TLS_log
-runcensys 62.249.32.0/20 443.https.tls.certificate.parsed.extensions.subject_alt_name.dns_names.raw >> TLS_log
-runcensys 62.249.32.0/20 443.https.tls.chain.parsed.extensions.issuer_alt_name.dns_names.raw >> TLS_log
-runcensys 62.249.32.0/20 443.https.tls.chain.parsed.extensions.subject_alt_name.dns_names.raw >> TLS_log
-
-runcensys 62.249.36.0/20 443.https.ssl_2.certificate.parsed.extensions.subject_alt_name.dns_names.raw >> SSL2_log
-runcensys 62.249.36.0/20 443.https.tls.certificate.parsed.extensions.issuer_alt_name.dns_names.raw >> TLS_log
-runcensys 62.249.36.0/20 443.https.tls.certificate.parsed.extensions.subject_alt_name.dns_names.raw >> TLS_log
-runcensys 62.249.36.0/20 443.https.tls.chain.parsed.extensions.issuer_alt_name.dns_names.raw >> TLS_log
-runcensys 62.249.36.0/20 443.https.tls.chain.parsed.extensions.subject_alt_name.dns_names.raw >> TLS_log
-
-runcensys 62.249.36.0/20 53.dns.lookup.additionals.name | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.additionals.response.raw | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.additionals.type | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.answers.name | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.answers.response.raw | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.answers.type | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.authorities.name | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.authorities.response.raw | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.authorities.type | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.errors | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.metadata.description.raw | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.metadata.manufacturer.raw | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.metadata.product.raw | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.metadata.revision.raw | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.metadata.version.raw | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.open_resolver | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.questions.name | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.questions.type | tee -a DNS_log
-runcensys 62.249.36.0/20 53.dns.lookup.resolves_correctly | tee -a DNS_log
-
-| tee -a DNS_log
