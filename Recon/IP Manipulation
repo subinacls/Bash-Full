@@ -1,0 +1,27 @@
+#
+# IP address range list geenrator
+# Supply two arguments (startip, endip) to the function
+# Will return a list of all IP addresses to STDOUT
+listipaddr() { python -c "import netaddr; \
+ s='$1'; \
+ e='$2'; \
+ list=[x for x in netaddr.ip.IPRange(s,e)]; \
+ print list" | \
+ tr -s "," "\n" | \
+ cut -d"'" -f2; 
+} ## listipaddr 192.168.1.1 192.168.1.254
+listipaddr 192.168.1.1 192.168.1.254
+#
+# IP address range to CIDR 
+# Supply two arguments (startip, endip) to the function
+# Will return a list of all IP addresses to STDOUT
+listcird() {
+ python -c "import netaddr; \
+ s='$1'; \
+ e='$2'; \
+ cidr=[x for x in netaddr.iprange_to_cidrs(s,e)]; \
+ print cidr" |\
+ tr -s "," "\n" | \
+ cut -d"'" -f2; 
+} ## listcird 192.168.1.0 192.168.1.255
+listcird 192.168.1.0 192.168.1.255
