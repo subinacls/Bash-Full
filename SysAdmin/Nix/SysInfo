@@ -4,7 +4,7 @@
 # Modify or append as needed, share with team for uniformity
 #
 ### get routable Gateway (External IP), checks 2 different places for reply
-extip() { a=`wget whatsmyip.com -O - 2>/dev/null | grep -E '^setCookie' | cut -d"'" -f4 2>/dev/null` && b=`wget ipchicken.com -O - 2>/dev/null | grep -E "^(([0-9]{1,3}\.){3}([0-9]{1,3}))" | cut -d"<" -f1 2>/dev/null`; if echo $a; then $(echo -n "");else echo $b; fi;} # Example: extip
+extip() { a=`wget whatsmyip.com -O - 2>/dev/null | grep -E '^setCookie' | cut -d"'" -f4 2>/dev/null` && b=`wget ipchicken.com -O - 2>/dev/null | grep -E "^(([0-9]{1,3}\.){3}([0-9]{1,3}))" | cut -d"<" -f1 2>/dev/null`; if [ ! $a ]; then echo $b; else echo $a; fi;} # Example: extip
 ### additional method to identify External IP address 
 extip2() { wget -q -O- http://ipecho.net/plain 2>/dev/null | xargs ;} # Example: extip2
 ### shows listening TCP services on the network stack
