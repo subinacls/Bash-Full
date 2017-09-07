@@ -1,0 +1,39 @@
+# this file should be sourced in the users ~./.bashrc file
+# this will enable the use of these functions in their default shell
+# the export function(s) at the end of this file makes the function 
+# available to all shells and xterms for eash environment hopping
+#
+# FUNCTIONS DEFINITIONS
+#
+# takes a single domain name and does a PING to get external IP address
+# returns this IP address as output that can be piped into other functions
+pingdomain2ip() { 
+ ping -c 1 $1 -t1 | \
+ grep PING | \
+ sed -r "s/PING (.*) \((.*)\) ([0-9]{1,3}\([0-9]{1,3}\)(.*))/\2/g"; 
+} ## pingdomain2ip 8.8.8.8
+#
+# takes a single IP address and does a whois lookup on that address
+# looks for 2 specific strings that contain a range
+# outputs the start and finish variables as well, returns the range to SDTOUT
+whoinetrange() {
+ inetn=`whois $1 | \
+ grep -Ei "(inetnum|netrange)" | \
+ tr -s " " | \
+ cut -d " " -f2`; 
+ s=`echo $inetn | \
+ cut -d" " -f1` ; 
+ e=`echo $inetn | \
+ cut -d" " -f2`;
+ echo $s $e 
+} ## whoinetrange 8.8.8.8
+#
+# ADVANCED USAGE
+# uses additional function from another project
+# pings domain name, returns IP address
+# does whois on IP address and returns the net range var $s,$e, and returns on STDOUT
+# runs listcidr on retured values, prints to SDTOUT
+#
+# listcidr $(whoinetrange `pingdomain2ip somedomain.tld`)
+export -f ping4ip
+export -f whoinetrange
