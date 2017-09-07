@@ -1,3 +1,6 @@
+# You should source these files in ~./.bashrc 
+# if you do this they will be available to all shells
+# and users who have permission on the system
 #
 # IP address range list geenrator
 # Supply two arguments (startip, endip) to the function
@@ -10,12 +13,11 @@ listipaddr() { python -c "import netaddr; \
  tr -s "," "\n" | \
  cut -d"'" -f2; 
 } ## listipaddr 192.168.1.1 192.168.1.254
-listipaddr 192.168.1.1 192.168.1.254
 #
 # IP address range to CIDR 
 # Supply two arguments (startip, endip) to the function
 # Will return a list of all IP addresses to STDOUT
-listcird() {
+listcidr() {
  python -c "import netaddr; \
  s='$1'; \
  e='$2'; \
@@ -24,4 +26,8 @@ listcird() {
  tr -s "," "\n" | \
  cut -d"'" -f2; 
 } ## listcird 192.168.1.0 192.168.1.255
-listcird 192.168.1.0 192.168.1.255
+#
+# export functions for all shells to find on system after sourced
+#
+export -f listcidr
+export -f listipaddr
