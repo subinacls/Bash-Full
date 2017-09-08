@@ -1,11 +1,18 @@
 # file should be sources on the users ./.bashrc file
 # You must set your own variables as shown to use this properly on the API
 # CSECRET="!@#$%^&*(*&YTRFGHJU^%$EWS"
-# CAIID="#$%^&UYGFDVBGHJUI*Y"
+# CAPIID="#$%^&UYGFDVBGHJUI*Y"
 # export -f CSECRET
 # export -f CAIPID
 #
-runcensys() { 
+
+runcensys() {
+ checkdir evidence censys
+ evidir="./evidence/censys"
+ targeteddomain="$1"
+ checkdir $evidir $targeteddomain
+ censys_projectname="$evidir/$targeteddomain";
+ runcensyslog="$censys_projectname/$targeteddomain_runcensys.log";
  wget \
  --no-check-certificate \
  "https://www.censys.io/ipv4/report?q=$1&field=$2&max_buckets" \
@@ -15,11 +22,68 @@ runcensys() {
  tr -d " " | \
  sed -r "s/\*\.(.*)/\1/g" | \
  grep -Ev "(([0-9]\.){1,3}\.[0-9])" | \
- sort -u; 
+ sort -u > $runcensyslog;
 } ## run censys query against a domain/cidr/ipaddress and get reflected information back
 ## runcensys 62.249.32.0/20 "443.https.tls.certificate.parsed.names.raw" > runcensys.test
 #
-censys_raw_whois() {
+#
+dobasics() {
+ checkdir $censys_projectname ping;
+ checkdir $censys_projectname dig;
+ checkdir $censys_projectname nslookup;
+ pingdir="$censys_projectname/ping";
+ digdir="$censys_projectname/dig";
+ nslookupdir="$censys_projectname/nslookup";
+ pinglog="$pingdir/$targeteddomain-ping";
+ diglog="$digdir/$targeteddomain-dig";
+ nsllog="$nslookupdir/$targeteddomain-nslookup";
+ echo "" > $pinglog;
+ echo "" > $diglog;
+ echo "" > $nsllog;
+ for x in $(cat $runcensyslog); do 
+  ping -W 2 -c 1 $x | tee -a $pinglog;
+  dig +time=3 +tries=1 @8.8.8.8 $x | tee -a $diglog;
+  nslookup -timeout=2 -type=any $x 8.8.8.8 | tee -a $nsllog; 
+ done
+} ## dobasics
+#
+dobasics
+parseping() {
+ plog=$pingdir/parsed_pinglog_results
+ cat $pinglog | \
+ grep PING | \
+ sed -r "s/PING (.*) \((.*)\) [0-9]{1,3}(.*)/\1 - \2/g" > $plog; 
+}
+parsedig() { 
+ dlog=$digdir/parsed_diglog_results
+ cat $diglog | \
+ tr -s "\t" " " | \
+ grep "IN A" | \
+ sed -r "s/;(.*)/\1/g" | \
+ sed -r s"/^(.*)\. [0-9]{1,5} IN A (.*)/\1 - \2/g" | \
+ grep -v "IN A" > $dlog;
+}
+parsenslookup() { 
+ pnnr=$nslookupdir/parsed_nslookup_names_results;
+ pnar=$nslookupdir/parsed_nslookup_address_results;
+ nslog=$nslookupdir/parsed_nslookup_results;
+ cat $nsllog | grep Name | sed -r s"/Name:[ \t]{1,7}(.*)/\1/g" > $pnnr;
+ cat $nsllog | grep Address | grep -v "#" | sed -r s"/Address:[ \t]{1,7}(.*)/\1/g" > $pnar;
+ paste -d " " $pnnr $pnar | sed -r "s/(.*) (.*)/\1 - \2/g" > $nslog;
+}
+parsebasics() {
+ parseping
+ parsedig
+ parsenslookup
+ cat $plog $dlog $nslog | \
+  sort -u  | \
+  tee $censys_projectname/DNStoIPaddress_results
+}
+parsebasics
+#
+#
+#
+censys_raw_api_whois() {
  censysrawwhois="censys_whois_log_$1"
  wget \
   --user=$CAIPID \
@@ -77,20 +141,6 @@ censysAPI_export_IPv4() {
   2>/dev/null`;
   censysparse_ip_proto;
 }
-#
-dobasics() {
- log="$PROJECT"; 
- echo "" > $log-ping_$x $log-dig_$x $log-nslookup_$x ;
- for x in $(cat runcensys.test); do 
-  ping -W 2 -c 1 $x | \
-  tee -a $log-ping && \
-  dig +time=3 +tries=1 @8.8.8.8 $x | \
-  tee -a $log-dig && \
-  nslookup -timeout=2 -type=all $x 8.8.8.8 | \
-  tee -a $log-nslookup ; 
- done
-}
-#
 export -f runcensys
 export -f censys_raw_whois
 export -f censys_raw_search
