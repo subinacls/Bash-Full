@@ -1,0 +1,452 @@
+################################################################################
+# Searches the site for movies by year released, useful if your just trying to find something by known year
+# Example Usage: findmoviebyyear [PRESS ENTER], Input when prompted for the year (ex: 2017)
+findmoviesbyyear() {
+   year="";
+   if [ -z $1 ];
+    then
+     echo "[!] Please enter the year you would like to search movies in and press {ENTER}";
+     read year;
+   else
+     year=$1
+   fi;
+   fname="./my-$year-movies.txt";
+   URLOnly="./my-$year-movies-URLs.txt";
+   echo "" > ./$fname 1>&2;
+   startpage=$(echo "http://$site/search-movies/$year.html");
+   getstartpage=$(curl -s -k -L $startpage -H $'User-Agent: $(randomUA)');
+   pagecount=$(echo $getstartpage |\
+     sed -r 's/(href|<b>)/\n\n/g' |\
+     grep showFilm |\
+     tail -n1 |\
+     cut -d" " -f1 |\
+     cut -d"=" -f2 |\
+     sed -r 's/(.*)page-(.*)\.html/\2/g') ;
+   echo;
+   for page in $(seq 1 $(echo $pagecount));
+      do
+       echo "    Grabbing info from page: $page of total pages: $pagecount";
+       getpage="curl -s -k -L -H $'User-Agent: $(randomUA)' http://$site/search-movies/$year/page-$page.html";
+       $getpage |\
+       grep -aE '<p><b><a href\=\"http:\/\/(.*)\/watch\/(.*)' |\
+       sed -r 's/<p><b><a href=\"(.*)\"/\nURL\: \1/'|\
+       sed -r 's/<img src\=http:\/\/(.*)\/themes\/movies\/img\/white.png width=100% height\=1>//g' |\
+       sed -r 's/ onmouseout\="UnTip\(\)" onmouseover\=\"//g' |\
+       sed -r "s/Tip\('<b><i>(.*)/\nTitle: \1/g" |\
+       sed -r "s/<\/i><\/b><br><b>/\n/g" |\
+       sed -r "s/<\/b><br><b>/\n/g" |\
+       sed -r "s/<\/b><br><div style\=padding-top\:5px\;padding-bottom\:5px\;><\/div>/\nSynopsis: '/g" |\
+       sed -r "s/, WIDTH, -300, FONTFACE, 'Arial, Tahoma', FONTSIZE, '13px(.*)\/a><\/b><\/p>//g" |\
+       sed -r 's/\.html\"/\.html/g' >> $fname;
+   done;
+   cat $fname |\
+     grep URL |\
+     sort -V -t"-" --key=2 > $URLOnly;
+   echo;
+   echo "[!] Finished";
+   echo;
+   echo "    [*] Full information saved to $fname";
+   echo;
+   echo "    [*] Urls saved to $URLOnly";
+   echo;
+}
+################################################################################
+# Searches the site for movies Country released, useful if your just trying to find something by Language
+# Example Usage: findmoviebycountry [PRESS ENTER], Input when prompted for the year (ex: USA)
+findmoviesbycountry() {
+   country="";
+   if [ -z $1 ];
+    then
+     echo "[!] Please enter the country you would like to search movies in and press {ENTER}";
+     read country;
+     country=$(echo $country | tr '[:upper:]' '[:lower:]');
+   else
+     country=$(echo $1 | tr '[:upper:]' '[:lower:]');
+   fi;
+   fname="./my-$country-movies.txt";
+   URLOnly="./my-$country-movies-URLs.txt";
+   echo "" > ./$fname;
+   startpage=$(echo "http://$site/movies-countries/$country.html");
+   getstartpage=$(curl -s -k -L $startpage -H $'User-Agent: $(randomUA)');
+   pagecount=$(echo $getstartpage |\
+     sed -r 's/(href|<b>)/\n\n/g' |\
+     grep showFilm |\
+     tail -n1 |\
+     cut -d" " -f1 |\
+     cut -d"=" -f2 |\
+     sed -r 's/(.*)page-(.*)\.html/\2/g');
+   echo;
+   for page in $(seq 1 $(echo $pagecount));
+      do
+       echo "    Grabbing info from page: $page of total pages: $pagecount" 1>&2;
+       getpage="curl -s -k -L -H $'User-Agent: $(randomUA)' http://$site/movies-countries/$country/page-$page.html";
+       $getpage |\
+       grep -aE '<p><b><a href=\"http:\/\/(.*)\/watch\/(.*)' |\
+       sed -r 's/<p><b><a href=\"(.*)\"/\nURL\: \1/'|\
+       sed -r 's/<img src\=http:\/\/(.*)\/themes\/movies\/img\/white.png width=100% height\=1>//g' |\
+       sed -r 's/ onmouseout\="UnTip\(\)" onmouseover\=\"//g' |\
+       sed -r "s/Tip\('<b><i>(.*)/\nTitle: \1/g" |\
+       sed -r "s/<\/i><\/b><br><b>/\n/g" |\
+       sed -r "s/<\/b><br><b>/\n/g" |\
+       sed -r "s/<\/b><br><div style\=padding-top\:5px\;padding-bottom\:5px\;><\/div>/\nSynopsis: '/g" |\
+       sed -r "s/, WIDTH, -300, FONTFACE, 'Arial, Tahoma', FONTSIZE, '13px(.*)\/a><\/b><\/p>//g" |\
+       sed -r 's/\.html"/\.html/g' >> $fname;
+   done;
+   cat $fname |\
+     grep URL |\
+     sort -V -t"-" --key=2 > $URLOnly;
+   echo;
+   echo "[!] Finished" 1>&2;
+   echo;
+   echo "    [*] Full information saved to $fname" 1>&2;
+   echo;
+   echo "    [*] Urls saved to $URLOnly" 1>&2;
+   echo;
+}
+################################################################################
+# Downloads the movie to disk by a given URL, this is for single instances ONLY
+# Example Usage: downthemovie http(s|)://somedomain.tld/folder/movie_title.html
+downthemovie () {
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the movie you wish to download and then {ENTER}" 1>&2
+        read durl
+      else
+        durl=$1
+    fi;
+    a=$(curl -s -k -L $durl \
+         -H $'User-Agent: $(randomUA)' |\
+      grep -i base64.decode |\
+      cut -d '"' -f4 |\
+      cut -d '"' -f1 |\
+      base64 -d |\
+      cut -d'"' -f8 |\
+      cut -d'"' -f1);
+    b=$(curl -s -k -L $a \
+         -H $'User-Agent: $(randomUA)' |\
+      grep \.mp4\" |\
+      cut -d'"' -f2);
+    c=$(echo $b |\
+      cut -d"/" -f5- |\
+      sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
+    curl -k -L -X $'GET' \
+      -H $'User-Agent: $(randomUA)' \
+      -H $'Referer: $a' \
+      -H $'Range: bytes=0-' \
+      --retry 999 \
+      --retry-max-time 0 \
+      $b -o $c;
+}
+################################################################################
+# Downloads an entire season by the given URL, if you only want 1 episode use downthemovie 
+# Example Usage: downtheseason http(s|)://somedomain.tld/folder/series_title.html
+downtheseason () {
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the series you wish to download and then {ENTER}" 1>&2
+        read durl
+      else
+        durl=$1
+    fi;
+    a=$(curl -s -k -L $durl -o - \
+        -H $'User-Agent: $(randomUA)' |\
+      grep -Ei 'class="episode episode_series_link active');
+    b=$(echo $a |\
+      tr -s " " "\n" |\
+      grep href |\
+      cut -d'"' -f2 |\
+      sort -u -V -t "/" -k6);
+    for c in $(echo $b | tr -s " " "\n");
+      do
+        echo -e "[#] Downloading file: $c";
+        d=$(curl -s -k -L $c \
+            -H $'User-Agent: $(randomUA)' |\
+          grep -i base64.decode |\
+          cut -d '"' -f4 |\
+          cut -d '"' -f1 |\
+          base64 -d |\
+          cut -d'"' -f8 |\
+          cut -d'"' -f1);
+        e=$(curl -s -k -L $d \
+            -H $'User-Agent: $(randomUA)' |\
+          grep \.mp4\" |\
+          cut -d'"' -f2);
+        f=$(echo $e |\
+          cut -d"/" -f5- |\
+          sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
+          curl -k -L -X $'GET' \
+            -H $'User-Agent: $(randomUA)' \
+            -H $'Referer: $d' \
+            -H $'Range: bytes=0-' \
+            --retry 999 \
+            --retry-max-time 0 \
+            $e -o $f;
+    done;
+}
+################################################################################
+# Gathers infomation about the given Movie / Series URL and outputs to STDOUT
+# Example Usage: getinfo http(s|)://somedomain.tld/folder/movie_title
+getinfo () {
+    checkup() {
+      whichlynx=$(which lynx);
+      if [ -z $whichlynx ]; 
+        then 
+          echo "[*] The application 'Lynx' is not installed on your system" 1>&2; 
+          echo "    [!] Please use: 'sudo apt-get -y install lynx' to use this script" 1>&2;
+          read -p "
+      [?] Would you like to install 'Lynx' on your system (y/n)? " answer;
+          case ${answer:0:1} in
+            y|Y )
+              sudo apt-get install -y lynx
+            ;;
+            * )
+              echo ""
+            ;;
+          esac;
+        fi; 
+    }
+    checkup;
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the movie/show you wish to see info about and then {ENTER}" 1>&2
+        read durl
+      else
+        durl=$1
+    fi;
+    a=$(curl -s -k -L $durl \
+      -H $'User-Agent: $(randomUA)');
+    story=$(echo $a |\
+      lynx --dump --stdin |\
+      awk "/Storyline/" RS= |\
+      tr -s "\n" " " |\
+      head -n 1);
+    synopsis=$(echo $a |\
+      lynx --dump --stdin |\
+      awk "/Synopsis/" RS= |\
+      tr -s "\n" " ");
+    actors=$(echo $a |\
+      lynx --dump --stdin |\
+      awk "/Actors/" RS= |\
+      tr -s "\n" " ");
+    duration=$(echo $a |\
+      lynx --dump --stdin |\
+      awk "/Duration/" RS= |\
+      tr -s "\n" " ");
+    year=$(echo $a |\
+      lynx --dump --stdin |\
+      awk "/Release Year/" RS= |\
+      tr -s "\n" " ");
+    echo;
+    echo "---------------------- {Details about the show listed below} ----------------------" 1>&2;
+    echo;
+    if [ ! -z "${year}" ]; then echo $year; fi;
+    if [ ! -z "${actors}" ]; then echo $actors; fi;
+    if [ ! -z "${synopsis}" ]; then echo $synopsis; fi;
+    if [ ! -z "${story}" ]; then echo $story; fi;
+    if [ ! -z "${duration}" ]; then echo $duration; fi;
+    read -p "
+      [?] Would you like to download this movie/show (y/n)? " answer;
+    case ${answer:0:1} in
+      y|Y )
+        echo ""
+        downthemovie $durl
+      ;;
+      * )
+        echo ""
+      ;;
+    esac;
+    echo;
+}
+################################################################################
+# List all episodes to a given series, you should supply the URL to the specific series
+# Example Usage: listepisodes http(s|)://somedomain.tld/folder/movie_title
+listepisodes() {
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the series you wish to see episodes for and then {ENTER}" 1>&2
+        read durl
+      else
+        durl=$1
+    fi;
+    echo;
+    echo;
+    echo "---------------------- {Episode URLS are provided below} ----------------------" 1>&2;
+    echo;
+    curl -s -k -L $durl \
+      -H $'User-Agent: $(randomUA)'|\
+    grep -Ei 'class="episode episode_series_link active' |\
+    tr -s " " "\n" |\
+    grep href |\
+    cut -d '"' -f2 |\
+    sort -u -V -t "/" -k6;
+    read -p "
+      [?] Would you like to download the season (y/n)? " answer;
+      case ${answer:0:1} in
+        y|Y )
+          downtheseason $durl
+        ;;
+        * )
+          echo ""
+        ;;
+      esac;
+}
+################################################################################
+# used to search the site for information about movies / series contained in their Database
+# Example Usage: searchsite [PRESS ENTER], Input when prompted for the year (ex: game of thrones)
+searchsite () {
+    echo;
+    echo "Please enter the search string below and press [ENTER]:" 1>&2;
+    echo;
+    read search;
+    echo;
+    echo "---------------------- {Results are listed below} ----------------------" 1>&2;
+    echo;
+    curl -s -k -L \
+         -H $'User-Agent: $(randomUA)' \
+         $site/search-movies/$(echo $search |\
+            tr -s " " "+").html |\
+            grep $(echo $search | tr -s " " "-") |\
+            grep -iE "(season|movie)" |\
+            grep href |\
+            cut -d'"' -f2 |\
+            sort -u -V -t "-" -k2;
+}
+################################################################################
+# Shows the real location of the movies / series offered by their CDN (Content Delivery Network)
+# Example Usage: showreallocation http(s|)://somedomain.tld/folder/movie_title
+showreallocation () {
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL to reveal its real location stored on a CDN and then {ENTER}" 1>&2
+        read durl
+      else
+        durl=$1
+    fi;
+    a=$(curl -s -k -L $durl \
+         -H $'User-Agent: $(randomUA)' |\
+      grep -i base64.decode |\
+      cut -d '"' -f4 |\
+      cut -d '"' -f1 |\
+      base64 -d |\
+      cut -d'"' -f8 |\
+      cut -d'"' -f1);
+    b=$(curl -s -k -L $a \
+         -H $'User-Agent: $(randomUA)' |\
+      grep \.mp4\" |\
+      cut -d'"' -f2);
+    echo;
+    echo -e "[-] the true location of this file is:\n\t$b" 1>&2;
+    echo;
+}
+################################################################################
+# Downloads movies from a file containing URL's for their locations
+# Example Usage: dowmoviefromfile /some/file/namere_here
+downmoviefromfile () {
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the filename for the list you wish to download from and then {ENTER}" 1>&2
+        read dfile
+      else
+        dfile=$1
+    fi;
+    for downURL in $(cat $dfile);
+      do
+        a=$(curl -s -K -L $downURL \
+             -H $'User-Agent: $(randomUA)' |\
+          grep -i base64.decode |\
+          cut -d '"' -f4 |\
+          cut -d '"' -f1 |\
+          base64 -d |\
+          cut -d'"' -f8 |\
+          cut -d'"' -f1);
+        b=$(curl -s -k -L $a \
+             -H $'User-Agent: $(randomUA)' |\
+          grep \.mp4\" |\
+          cut -d'"' -f2);
+        c=$(echo $b |\
+          cut -d"/" -f5- |\
+          sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
+        curl -k -L -X $'GET' \
+          -H $'User-Agent: $(randomUA)' \
+          -H $'Referer: $a' \
+          -H $'Range: bytes=0-' \
+          --retry 999 \
+          --retry-max-time 0 \
+          $b -o $c;
+    done; 
+}
+################################################################################
+# Downloads series from a file containing URL's for their locations
+# Example Usage: downseriesfromfile /some/file/namere_here
+downseasonfromfile () {
+    if [ -z $1 ];
+      then
+        echo "[!] Please enter the URL for the series you wish to download and then {ENTER}" 1>&2
+        read dfile
+      else
+        dfile=$1
+    fi;
+    for downURL in $(cat $dfile);
+      do
+        a=$(curl -k -L $downURL -o - \
+            -H $'User-Agent: $(randomUA)' |\
+          grep -Ei 'class="episode episode_series_link active');
+        b=$(echo $a |\
+          tr -s " " "\n" |\
+          grep href |\
+          cut -d'"' -f2 |\
+          sort -u -V -t "/" -k6);
+        for c in $(echo $b | tr -s " " "\n");
+          do
+            echo -e "[#] Downloading file: $c";
+            d=$(curl -s $c \
+                -H $'User-Agent: $(randomUA)' |\
+              grep -i base64.decode |\
+              cut -d '"' -f4 |\
+              cut -d '"' -f1 |\
+              base64 -d |\
+              cut -d'"' -f8 |\
+              cut -d'"' -f1);
+            e=$(curl -s $d |\
+              grep \.mp4\" |\
+              cut -d'"' -f2);
+            f=$(echo $e |\
+              cut -d"/" -f5- |\
+              sed -E "s/(.*)___[a-zA-Z0-9]{13}\.mp4/\1.mp4/");
+              curl -k -L -X $'GET' \
+                -H $'User-Agent: $(randomUA)' \
+                -H $'Referer: $d' \
+                -H $'Range: bytes=0-' \
+                --retry 999 \
+                --retry-max-time 0 \
+                $e -o $f;
+        done;
+    done;
+}
+################################################################################
+# Used to set the $site variable, needed in some of the scripts to keep the lenght shorter
+# Example Usage: No Usage needed
+setsite() {
+    site="somesite";
+}
+setsite;
+makeXtermLog() {
+  if [ -f $1-log.txt ];
+    then
+      rm $1-log.txt 2>/dev/null;
+  fi;
+  xterm -bc \
+    -bd white \
+    -bg black \
+    -fg green \
+    -l \
+    -lf $1-log.txt \
+    -leftbar \
+    -ls \
+    -name $1 \
+    -ms yellow \
+    -selbg orange \
+    -selfg black \
+    -title $1 \
+    -e "$2"; 
+}
