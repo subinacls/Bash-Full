@@ -1,0 +1,20 @@
+# make ping scanning automated
+
+#gets local host ip address and subnet
+getip() {
+  ipadr=`ip addr show | \
+    grep eth | \
+    grep inet | \
+    awk '{print $2}' | \
+    awk -F "/" '{print $1}'`;
+  snm=`ip addr show | \
+    grep eth | \
+    grep inet | \
+    awk '{print $2}' | \
+    awk -F "/" '{print $2}'`;
+}
+
+pingmap() {
+  nmap -sP $ipadr/$snm
+}
+
