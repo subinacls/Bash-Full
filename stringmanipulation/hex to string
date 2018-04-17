@@ -1,0 +1,23 @@
+#
+#
+# Useful for converting different hex captures to string "printable" characters"
+#
+#
+x2str() { 
+  echo; 
+  echo -e $1 | \
+    sed -r "s/([A-Fa-f0-9]{2})/\\\\\\\x\1/g" | \
+    xargs --null echo -e | \
+    sed -r "s/\\\x//g";
+  echo; 
+} ## Example: x2str ":\x00\x00\x00#H\x00\x00\x00\x00\x00\x00\xd4\x07\x00\x00\x00\x00\x00\x00admin"
+
+
+
+h2str() { 
+  echo; 
+  echo $1 | \
+    sed -e 's/\(..\)\.\?/\\x\1/g' | \
+    xargs --null echo -e; 
+  echo; 
+} ## Example: h2str "80f08400000000010000000020434b414141414141414141414141"
