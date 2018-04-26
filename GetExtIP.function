@@ -1,0 +1,5 @@
+GetExtIP() { 
+  wget ipchicken.com -O - 2>/dev/null | \
+  grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | \
+  cut -d "<" -f1; 
+}
