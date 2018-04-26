@@ -1,0 +1,16 @@
+
+
+mapaddress() { 
+  d=`ifconfig eth0 | \
+    grep "inet addr:" | \
+    awk -F ":" '{print $4}' | \
+    cut -d " " -f1`;
+  a=`ifconfig eth0 | \
+    grep "inet addr:" | \
+    awk -F ":" '{print $2}' | \
+    cut -d " " -f1`;
+  b=`cat /root/ipaddress`; 
+  c=`hostname`;
+  echo $c : $b : $a : $d;
+}
+
