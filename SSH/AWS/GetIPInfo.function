@@ -1,6 +1,4 @@
-
-
-mapaddress() { 
+MapAddresses() { 
   d=`ifconfig eth0 | \
     grep "inet addr:" | \
     awk -F ":" '{print $4}' | \
