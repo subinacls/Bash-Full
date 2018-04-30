@@ -1,0 +1,19 @@
+h2ad() { 
+  echo; \
+  echo $1 | \
+  sed -r "s/([0-9a-fA-F]{2})/\\\\\\\x\1/g"} | \
+  xargs echo -e | \
+  hexdump -C | \
+  grep -Ev "^[0-9]{8}$";
+  echo;
+}  ## h2ad 5353482d322e302d505554545900a
+## 00000000 53 53 48 2d 32 2e 30 2d  50 55 54 54 59 0d 0a    |SSH-2.0-PUTTY...|
+
+h2a() { 
+  echo ;
+  echo $1 | \
+  sed -r "s/([0-9a-fA-F]{2})/\\\\\\\x\1/g"} | \
+  xargs echo -e ;
+  echo ;
+}  ## h2ad 5353482d322e302d505554545900a
+## SSH-2.0-PUTTY
