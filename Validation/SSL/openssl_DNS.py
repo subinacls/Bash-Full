@@ -28,7 +28,11 @@ def openssl_process():
     for xs in xres.split(','):
      nlist.append(xs)
     for xso in sorted(set(nlist)):
-     print('{}\t{}'.format(xnip, xso))
+     try:
+      xso.split(".")[1]
+      print('{}\t{}'.format(xnip, xso))
+     except:
+      pass
  except Exception as e:
   print e
 
