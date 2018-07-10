@@ -18,12 +18,11 @@ def openssl_process():
    timeout 2 openssl s_client -connect '+str(xnip)+':443 2>/dev/null | \
    openssl x509 -noout -text 2>/dev/null | \
    grep DNS: | \
-   tr -d " \t" | \
-   cut -d"." -f2-'
+   tr -d " \t"'
   res = os.popen(cmd).readlines()
   if res:
    nlist = list()
-   reslist = [r.strip().replace('DNS:','') for r in res]
+   reslist = [r.strip().replace('DNS:','').replace('*.','') for r in res]
    for xres in reslist:
     for xs in xres.split(','):
      nlist.append(xs)
